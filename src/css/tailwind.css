@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  --header-h: 73px;
+  --content-area: 1440px;
   --color-gradient-positive: linear-gradient(90deg, #71e9d0 0%, #03aedd 100%);
   --color-gradient-negative: linear-gradient(90deg, #ffa69e 0%, #fa084d 100%);
 }
