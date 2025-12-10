@@ -1,6 +1,5 @@
 @import "./tailwind.css";
 
-.recharts-pie path {
+.recharts-wrapper * {
   outline: none !important;
-  stroke: none !important;
 }
