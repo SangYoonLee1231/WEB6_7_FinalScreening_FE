@@ -30,8 +30,8 @@ const buttonVariants = cva(
         xl: "w-125 h-15 px-6 text-lg",
       },
       tone: {
-        tertiary: "bg-bg-tertiary hover:bg-bg-tertiary/50",
-        accent: "bg-accent hover:bg-accent/50",
+        black: "bg-bg-tertiary hover:bg-bg-tertiary/50",
+        color: "bg-accent hover:bg-accent/50",
         positive: "bg-positive hover:bg-positive/50",
         negative: "bg-negative hover:bg-negative/50",
         gradient_positive: "bg-gradient-positive",
@@ -41,7 +41,7 @@ const buttonVariants = cva(
 
     defaultVariants: {
       size: "md",
-      tone: "tertiary",
+      tone: "black",
     },
   },
 );
