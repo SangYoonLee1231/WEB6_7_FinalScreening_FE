@@ -22,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${pretendard.variable}`}>
-      <body className={`${pretendard.className} dark bg-bg-secondary`}>
+      <body
+        className={`${pretendard.className} dark bg-bg-secondary font-medium`}
+      >
         <Header />
         <div className="m-auto min-h-dvh w-(--content-area) max-w-full">
           <main>{children}</main>
