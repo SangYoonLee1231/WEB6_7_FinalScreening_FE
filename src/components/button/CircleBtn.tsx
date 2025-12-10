@@ -3,42 +3,62 @@
 "use client";
 
 import { Sun } from "lucide-react";
+import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
+import React from "react";
 
-interface CircleBtnProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  size: number | "xl" | "lg" | "md" | "sm" | "xs";
-}
+const circleBtn = cva(
+  // 공통 스타일
+  "inline-flex items-center justify-center rounded-full bg-bg-tertiary text-content-main",
+  {
+    variants: {
+      size: {
+        xs: "size-7.5", // 30px 정도라고 가정
+        sm: "size-10", // 40px
+        md: "size-12.5", // 50px
+        lg: "size-17", // 68px
+        xl: "size-25.5", // 102px
+        xxl: "size-32.5", // 130px
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  },
+);
 
-const SIZE_MAP: Record<string, number> = {
-  xl: 120,
-  lg: 80,
-  md: 60,
-  sm: 40,
-  xs: 24,
+type CircleBtnVariants = VariantProps<typeof circleBtn>;
+
+interface CircleBtnProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, CircleBtnVariants {}
+
+const ICON_SIZE_MAP: Record<NonNullable<CircleBtnVariants["size"]>, number> = {
+  xs: 14,
+  sm: 18,
+  md: 22,
+  lg: 26,
+  xl: 32,
+  xxl: 40,
 };
 
-// size prop을 통해 크기 조절 가능 (number 또는 predefined size)
 export default function CircleBtn({
-  size,
+  size = "md",
   className,
   ...props
 }: CircleBtnProps) {
-  const finalSize = typeof size === "number" ? size : SIZE_MAP[size];
+  const safeSize: NonNullable<CircleBtnVariants["size"]> = size ?? "md";
+  const iconSize = ICON_SIZE_MAP[safeSize];
 
   return (
     <button
       {...props}
-      style={{
-        width: finalSize,
-        height: finalSize,
-      }}
       className={twMerge(
-        "bg-bg-tertiary text-content-main flex items-center justify-center rounded-full",
+        circleBtn({ size }),
         "hover:bg-bg-quaternary transition-all duration-150 active:scale-95",
         className,
       )}
     >
-      <Sun width={finalSize * 0.45} height={finalSize * 0.45} strokeWidth={1} />
+      <Sun width={iconSize} height={iconSize} strokeWidth={2} />
     </button>
   );
 }
