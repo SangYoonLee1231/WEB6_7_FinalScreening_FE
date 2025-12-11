@@ -2,23 +2,21 @@
 
 "use client";
 
-import { Sun } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 import React from "react";
 
 const circleBtn = cva(
-  // 공통 스타일
-  "inline-flex items-center justify-center rounded-full bg-bg-tertiary text-content-main",
+  "inline-flex items-center justify-center rounded-full bg-bg-tertiary text-content-main hover:bg-bg-quaternary transition-all duration-150 active:scale-95",
   {
     variants: {
       size: {
-        xs: "size-7.5", // 30px 정도라고 가정
-        sm: "size-10", // 40px
-        md: "size-12.5", // 50px
-        lg: "size-17", // 68px
-        xl: "size-25.5", // 102px
-        xxl: "size-32.5", // 130px
+        xs: "size-7.5",
+        sm: "size-10",
+        md: "size-12.5",
+        lg: "size-17",
+        xl: "size-25.5",
+        xxl: "size-32.5",
       },
     },
     defaultVariants: {
@@ -30,43 +28,25 @@ const circleBtn = cva(
 type CircleBtnVariants = VariantProps<typeof circleBtn>;
 
 interface CircleBtnProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>, CircleBtnVariants {}
-
-const ICON_SIZE_MAP: Record<NonNullable<CircleBtnVariants["size"]>, number> = {
-  xs: 14,
-  sm: 18,
-  md: 22,
-  lg: 26,
-  xl: 32,
-  xxl: 40,
-};
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, CircleBtnVariants {
+  children: React.ReactNode;
+}
 
 export default function CircleBtn({
   size = "md",
   className,
+  children,
   ...props
 }: CircleBtnProps) {
-  const safeSize: NonNullable<CircleBtnVariants["size"]> = size ?? "md";
-  const iconSize = ICON_SIZE_MAP[safeSize];
-
   return (
-    <button
-      {...props}
-      className={twMerge(
-        circleBtn({ size }),
-        "hover:bg-bg-quaternary transition-all duration-150 active:scale-95",
-        className,
-      )}
-    >
-      <Sun width={iconSize} height={iconSize} strokeWidth={2} />
+    <button {...props} className={twMerge(circleBtn({ size }), className)}>
+      {children}
     </button>
   );
 }
 
 /* 사용법 예시
-    <CircleBtn size={120} />
-    <CircleBtn size={80} />
-    <CircleBtn size={60} />
-    <CircleBtn size={40} />
-    <CircleBtn size={xl} />
+  <CircleBtn size="lg">
+    <svg width="24" height="24" ...>...</svg>
+  </CircleBtn>
 */
