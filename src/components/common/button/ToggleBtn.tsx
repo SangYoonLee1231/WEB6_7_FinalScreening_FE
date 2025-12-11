@@ -5,7 +5,6 @@
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
-import React from "react";
 
 // 모집 상태 타입
 export type RecruitStatus = "recruiting" | "completed";
@@ -55,9 +54,9 @@ export default function ToggleBtn({
           segmentBtn({ size }),
           isRecruiting
             ? // 선택된 상태 (이미지에서 왼쪽 버튼)
-              "bg-bg-tertiary border-accent text-accent"
+              "bg-bg-tertiary border-accent text-accent hover:bg-accent/10 hover:border-border-primary"
             : // 비선택 상태
-              "text-content-secondary border-border-primary bg-transparent opacity-60",
+              "bg-bg-primary text-content-secondary border-border-primary hover:bg-bg-tertiary hover:border-border-primary",
         )}
       >
         모집중
@@ -71,9 +70,9 @@ export default function ToggleBtn({
           segmentBtn({ size }),
           isCompleted
             ? // 선택된 상태 (이미지에서 오른쪽이 활성일 때)
-              "bg-bg-tertiary border-accent text-accent"
+              "bg-bg-tertiary border-accent text-accent hover:bg-accent/10 hover:border-border-primary"
             : // 비선택 상태
-              "text-content-secondary border-border-primary bg-transparent opacity-60",
+              "bg-bg-primary text-content-secondary border-border-primary hover:bg-bg-tertiary hover:border-border-primary",
         )}
       >
         모집완료
@@ -112,8 +111,19 @@ export default function PostListPage() {
 
 /* 사용법 예시 2
 
-const [status, setStatus] = useState<RecruitStatus>("completed");
+"use client";
 
-<ToggleBtn value={status} onChange={setStatus} size="lg" />;
+import { useState } from "react";
+import ToggleBtn, { RecruitStatus } from "@/components/common/button/ToggleBtn";
+
+export default function Home() {
+  const [status, setStatus] = useState<RecruitStatus>("completed");
+
+  return (
+    <>
+      <ToggleBtn value={status} onChange={setStatus} />
+    </>
+  );
+}
 
 */
