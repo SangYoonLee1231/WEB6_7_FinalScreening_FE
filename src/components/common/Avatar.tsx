@@ -23,15 +23,19 @@ const avatar = cva(
   },
 );
 
+type AvatarType = "profile" | "champion";
+
 interface AvatarProps
   extends React.ComponentPropsWithoutRef<"img">, VariantProps<typeof avatar> {
   src: string;
+  type: AvatarType;
   className?: string;
 }
 
 export default function Avatar({
   size,
   src,
+  type,
   className,
   ...props
 }: AvatarProps) {
@@ -43,10 +47,19 @@ export default function Avatar({
       <RadixAvatar.Image
         className="size-full rounded-[inherit] object-cover"
         src={src}
-        alt="user profile"
+        alt={
+          type === "profile" ? "user profile image" : "champion thumbnail image"
+        }
       />
       <RadixAvatar.Fallback delayMs={600}>
-        <Image src={profile} alt="user default image" />
+        <Image
+          src={profile}
+          alt={
+            type === "profile"
+              ? "user profile default image"
+              : "champion thumbnail default image"
+          }
+        />
       </RadixAvatar.Fallback>
     </RadixAvatar.Root>
   );
