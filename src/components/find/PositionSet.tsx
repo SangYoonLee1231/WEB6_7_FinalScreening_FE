@@ -19,8 +19,10 @@ export default function PositionSet({
 }: PositionSetProps) {
   const h = size === "default" ? 40 : 24;
   return (
-    <div>
-      <span>{type === "my" ? "주 포지션" : "찾는 포지션"}</span>
+    <div className="flex flex-col items-center justify-center gap-2 font-semibold">
+      <span className="text-sm">
+        {type === "my" ? "주 포지션" : "찾는 포지션"}
+      </span>
       {typeof data === "object" ? (
         data.map((d, index) => (
           <Image
