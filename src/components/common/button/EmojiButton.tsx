@@ -10,7 +10,8 @@ import emojiBad from "@/assets/images/emoji/emoji_bad.png";
 type Expression = "good" | "normal" | "bad";
 
 interface EmojiRadioButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onChange">,
+  extends
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onChange">,
     VariantProps<typeof emojiButtonVariants> {
   expression: Expression;
   selected: boolean;
@@ -39,7 +40,11 @@ export function EmojiRadioButton({
     <button
       type="button"
       role="radio"
-      className={twMerge(emojiButtonVariants({ size }), selected && "grayscale-0 opacity-100", className)}
+      className={twMerge(
+        emojiButtonVariants({ size }),
+        selected && "opacity-100 grayscale-0",
+        className,
+      )}
       {...props}
     >
       <Image
@@ -60,10 +65,7 @@ export function EmojiRadioGroup({
   size = "md",
 }: EmojiRadioGroupProps) {
   return (
-    <div
-      role="radiogroup"
-      className="flex gap-6"
-    >
+    <div role="radiogroup" className="flex gap-6">
       {EXPRESSIONS.map((expression) => {
         const selected = value === expression;
 
