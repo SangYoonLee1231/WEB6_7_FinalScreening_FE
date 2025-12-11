@@ -1,4 +1,4 @@
-import { Headset, UserRound } from "lucide-react";
+import { Headset } from "lucide-react";
 import Avatar from "../common/Avatar";
 import FindCardContainer from "../common/container/FindCardContainer";
 import { PostDetail } from "@/types/post";
@@ -11,6 +11,7 @@ import MostChampion from "../profile/MostChampion";
 import Champion from "@/assets/images/test_champion_thumb.png";
 import WinRate from "../profile/WinRate";
 import { BoxButton } from "../common/button/BoxButton";
+import formatRelativeTime from "@/utils/formatRelativeTime";
 
 interface FindCardProps {
   data: PostDetail;
@@ -66,7 +67,7 @@ export default function FindCard({ data }: FindCardProps) {
       <div className="flex flex-col gap-1">
         <IntroduceBubble content={options.memo} />
         <span className="text-content-secondary text-right text-xs">
-          {statistics.createdAt}
+          {formatRelativeTime(statistics.createdAt)}
         </span>
       </div>
 
