@@ -47,6 +47,6 @@ export default function CircleBtn({
 
 /* 사용법 예시
   <CircleBtn size="lg">
-    <svg width="24" height="24" ...>...</svg>
+    <svg width="24" height="24">...</svg>
   </CircleBtn>
 */
