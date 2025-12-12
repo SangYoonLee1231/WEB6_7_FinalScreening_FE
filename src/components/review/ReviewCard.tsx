@@ -4,6 +4,8 @@ import Image, { type StaticImageData } from "next/image";
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
+import HorizontalCardContainer from "@/components/common/container/HorizontalCardContainer";
+
 import emojiGood from "@/assets/images/emoji/emoji_good.png";
 import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
 import emojiBad from "@/assets/images/emoji/emoji_bad.png";
@@ -62,7 +64,7 @@ export default function ReviewCard({
   const gameLogoSrc = GAME_LOGO_MAP[gameName];
 
   return (
-    <article className="bg-bg-secondary border-border-primary w-full rounded-xl border px-4 py-3">
+    <HorizontalCardContainer className="w-full px-4 py-3">
       {/* 상단 바 */}
       <button
         type="button"
@@ -133,7 +135,7 @@ export default function ReviewCard({
           </button>
         </div>
       )}
-    </article>
+    </HorizontalCardContainer>
   );
 }
 
@@ -143,27 +145,27 @@ import ReviewCard from "@/components/review/ReviewCard";
 
 export default function Home() {
   return (
-    <>
-      // 받은 리뷰 리스트
+    <div className="flex flex-col gap-4">
+      // 받은 리뷰
       <ReviewCard
         mode="received"
-        gameIconSrc="/lol.png"
+        gameName="lol"
         communityName="커뮤니티 닉네임"
         content="리뷰내용"
         emotion="good"
         createdAt="2025-12-12T00:12:00.000Z"
       />
 
-      // 작성한 리뷰 리스트
+      // 작성한 리뷰
       <ReviewCard
         mode="written"
-        gameIconSrc="/lol.png"
+        gameName="valorant"
         communityName="커뮤니티 닉네임"
         content="리뷰내용"
         emotion="bad"
         createdAt="2025-12-11T00:11:00.000Z"
       />
-    </>
+    </div>
   );
 }
 
