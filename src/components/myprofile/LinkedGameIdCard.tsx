@@ -57,7 +57,7 @@ export default function LinkedGameIdCard({
 
       {/* Right: Date + Button */}
       <div className="flex items-center gap-5">
-        <span className="text-base text-content-secondary">Date: {time.toString()}</span>
+        <span className="text-base text-content-secondary">Date: {time}</span>
 
         <BoxButton
           tone="negative"
