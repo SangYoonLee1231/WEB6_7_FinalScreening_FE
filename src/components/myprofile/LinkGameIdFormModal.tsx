@@ -8,7 +8,7 @@ import { BoxButton } from "@/components/common/button/BoxButton";
 
 export interface FormModalProps {
   /** 모달 오픈 여부 */
-  open: boolean;
+  isOpen: boolean;
 
   /** 모달 닫기 함수 */
   onClose: () => void;
@@ -23,14 +23,10 @@ const items = [
   { value: "valorant", label: "발로란트" },
 ];
 
-export default function FormModal({ open, onSubmit, onClose }: FormModalProps) {
+export default function FormModal({ isOpen, onSubmit, onClose }: FormModalProps) {
   const [value, setValue] = useState("lol");
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "auto";
-  }, [open]);
-
-  if (!open) return null;
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
