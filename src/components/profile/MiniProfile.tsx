@@ -40,13 +40,8 @@ export default function MiniProfile({ className }: MiniProfileProps) {
   return (
     <FindCardContainer className={twMerge("flex flex-col gap-2", className)}>
       <div className="flex gap-2">
-        <Avatar
-          type="profile"
-          src={userData.profileImageUrl}
-          size="sm"
-          className="w-full"
-        />
-        <div className="flex w-full flex-col gap-2">
+        <Avatar type="profile" src={userData.profileImageUrl} size="sm" />
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold">{userData.nickname}</h3>
             <BoxButton size="xs" tone="negative" text="차단하기" />

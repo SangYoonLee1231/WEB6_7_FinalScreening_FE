@@ -1,12 +1,13 @@
-import { Crown } from "lucide-react";
+import { Crown, Minus, Plus } from "lucide-react";
 import Avatar from "../common/Avatar";
 import Image from "next/image";
 import { activePositionIcons, Position } from "@/types/position";
+import CircleBtn from "../common/button/CircleBtn";
 
-export default function FindMemberCard({
-  masterUser,
-  data,
-}: {
+type FindMemberCardType = "default" | "modal";
+interface FindMemberCardProps {
+  type: FindMemberCardType;
+  currentUserId: number;
   masterUser: number;
   data: {
     userId: number;
@@ -23,7 +24,16 @@ export default function FindMemberCard({
       mainPosition: Position;
     };
   };
-}) {
+}
+
+export default function FindMemberCard({
+  type = "default",
+  currentUserId,
+  masterUser,
+  data,
+}: FindMemberCardProps) {
+  const isMaster = currentUserId === masterUser;
+
   if (data)
     return (
       <div className="bg-accent/10 border-accent/50 flex items-center justify-between rounded-xl border px-4 py-2">
@@ -41,12 +51,18 @@ export default function FindMemberCard({
         </div>
         {masterUser === data.userId ? (
           <Crown size={18} strokeWidth={3} className="text-accent" />
-        ) : (
+        ) : type === "default" ? (
           <Image
             src={activePositionIcons[data.gameAccount.mainPosition]}
             alt={`${data.gameAccount.mainPosition} position icon`}
             height={18}
           />
+        ) : (
+          isMaster && (
+            <CircleBtn className="bg-negative hover:bg-negative/50 h-5 w-5">
+              <Minus />
+            </CircleBtn>
+          )
         )}
       </div>
     );
@@ -57,6 +73,11 @@ export default function FindMemberCard({
           <Avatar type="profile" src="" size="sm" />
           <h4 className="flex items-center gap-1 font-bold">빈자리</h4>
         </div>
+        {type === "modal" && isMaster && (
+          <CircleBtn className="bg-accent hover:bg-accent/50 h-5 w-5">
+            <Plus />
+          </CircleBtn>
+        )}
       </div>
     );
 }
