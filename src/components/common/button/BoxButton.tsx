@@ -6,18 +6,28 @@ import { twMerge } from "tailwind-merge";
 interface ButtonProps
   extends
     ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {}
-export function BoxButton({ size, tone, className, ...props }: ButtonProps) {
+    VariantProps<typeof buttonVariants> {
+  text: string;
+}
+export function BoxButton({
+  size,
+  tone,
+  className,
+  text,
+  ...props
+}: ButtonProps) {
   return (
     <button
       className={twMerge(buttonVariants({ size, tone }), className)}
       {...props}
-    />
+    >
+      {text}
+    </button>
   );
 }
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center rounded-md font-medium text-white transition overflow-hidden hover: cursor-pointer",
+  "relative inline-flex items-center justify-center rounded-xl font-bold text-white transition overflow-hidden hover: cursor-pointer",
 
   {
     variants: {
