@@ -4,8 +4,9 @@ import Image from "next/image";
 import LolLogo from "@/assets/images/games/lol/lol-logo.png";
 import OverwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
 import ValorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
-import { BoxButton } from "../common/button/BoxButton";
+import { BoxButton } from "@/components/common/button/BoxButton";
 import { twMerge } from "tailwind-merge";
+import HorizontalCardContainer from "@/components/common/container/HorizontalCardContainer";
 
 interface GameIdItemProps {
   game: gameType;
@@ -33,7 +34,7 @@ export default function LinkedGameIdCard({
   onUnlink,
 }: GameIdItemProps) {
   return (
-    <div className={twMerge("flex w-223.5 h-28 items-center justify-between rounded-xl bg-bg-primary px-5 py-4", className)}>
+    <HorizontalCardContainer className={twMerge("flex w-223.5 h-28 items-center border-none justify-between", className)}>
       
       {/* Left: Icon + Texts */}
       <div className="flex items-center gap-5">
@@ -48,7 +49,7 @@ export default function LinkedGameIdCard({
         </div>
 
         <div className="flex flex-col">
-          <span className="text-xl font-semibold text-content-primary">{game}</span>
+          <span className="text-xl font-semibold">{game}</span>
           <span className="text-base text-content-secondary">
             {nickname} #{tag}
           </span>
@@ -67,6 +68,6 @@ export default function LinkedGameIdCard({
         />
       </div>
 
-    </div>
+    </HorizontalCardContainer>
   );
 }
