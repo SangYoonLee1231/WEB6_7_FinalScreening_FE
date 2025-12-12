@@ -15,12 +15,30 @@ import WinRate from "../profile/WinRate";
 import { BoxButton } from "../common/button/BoxButton";
 import formatRelativeTime from "@/utils/formatRelativeTime";
 import { useState } from "react";
-import FindMemberCard from "./FindMemberCard";
 import { Position } from "@/types/position";
 import MiniProfile from "../profile/MiniProfile";
+import * as HoverCard from "@radix-ui/react-hover-card";
+import SubTitleAndData from "./SubTitleAndData";
+import FindCardMemberDetail from "./FindCardMemberDetail";
 
 interface FindCardProps {
   data: PostDetail;
+}
+
+export interface sampleMemberType {
+  userId: number;
+  nickname: string;
+  profileImageUrl: string;
+  comment: string;
+  gameAccount: {
+    summonerName: string;
+    tag: string;
+    tier: string;
+    winRate: number;
+    kda: number;
+    favoriteChampions: string[];
+    mainPosition: Position;
+  };
 }
 
 export default function FindCard({ data }: FindCardProps) {
@@ -31,21 +49,7 @@ export default function FindCard({ data }: FindCardProps) {
   const validRank = isRank(rank) ? rank : "";
 
   // 샘플 데이터
-  interface sampleMemberType {
-    userId: number;
-    nickname: string;
-    profileImageUrl: string;
-    comment: string;
-    gameAccount: {
-      summonerName: string;
-      tag: string;
-      tier: string;
-      winRate: number;
-      kda: number;
-      favoriteChampions: string[];
-      mainPosition: Position;
-    };
-  }
+
   const champions = [
     { id: 0, src: Champion.src, percent: 50 },
     { id: 1, src: Champion.src, percent: 50 },
@@ -111,15 +115,23 @@ export default function FindCard({ data }: FindCardProps) {
       <FindCardContainer className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="relative flex items-center gap-3">
-            <div className="group">
-              <Avatar
-                type="profile"
-                src={writer.profileImageUrl}
-                size="md"
-                className="cursor-pointer"
-              />
-              <MiniProfile className="invisible absolute bottom-13 z-10 group-hover:visible" />
-            </div>
+            <HoverCard.Root openDelay={0} closeDelay={150}>
+              <HoverCard.Trigger asChild>
+                <Avatar
+                  type="profile"
+                  src={writer.profileImageUrl}
+                  size="md"
+                  className="cursor-pointer"
+                />
+              </HoverCard.Trigger>
+              <HoverCard.Content
+                side="top"
+                align="center"
+                className="animate-fadeIn pb-3"
+              >
+                <MiniProfile className="z-10" />
+              </HoverCard.Content>
+            </HoverCard.Root>
 
             <div>
               <div className="flex items-center gap-1">
@@ -185,7 +197,10 @@ export default function FindCard({ data }: FindCardProps) {
           />
         </div>
 
-        <div className="bg-accent/10 border-accent/50 flex flex-col gap-3.5 rounded-xl border px-4 py-2">
+        <div
+          className="bg-accent/10 border-accent/50 hover:border-border-primary flex cursor-pointer flex-col gap-3.5 rounded-xl border px-4 py-2 transition-all duration-150"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
           <SubTitleAndData
             title="인원"
             data={`${statistics.currentMemberCount}/${options.recruitCount}`}
@@ -231,53 +246,19 @@ export default function FindCard({ data }: FindCardProps) {
               size="xs"
               tone="color"
               text="참여하기"
-              onClick={() => {
-                setIsOpen((prev) => !prev);
-              }}
+              onClick={() => {}}
             />
           </div>
         </div>
       </FindCardContainer>
 
       {isOpen && (
-        <FindCardContainer className="flex flex-col gap-5 border-t-0">
-          <div className="flex flex-col">
-            <h3 className="text-content-primary flex w-full items-center justify-between text-xl font-bold">
-              인원 정보
-              <span>{`${statistics.currentMemberCount}/${options.recruitCount}`}</span>
-            </h3>
-          </div>
-          {Array.from({ length: options.recruitCount }).map((_, i) => (
-            <FindMemberCard
-              key={`member${i}`}
-              masterUser={userId}
-              data={members[i]}
-            />
-          ))}
-        </FindCardContainer>
+        <FindCardMemberDetail
+          userId={userId}
+          postData={data}
+          memberData={members}
+        />
       )}
     </div>
-  );
-}
-
-function SubTitleAndData({
-  title,
-  data,
-  className,
-}: {
-  title: string;
-  data: string;
-  className?: string;
-}) {
-  return (
-    <h5
-      className={twMerge(
-        "text-content-primary flex w-full items-center justify-between text-sm font-normal",
-        className,
-      )}
-    >
-      {title}
-      <span className="font-semibold">{data}</span>
-    </h5>
   );
 }

@@ -7,7 +7,7 @@ import { twMerge } from "tailwind-merge";
 import React from "react";
 
 const circleBtn = cva(
-  "inline-flex items-center justify-center rounded-full bg-bg-tertiary text-content-main hover:bg-bg-quaternary transition-all duration-150 active:scale-95",
+  "inline-flex items-center justify-center rounded-full cursor-pointer bg-bg-tertiary text-content-main transition-all duration-150 active:scale-95",
   {
     variants: {
       size: {
