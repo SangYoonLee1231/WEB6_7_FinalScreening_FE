@@ -10,18 +10,24 @@ import Master from "@/assets/images/tiers/Rank=Master.png";
 import Grandmaster from "@/assets/images/tiers/Rank=Grandmaster.png";
 import Challenger from "@/assets/images/tiers/Rank=Challenger.png";
 
-export type Tier =
-  | "UNRANKED"
-  | "IRON"
-  | "BRONZE"
-  | "SILVER"
-  | "GOLD"
-  | "PLATINUM"
-  | "EMERALD"
-  | "DIAMOND"
-  | "MASTER"
-  | "GRANDMASTER"
-  | "CHALLENGER";
+const TIERS = [
+  "IRON",
+  "BRONZE",
+  "SILVER",
+  "GOLD",
+  "PLATINUM",
+  "EMERALD",
+  "DIAMOND",
+  "MASTER",
+  "GRANDMASTER",
+  "CHALLENGER",
+] as const;
+
+export type Tier = (typeof TIERS)[number];
+
+export function isTier(value: string): value is Tier {
+  return TIERS.includes(value as Tier);
+}
 
 export const tierIcons = {
   UNRANKED: Unranked,
@@ -37,4 +43,10 @@ export const tierIcons = {
   CHALLENGER: Challenger,
 } as const;
 
-export type Rank = "I" | "II" | "III" | "IV";
+const RANKS = ["I", "II", "III", "IV"] as const;
+
+export type Rank = (typeof RANKS)[number];
+
+export function isRank(value: string): value is Rank {
+  return RANKS.includes(value as Rank);
+}
