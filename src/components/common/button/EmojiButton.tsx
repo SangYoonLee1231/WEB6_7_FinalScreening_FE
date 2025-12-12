@@ -7,7 +7,7 @@ import emojiGood from "@/assets/images/emoji/emoji_good.png";
 import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
 import emojiBad from "@/assets/images/emoji/emoji_bad.png";
 
-type Expression = "good" | "normal" | "bad";
+import { EmojiType as Expression } from "@/types/emoji";
 
 interface EmojiRadioButtonProps
   extends

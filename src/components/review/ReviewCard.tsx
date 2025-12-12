@@ -14,8 +14,9 @@ import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
 
 import formatRelativeTime from "@/utils/formatRelativeTime";
 
+import type { EmojiType as Emotion } from "@/types/emoji";
+
 type ReviewMode = "received" | "written";
-type Emotion = "good" | "normal" | "bad";
 type GameName = "lol" | "overwatch" | "valorant";
 
 const EMOJI_MAP: Record<Emotion, StaticImageData> = {
