@@ -40,7 +40,6 @@ export default function MostChampion({
   data,
   className,
 }: MostChampionProps) {
-  console.log(data);
   return (
     <div className={twMerge(container({ size }), className)}>
       <p className={twMerge(title({ size }), className)}>
@@ -48,7 +47,7 @@ export default function MostChampion({
       </p>
       <div className="flex items-center justify-between">
         {data?.map((champ) => (
-          <div className="relative flex">
+          <div key={champ.id} className="relative flex">
             {" "}
             <Avatar
               key={champ.id}

@@ -7,29 +7,23 @@ import bad from "@/assets/images/emoji/emoji_bad.png";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
-const data = [
-  {
-    name: "percentBar",
-    good: 9,
-    normal: 2,
-    bad: 1,
-  },
-];
-
 type ReviewPercentType = "default" | "mini";
 
 interface ReviewPercentProps {
   type: ReviewPercentType;
+  ratios: { GOOD: number; NORMAL: number; BAD: number };
 }
 
 export default function ReviewPercent({
   type = "default",
+  ratios,
 }: ReviewPercentProps) {
+  const reviewData = [{ name: "percentBar", ...ratios }];
   return (
     <div
       className={twMerge(
         "text-content-primary flex flex-col",
-        type === "mini" && "w-77.5",
+        type === "mini" && "min-w-77.5",
       )}
     >
       <p
@@ -44,12 +38,12 @@ export default function ReviewPercent({
       <div
         className={twMerge(
           "mb-3.5 h-7.5 w-full",
-          type === "mini" && "mb-2 h-3.5",
+          type === "mini" && "mb-2 h-5",
         )}
       >
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={data}
+            data={reviewData}
             layout="vertical"
             margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
             stackOffset="expand"
@@ -58,16 +52,16 @@ export default function ReviewPercent({
             <YAxis type="category" dataKey="name" hide />
 
             <Bar
-              dataKey="good"
+              dataKey="GOOD"
               stackId="a"
               fill="#03AEDD"
               radius={[50, 0, 0, 50]}
             ></Bar>
 
-            <Bar dataKey="normal" stackId="a" fill="#FF9D00"></Bar>
+            <Bar dataKey="NORMAL" stackId="a" fill="#FF9D00"></Bar>
 
             <Bar
-              dataKey="bad"
+              dataKey="BAD"
               stackId="a"
               fill="#FA084D"
               radius={[0, 50, 50, 0]}
@@ -84,22 +78,20 @@ export default function ReviewPercent({
         <div className="flex items-center gap-2">
           <Image src={good} alt="good review emoji" />
           <span className="">
-            9개
-            <span className="text-[#10B5DC]"> (75%)</span>
+            {reviewData[0].GOOD}개<span className="text-[#10B5DC]"> (75%)</span>
           </span>
         </div>
         <div className="flex items-center gap-2">
           <Image src={normal} alt="normal review emoji" />
           <span className="">
-            9개
+            {reviewData[0].NORMAL}개
             <span className="text-[#FFA106]"> (75%)</span>
           </span>
         </div>
         <div className="flex items-center gap-2">
           <Image src={bad} alt="bad review emoji" />
           <span className="">
-            9개
-            <span className="text-[#FC3665]"> (75%)</span>
+            {reviewData[0].BAD}개<span className="text-[#FC3665]"> (75%)</span>
           </span>
         </div>
       </div>
