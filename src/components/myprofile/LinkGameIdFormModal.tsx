@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CircleAlert, ChevronDown } from "lucide-react";
 import TextInput from "@/components/common/TextInput";
 import Dropdown from "@/components/common/Dropdown";
