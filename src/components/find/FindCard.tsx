@@ -18,6 +18,7 @@ import { useState } from "react";
 import FindMemberCard from "./FindMemberCard";
 import { Position } from "@/types/position";
 import MiniProfile from "../profile/MiniProfile";
+import * as HoverCard from "@radix-ui/react-hover-card";
 
 interface FindCardProps {
   data: PostDetail;
@@ -111,15 +112,23 @@ export default function FindCard({ data }: FindCardProps) {
       <FindCardContainer className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="relative flex items-center gap-3">
-            <div className="group">
-              <Avatar
-                type="profile"
-                src={writer.profileImageUrl}
-                size="md"
-                className="cursor-pointer"
-              />
-              <MiniProfile className="invisible absolute bottom-13 z-10 group-hover:visible" />
-            </div>
+            <HoverCard.Root openDelay={0} closeDelay={150}>
+              <HoverCard.Trigger asChild>
+                <Avatar
+                  type="profile"
+                  src={writer.profileImageUrl}
+                  size="md"
+                  className="cursor-pointer"
+                />
+              </HoverCard.Trigger>
+              <HoverCard.Content
+                side="top"
+                align="center"
+                className="animate-fadeIn pb-3"
+              >
+                <MiniProfile className="z-10" />
+              </HoverCard.Content>
+            </HoverCard.Root>
 
             <div>
               <div className="flex items-center gap-1">
