@@ -4,9 +4,9 @@ import Image from "next/image";
 import LolLogo from "@/assets/images/games/lol/lol-logo.png";
 import OverwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
 import ValorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
-import { BoxButton } from "../common/button/BoxButton";
+import { BoxButton } from "@/components/common/button/BoxButton";
 import { twMerge } from "tailwind-merge";
-import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
+import HorizontalCardContainer from "@/components/common/container/HorizontalCardContainer";
 
 interface GameIdItemProps {
   game: gameType;
