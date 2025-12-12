@@ -8,8 +8,15 @@ import emojiGood from "@/assets/images/emoji/emoji_good.png";
 import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
 import emojiBad from "@/assets/images/emoji/emoji_bad.png";
 
+import lolLogo from "@/assets/images/games/lol/lol-logo.png";
+import overwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
+import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
+
+import formatRelativeTime from "@/utils/formatRelativeTime";
+
 type ReviewMode = "received" | "written";
 type Emotion = "good" | "normal" | "bad";
+type GameName = "lol" | "overwatch" | "valorant";
 
 const EMOJI_MAP: Record<Emotion, StaticImageData> = {
   good: emojiGood,
@@ -17,22 +24,28 @@ const EMOJI_MAP: Record<Emotion, StaticImageData> = {
   bad: emojiBad,
 };
 
+const GAME_LOGO_MAP: Record<GameName, StaticImageData> = {
+  lol: lolLogo,
+  overwatch: overwatchLogo,
+  valorant: valorantLogo,
+};
+
 interface ReviewCardProps {
   mode: ReviewMode; // "received" | "written"
-  gameIconSrc: string;
+  gameName: GameName;
   communityName: string;
   content: string;
   emotion: Emotion; // 밖에서는 이 값만 넘기면 됨
-  time: string; // 시간 안내 문구 (예: "5분 전")
+  createdAt: string; // ISO 날짜 문자열
 }
 
 export default function ReviewCard({
   mode,
-  gameIconSrc,
+  gameName,
   communityName,
   content,
   emotion,
-  time,
+  createdAt,
 }: ReviewCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,58 +58,66 @@ export default function ReviewCard({
   };
 
   const emotionSrc = EMOJI_MAP[emotion];
+  const gameLogoSrc = GAME_LOGO_MAP[gameName];
 
   return (
-    <article className="bg-bg-secondary w-full rounded-xl px-4 py-3">
+    <article className="bg-bg-secondary border-border-primary w-full rounded-xl border px-4 py-3">
       {/* 상단 바 */}
       <button
         type="button"
         onClick={handleToggle}
         disabled={!isToggleable}
-        className="flex w-full items-center gap-3 text-left"
+        className="flex w-full items-center justify-between gap-3 text-left"
       >
-        {/* 좌측 게임 아이콘 */}
-        <div className="shrink-0">
-          <img
-            src={gameIconSrc}
-            alt=""
-            className="h-10 w-10 rounded-md object-cover"
-          />
-        </div>
-
-        {/* 커뮤니티 닉네임 + 내용 */}
-        <div className="flex flex-1 items-center gap-3">
-          <div className="flex shrink-0 items-center gap-2">
-            <div className="bg-bg-quaternary h-8 w-8 rounded-full" />
-            <span className="text-content-primary text-sm">
-              {communityName}
-            </span>
+        {/* 좌측 그룹 */}
+        <div className="flex flex-1 items-center gap-4">
+          {/* 게임 아이콘 */}
+          <div className="shrink-0">
+            <Image
+              src={gameLogoSrc}
+              alt={`${gameName} logo`}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-md object-cover"
+            />
           </div>
 
-          <div className="bg-bg-tertiary text-content-primary flex-1 rounded-md px-4 py-2 text-sm">
-            {content}
+          {/* 커뮤니티 닉네임 + 내용 */}
+          <div className="flex flex-1 items-center gap-3">
+            <div className="flex shrink-0 items-center gap-2">
+              <div className="bg-bg-quaternary h-8 w-8 rounded-full" />
+              <span className="text-content-primary text-sm">
+                {communityName}
+              </span>
+            </div>
+
+            <div className="bg-bg-tertiary text-content-primary flex-1 rounded-md px-4 py-2 text-sm">
+              {content}
+            </div>
           </div>
         </div>
 
-        {/* 이모지 */}
-        <div className="relative mx-3 h-6 w-6">
-          <Image
-            src={emotionSrc}
-            alt={`${emotion} emoji`}
-            fill
-            className="object-contain"
-          />
-        </div>
+        {/* 우측 그룹 */}
+        <div className="flex shrink-0 items-center gap-3">
+          {/* 이모지 */}
+          <div className="relative h-6 w-6">
+            <Image
+              src={emotionSrc}
+              alt={`${emotion} emoji`}
+              fill
+              className="object-contain"
+            />
+          </div>
 
-        {/* 시간 + 화살표 */}
-        <div className="text-content-secondary flex items-center gap-1 text-xs">
-          <span>{time}</span>
-          {isToggleable && (
-            // 안 펼쳐짐 → 아래 화살표, 펼쳐짐 → 위 화살표
-            <span className="text-base">
-              {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </span>
-          )}
+          {/* 시간 + 화살표 */}
+          <div className="text-content-secondary flex items-center gap-1 text-xs">
+            <span>{formatRelativeTime(createdAt)}</span>
+            {isToggleable && (
+              <span className="text-base">
+                {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </span>
+            )}
+          </div>
         </div>
       </button>
 
@@ -126,20 +147,20 @@ export default function Home() {
       <ReviewCard
         mode="received"
         gameIconSrc="/lol.png"
-        communityName="커뮤니티닉네임"
+        communityName="커뮤니티 닉네임"
         content="리뷰내용"
         emotion="good"
-        time="5분 전"
+        createdAt="2025-12-12T00:12:00.000Z"
       />
 
       // 작성한 리뷰 리스트
       <ReviewCard
         mode="written"
         gameIconSrc="/lol.png"
-        communityName="커뮤니티닉네임"
+        communityName="커뮤니티 닉네임"
         content="리뷰내용"
         emotion="bad"
-        time="5분 전"
+        createdAt="2025-12-11T00:11:00.000Z"
       />
     </>
   );
