@@ -27,7 +27,7 @@ export function BoxButton({
 }
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center rounded-xl font-bold text-white transition overflow-hidden hover: cursor-pointer",
+  "relative inline-flex items-center justify-center rounded-xl font-bold text-white transition overflow-hidden hover:cursor-pointer",
 
   {
     variants: {
@@ -44,8 +44,8 @@ const buttonVariants = cva(
         color: "bg-accent hover:bg-accent/50",
         positive: "bg-positive hover:bg-positive/50",
         negative: "bg-negative hover:bg-negative/50",
-        gradient_positive: "bg-gradient-positive",
-        gradient_negative: "bg-gradient-negative",
+        gradient_positive: "bg-gradient-positive hover:bg-gradient-positive-50",
+        gradient_negative: "bg-gradient-negative hover:bg-gradient-negative-50",
       },
     },
 

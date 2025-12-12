@@ -11,11 +11,11 @@ export type RecruitStatus = "recruiting" | "completed";
 
 // 공통 버튼 스타일 (크기만 variant로 제어)
 const segmentBtn = cva(
-  "inline-flex items-center justify-center rounded-xl border transition-all duration-150 active:scale-95 select-none font-semibold",
+  "inline-flex items-center justify-center rounded-xl border transition-all duration-150 active:scale-95 select-none font-semibold cursor-pointer",
   {
     variants: {
       size: {
-        sm: "h-9 px-5 text-xs",
+        sm: "h-9 px-5 text-sm",
         md: "h-11 px-8 text-sm",
         lg: "h-12 px-10 text-base",
       },
@@ -54,7 +54,7 @@ export default function ToggleBtn({
           segmentBtn({ size }),
           isRecruiting
             ? // 선택된 상태 (이미지에서 왼쪽 버튼)
-              "bg-bg-tertiary border-accent text-accent hover:bg-accent/10 hover:border-border-primary"
+              "bg-accent/10 border-accent/50 text-accent hover:border-border-primary"
             : // 비선택 상태
               "bg-bg-primary text-content-secondary border-border-primary hover:bg-bg-tertiary hover:border-border-primary",
         )}
@@ -70,7 +70,7 @@ export default function ToggleBtn({
           segmentBtn({ size }),
           isCompleted
             ? // 선택된 상태 (이미지에서 오른쪽이 활성일 때)
-              "bg-bg-tertiary border-accent text-accent hover:bg-accent/10 hover:border-border-primary"
+              "bg-accent/10 border-accent/50 text-accent hover:border-border-primary"
             : // 비선택 상태
               "bg-bg-primary text-content-secondary border-border-primary hover:bg-bg-tertiary hover:border-border-primary",
         )}
