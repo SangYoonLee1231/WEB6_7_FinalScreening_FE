@@ -17,6 +17,7 @@ import formatRelativeTime from "@/utils/formatRelativeTime";
 import { useState } from "react";
 import FindMemberCard from "./FindMemberCard";
 import { Position } from "@/types/position";
+import MiniProfile from "../profile/MiniProfile";
 
 interface FindCardProps {
   data: PostDetail;
@@ -109,8 +110,17 @@ export default function FindCard({ data }: FindCardProps) {
     <div className="flex flex-col">
       <FindCardContainer className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Avatar type="profile" src={writer.profileImageUrl} size="md" />
+          <div className="relative flex items-center gap-3">
+            <div className="group">
+              <Avatar
+                type="profile"
+                src={writer.profileImageUrl}
+                size="md"
+                className="cursor-pointer"
+              />
+              <MiniProfile className="invisible absolute bottom-13 z-10 group-hover:visible" />
+            </div>
+
             <div>
               <div className="flex items-center gap-1">
                 <h3 className="text-lg">{writer.gameAccount.summonerName}</h3>
@@ -228,6 +238,7 @@ export default function FindCard({ data }: FindCardProps) {
           </div>
         </div>
       </FindCardContainer>
+
       {isOpen && (
         <FindCardContainer className="flex flex-col gap-5 border-t-0">
           <div className="flex flex-col">
