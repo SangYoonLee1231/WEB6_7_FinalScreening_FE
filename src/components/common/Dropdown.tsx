@@ -1,21 +1,30 @@
 import * as Select from "@radix-ui/react-select";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { twMerge } from "tailwind-merge";
 
 interface DropDownProps {
   placeholder: string;
   items: { value: string; label: string }[];
-  defaultValue?: string;
+  value: string;
+  onValueChange: (value: string) => void;
   className?: string;
 }
 
 export default function Dropdown({
   placeholder,
   items,
-  defaultValue,
+  value,
+  onValueChange,
+  className,
 }: DropDownProps) {
   return (
-    <Select.Root defaultValue={defaultValue}>
-      <Select.Trigger className="border-border-primary bg-bg-primary text-content-primary data-placeholder:text-content-secondary flex cursor-pointer items-center gap-40 rounded-xl border px-4 py-2.5 text-sm outline-0">
+    <Select.Root value={value} onValueChange={onValueChange}>
+      <Select.Trigger
+        className={twMerge(
+          "border-border-primary bg-bg-primary text-content-primary data-placeholder:text-content-secondary flex cursor-pointer items-center justify-between rounded-xl border px-4 py-2.5 text-sm outline-0",
+          className,
+        )}
+      >
         <Select.Value placeholder={placeholder} />
         <Select.Icon>
           <ChevronDown size={16} className="text-content-secondary" />
@@ -29,7 +38,7 @@ export default function Dropdown({
           position="popper"
           collisionPadding={0}
           avoidCollisions={false}
-          className="border-border-primary bg-bg-primary text-content-secondary max-h-60 w-full rounded-xl border px-3 py-2"
+          className="border-border-primary bg-bg-primary text-content-secondary max-h-60 w-(--radix-select-trigger-width) rounded-xl border px-3 py-2"
         >
           <Select.ScrollUpButton className="flex h-6 items-center justify-center">
             <ChevronUp size={14} />
