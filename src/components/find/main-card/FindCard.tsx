@@ -111,7 +111,7 @@ export default function FindCard({ data }: FindCardProps) {
   const empty = options.recruitCount - filled;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex min-w-110 flex-col">
       <FindCardContainer className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="relative flex items-center gap-3">
@@ -159,14 +159,14 @@ export default function FindCard({ data }: FindCardProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <IntroduceBubble content={options.memo} />
+        <div className="flex flex-col gap-1 px-5">
+          <IntroduceBubble content={options.memo} type="message" />
           <span className="text-content-secondary text-right text-xs">
             {formatRelativeTime(statistics.createdAt)}
           </span>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-5">
           <PositionSet
             type="my"
             data={options.myPosition}
