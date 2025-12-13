@@ -21,12 +21,12 @@ export default function page() {
           <TextInput
             type="email"
             placeholder="이메일 주소"
-            className="outline-border-primary h-15 w-125 outline-1 shadow-black shadow-md/25"
+            className="outline-border-primary h-15 w-125 outline-1"
           />
           <TextInput
             type="password"
             placeholder="비밀번호"
-            className="outline-border-primary mt-4 mb-2 h-15 w-125 outline-1  shadow-black shadow-md/25"
+            className="outline-border-primary mt-4 mb-2 h-15 w-125 outline-1"
           />
           <div className="flex flex-row gap-1 text-left text-base">
             <p className="text-content-secondary ml-2">
@@ -41,7 +41,7 @@ export default function page() {
             text="로그인"
             tone="black"
             size="xl"
-            className="mt-5 text-xl font-bold shadow-black shadow-md/25"
+            className="mt-5 text-xl font-bold"
           />
         </div>
 
@@ -50,7 +50,7 @@ export default function page() {
           아직 계정이 없으시다면
         </p>
 
-        <BoxButton text="회원가입" tone="color" size="xl" className="text-xl font-bold shadow-black shadow-md/25">
+        <BoxButton text="회원가입" tone="color" size="xl" className="text-xl font-bold">
           회원가입
         </BoxButton>
         <div className="flex items-center gap-3 w-125 mt-6 mb-6">
@@ -60,16 +60,16 @@ export default function page() {
         </div>
         {/* 소셜 로그인 */}
         <div className="flex gap-12">
-          <button className="rounded-full bg-white w-15 h-15 p-4 shadow-black shadow-md/25">
+          <button className="rounded-full bg-white w-15 h-15 p-4">
             <Image src={googleIcon} alt="Google" width={30} height={30} />
           </button>
 
-          <button className="rounded-full bg-[#5865F2] w-15 h-15 p-4 shadow-black shadow-md/25">
+          <button className="rounded-full bg-[#5865F2] w-15 h-15 p-4">
             <Image src={discordIcon} alt="Discord" width={30} height={23} className="invert brightness-0"/>
           </button>
 
-          <button className="rounded-full bg-[#0761F7] w-15 h-15 p-4 shadow-black shadow-md/25">
-            <Image src={facebookIcon} alt="Facebook" width={24} height={30}/>
+          <button className="rounded-full bg-[#0761F7] w-15 h-15 p-4">
+            <Image src={facebookIcon} alt="Facebook" width={28} height={30}/>
           </button>
         </div>
       </div>

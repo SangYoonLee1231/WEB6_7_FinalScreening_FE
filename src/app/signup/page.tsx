@@ -20,13 +20,13 @@ export default function page() {
           <TextInput
             type="email"
             placeholder="이메일 주소"
-            className="outline-border-primary w-125 shadow-md/25 shadow-black outline-1"
+            className="outline-border-primary w-125 outline-1"
           />
           <div className="mt-3 mb-2 flex flex-row items-center justify-between gap-3">
             <TextInput
               type="password"
               placeholder="이메일 주소로 받은 인증 번호"
-              className="outline-border-primary w-98 shadow-md/25 shadow-black outline-1"
+              className="outline-border-primary w-98 outline-1"
             />
             <BoxButton size="md" tone="color" text="인증" className="text-lg" />
           </div>
@@ -41,12 +41,12 @@ export default function page() {
           <TextInput
             type="password"
             placeholder="비밀번호"
-            className="outline-border-primary mt-3 mb-3 w-125 shadow-md/25 shadow-black outline-1"
+            className="outline-border-primary mt-3 mb-3 w-125 outline-1"
           />
           <TextInput
             type="password"
             placeholder="비밀번호 확인"
-            className="outline-border-primary w-125 shadow-md/25 shadow-black outline-1"
+            className="outline-border-primary w-125 outline-1"
           />
           <label className="text-content-primary mt-12 mb-12 flex flex-row items-center justify-center gap-1 text-center text-sm">
             <input type="checkbox" name="agreement" className="peer hidden" />
@@ -68,7 +68,7 @@ export default function page() {
             text="회원가입"
             tone="color"
             size="xl"
-            className="text-xl shadow-md/25 shadow-black"
+            className="text-xl"
           >
             회원가입
           </BoxButton>
