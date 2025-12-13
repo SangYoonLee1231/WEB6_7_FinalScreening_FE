@@ -1,24 +1,24 @@
 "use client";
 
 import { Headset } from "lucide-react";
-import Avatar from "../common/Avatar";
-import FindCardContainer from "../common/container/FindCardContainer";
+import Avatar from "@/components/common/Avatar";
+import FindCardContainer from "@/components/common/container/FindCardContainer";
 import { PostDetail } from "@/types/post";
 import { twMerge } from "tailwind-merge";
-import TierSet from "../profile/TierSet";
+import TierSet from "@/components/profile/TierSet";
 import { isRank, isTier } from "@/types/tier";
-import IntroduceBubble from "../profile/IntroduceBubble";
+import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import PositionSet from "./PositionSet";
-import MostChampion from "../profile/MostChampion";
+import MostChampion from "@/components/profile/MostChampion";
 import Champion from "@/assets/images/test_champion_thumb.png";
-import WinRate from "../profile/WinRate";
-import { BoxButton } from "../common/button/BoxButton";
+import WinRate from "@/components/profile/WinRate";
+import { BoxButton } from "@/components/common/button/BoxButton";
 import formatRelativeTime from "@/utils/formatRelativeTime";
 import { useState } from "react";
 import { Position } from "@/types/position";
-import MiniProfile from "../profile/MiniProfile";
+import MiniProfile from "@/components/profile/MiniProfile";
 import * as HoverCard from "@radix-ui/react-hover-card";
-import SubTitleAndData from "./SubTitleAndData";
+import SubTitleAndData from "../SubTitleAndData";
 import FindCardMemberDetail from "./FindCardMemberDetail";
 
 interface FindCardProps {
