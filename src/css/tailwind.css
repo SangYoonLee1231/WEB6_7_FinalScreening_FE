@@ -24,10 +24,10 @@
   .bg-gradient-negative {
     background: var(--color-gradient-negative);
   }
-  .bg-gradient-positive:hover {
+  .hover\:bg-gradient-positive-50:hover {
     background: var(--color-gradient-positive-50);
   }
-  .bg-gradient-negative:hover {
+  .hover\:bg-gradient-negative-50:hover {
     background: var(--color-gradient-negative-50);
   }
 }
