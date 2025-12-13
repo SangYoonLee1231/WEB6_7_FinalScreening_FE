@@ -21,6 +21,11 @@ export default function FindPositionCheckList({
 
   const toggleItem = (value: string) => {
     setSelected((prev) => {
+      // 주 포지션(내 포지션)은 1개만 선택 가능
+      if (type === "my") {
+        return prev[0] === value ? [] : [value];
+      }
+
       const hasAll = prev.includes("ALL");
 
       // 5개 포지션 선택한 경우 ALL로 변경
