@@ -1,15 +1,14 @@
 "use Client";
 
-import logo from "@/assets/images/logo.svg";
+import { Link } from 'lucide-react';
 import { BoxButton } from "@/components/common/button/BoxButton";
 import TextInput from "@/components/common/TextInput";
-import Image from "next/image";
 
 export default function page() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="flex w-full max-w-md flex-col items-center">
-        <Image src={logo} alt="match-my-duo logo" width={400} height={153} />
+        <Link width={50} height={50} className="text-accent"/>
         <p className="text-content-primary mt-2 mb-2 text-5xl font-bold">
           회원가입
         </p>
