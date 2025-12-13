@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
 const searchInput = cva(
-  "bg-bg-primary text-content-primary inline-flex items-center gap-3 rounded-full px-5 py-3",
+  "bg-bg-primary text-content-primary inline-flex items-center gap-3 rounded-full px-5 py-3 focus:border-border-secondary",
   {
     variants: {
       inputSize: {
