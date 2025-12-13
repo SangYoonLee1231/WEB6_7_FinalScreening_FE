@@ -49,6 +49,9 @@ export default function InviteMemberModal() {
             <Dialog.Title className="text-2xl font-bold">
               멤버 초대
             </Dialog.Title>
+            <Dialog.Description className="sr-only">
+              파티에 초대할 멤버를 선택하세요.
+            </Dialog.Description>
             <fieldset className="flex flex-col gap-2">
               <legend className="sr-only">초대할 멤버</legend>
               {sampleData?.map((d) => (
