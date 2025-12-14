@@ -22,6 +22,7 @@ export type ChatCardProps = {
   onClick?: () => void;
   menuItems?: ChatCardMenuItem[];
   className?: string;
+  isSelected?: boolean;
 };
 
 export default function ChatCard({
@@ -35,6 +36,7 @@ export default function ChatCard({
   onClick,
   menuItems,
   className,
+  isSelected = false,
 }: ChatCardProps) {
   const hasMenu = !!menuItems && menuItems.length > 0;
 
@@ -51,15 +53,29 @@ export default function ChatCard({
         }
       }}
       className={[
+        /* base */
         "h-25.25 w-100",
         "flex items-center gap-3 p-4",
         "rounded-xl border",
-        "bg-bg-primary",
-        "border-(--color-border-primary)",
         "text-content-main",
         onClick ? "cursor-pointer" : "",
+
+        // border는 공통
+        "border border-(--color-border-primary)",
+
+        // background
+        isSelected
+          ? "border-accent bg-[rgba(47,211,177,0.1)]"
+          : "bg-bg-primary hover:bg-[rgba(47,211,177,0.1)]",
+
+        // < rgba를 사용한 이유 >
+        // 피그마의 정확한 색상을 재현하기 위해 rgba를 사용하는 것이 좋다고 합니다.
+        // 브라우저 호환 + 가독성 고려하면 rgba 버전이 가장 안전하다고 합니다.
+
         className ?? "",
-      ].join(" ")}
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       {/* 프로필 이미지 */}
       <img
