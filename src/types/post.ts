@@ -1,5 +1,7 @@
 import { Position } from "./position";
 
+export type PostState = "RECRUITING" | "FILLED" | "GAME_FINISHED";
+
 export type PostDetail = {
   postId: number;
   writer: {
@@ -28,7 +30,7 @@ export type PostDetail = {
     duoChampions: null;
   };
   statistics: {
-    status: string;
+    status: PostState;
     currentMemberCount: number;
     createdAt: string;
     updatedAt: string;
