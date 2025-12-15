@@ -6,14 +6,21 @@ import Dropdown from "@/components/common/Dropdown";
 import FindCard from "@/components/find/main-card/FindCard";
 import PositionFilterBtns from "@/components/find/PositionFilterBtns";
 import { postDetailMock } from "@/mocks/post.mock";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FindCreateForm from "./FindCreateForm";
 import FindDetailModal from "./FindDetailModal";
+import { useMenuStore } from "@/stores/menuStore";
 
 export default function FindPageContent() {
   // 라우팅으로 변경 예정
   const [isOpenFindCreateForm, setIsOpenFindCreateForm] = useState(false);
   const [isOpenFindDetailModal, setIsOpenFindDetailModal] = useState(false);
+  const { setMenu } = useMenuStore();
+
+  useEffect(() => {
+    setMenu("find");
+  }, []);
+
   return (
     <div className="flex flex-col gap-7.5">
       <ToggleBtn value="recruiting" onChange={() => {}} className="mt-17.5" />
