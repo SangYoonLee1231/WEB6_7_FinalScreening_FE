@@ -6,8 +6,14 @@ import Dropdown from "@/components/common/Dropdown";
 import FindCard from "@/components/find/main-card/FindCard";
 import PositionFilterBtns from "@/components/find/PositionFilterBtns";
 import { postDetailMock } from "@/mocks/post.mock";
+import { useState } from "react";
+import FindCreateForm from "./FindCreateForm";
+import FindDetailModal from "./FindDetailModal";
 
 export default function FindPageContent() {
+  // 라우팅으로 변경 예정
+  const [isOpenFindCreateForm, setIsOpenFindCreateForm] = useState(false);
+  const [isOpenFindDetailModal, setIsOpenFindDetailModal] = useState(false);
   return (
     <div className="flex flex-col gap-7.5">
       <ToggleBtn value="recruiting" onChange={() => {}} className="mt-17.5" />
@@ -55,14 +61,31 @@ export default function FindPageContent() {
             size="sm"
             tone={"gradient_positive"}
             className="font-semibold"
+            onClick={() => setIsOpenFindCreateForm(true)}
           />
         </div>
+        <FindCreateForm
+          type="create"
+          isOpen={isOpenFindCreateForm}
+          onOpenChange={(open: boolean) => {
+            setIsOpenFindCreateForm(open);
+          }}
+        />
       </div>
       <div className="flex flex-wrap justify-between gap-y-7.5 px-7.5">
-        <FindCard data={postDetailMock} />
-        <FindCard data={postDetailMock} />
-        <FindCard data={postDetailMock} />
-        <FindCard data={postDetailMock} />
+        {Array.from({ length: 4 }).map((_, index) => (
+          <FindCard
+            key={index}
+            data={postDetailMock}
+            onClick={() => setIsOpenFindDetailModal(true)}
+          />
+        ))}
+        <FindDetailModal
+          isOpen={isOpenFindDetailModal}
+          onOpenChange={(open: boolean) => {
+            setIsOpenFindDetailModal(open);
+          }}
+        />
       </div>
     </div>
   );

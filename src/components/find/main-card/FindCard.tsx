@@ -14,14 +14,14 @@ import Champion from "@/assets/images/test_champion_thumb.png";
 import WinRate from "@/components/profile/WinRate";
 import { BoxButton } from "@/components/common/button/BoxButton";
 import formatRelativeTime from "@/utils/formatRelativeTime";
-import { useState } from "react";
+import { HTMLAttributes, useState } from "react";
 import { Position } from "@/types/position";
 import MiniProfile from "@/components/profile/MiniProfile";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import SubTitleAndData from "../SubTitleAndData";
 import FindCardMemberDetail from "./FindCardMemberDetail";
 
-interface FindCardProps {
+interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
   data: PostDetail;
 }
 
@@ -41,7 +41,7 @@ export interface sampleMemberType {
   };
 }
 
-export default function FindCard({ data }: FindCardProps) {
+export default function FindCard({ data, ...props }: FindCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { writer, options, statistics } = data;
   const [tier, rank] = writer.gameAccount.tier.split(" ");
@@ -111,7 +111,7 @@ export default function FindCard({ data }: FindCardProps) {
   const empty = options.recruitCount - filled;
 
   return (
-    <div className="flex min-w-110 flex-col">
+    <div className="flex min-w-110 cursor-pointer flex-col" {...props}>
       <FindCardContainer className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="relative flex items-center gap-3">
@@ -199,7 +199,10 @@ export default function FindCard({ data }: FindCardProps) {
 
         <div
           className="bg-accent/10 border-accent/50 hover:border-border-primary flex cursor-pointer flex-col gap-3.5 rounded-xl border px-4 py-2 transition-all duration-150"
-          onClick={() => setIsOpen((prev) => !prev)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen((prev) => !prev);
+          }}
         >
           <SubTitleAndData
             title="인원"
