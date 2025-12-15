@@ -5,8 +5,9 @@ import { twMerge } from "tailwind-merge";
 interface DropDownProps {
   placeholder: string;
   items: { value: string; label: string }[];
-  value: string;
+  value?: string;
   onValueChange: (value: string) => void;
+  name: string;
   className?: string;
 }
 
@@ -15,13 +16,14 @@ export default function Dropdown({
   items,
   value,
   onValueChange,
+  name,
   className,
 }: DropDownProps) {
   return (
-    <Select.Root value={value} onValueChange={onValueChange}>
+    <Select.Root value={value} onValueChange={onValueChange} name={name}>
       <Select.Trigger
         className={twMerge(
-          "border-border-primary bg-bg-primary text-content-primary data-placeholder:text-content-secondary flex cursor-pointer items-center justify-between rounded-xl border px-4 py-2.5 text-sm outline-0",
+          "border-border-primary bg-bg-primary text-content-primary data-placeholder:text-content-tertiary flex cursor-pointer items-center justify-between rounded-xl border px-4 py-2.5 text-sm outline-0",
           className,
         )}
       >
@@ -30,7 +32,6 @@ export default function Dropdown({
           <ChevronDown size={16} className="text-content-secondary" />
         </Select.Icon>
       </Select.Trigger>
-
       <Select.Portal>
         <Select.Content
           side="bottom"
@@ -38,13 +39,13 @@ export default function Dropdown({
           position="popper"
           collisionPadding={0}
           avoidCollisions={false}
-          className="border-border-primary bg-bg-primary text-content-secondary max-h-60 w-(--radix-select-trigger-width) rounded-xl border px-3 py-2"
+          className="border-border-primary bg-bg-primary text-content-secondary max-h-60 w-full rounded-xl border"
         >
           <Select.ScrollUpButton className="flex h-6 items-center justify-center">
             <ChevronUp size={14} />
           </Select.ScrollUpButton>
 
-          <Select.Viewport className="overflow-auto p-2">
+          <Select.Viewport className="w-(--radix-select-trigger-width) overflow-auto p-2">
             {items.map((item) => (
               <SelectItem key={item.value} value={item.value}>
                 {item.label}

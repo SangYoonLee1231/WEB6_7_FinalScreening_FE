@@ -5,11 +5,15 @@ interface TextInputProps extends React.ComponentPropsWithoutRef<"input"> {
   className?: string;
 }
 
-export default function TextInput({ placeholder, className, ...inputProps }: TextInputProps) {
+export default function TextInput({
+  placeholder,
+  className,
+  ...inputProps
+}: TextInputProps) {
   return (
     <div
       className={twMerge(
-        "bg-bg-primary placeholder:text-content-tertiary text-content-primary flex h-15 items-center gap-3 rounded-xl px-5 py-5 text-lg",
+        "bg-bg-primary focus-within:border-content-secondary border-border-primary placeholder:text-content-tertiary text-content-primary flex h-15 items-center gap-3 rounded-xl border px-5 py-5 text-lg",
         className,
       )}
     >
