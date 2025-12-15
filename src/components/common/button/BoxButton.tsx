@@ -32,12 +32,12 @@ const buttonVariants = cva(
   {
     variants: {
       size: {
-        xs: "w-18 h-9 px-2 text-xs",
-        sm_long: "w-63 h-10 px-3 text-sm",
-        sm: "w-18 h-10 px-3 text-sm",
-        md: "w-24 h-13 px-4 text-base",
-        lg: "w-63 h-15 px-6 text-lg",
-        xl: "w-125 h-15 px-6 text-lg",
+        xs: "min-w-13 px-3.5 h-[35px] text-sm",
+        sm_long: "min-w-63 px-26 h-10 text-sm",
+        sm: "min-w-18 h-10 px-3.5 text-sm",
+        md: "min-w-24 h-13 px-4 text-base",
+        lg: "min-w-63 h-15 px-23.5 text-lg",
+        xl: "min-w-125 h-15 px-54.5 text-lg",
       },
       tone: {
         black: "bg-bg-tertiary hover:bg-bg-tertiary/50",
