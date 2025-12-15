@@ -1,7 +1,7 @@
 import { PostDetail } from "@/types/post";
-import FindCardContainer from "../common/container/FindCardContainer";
+import FindCardContainer from "../../common/container/FindCardContainer";
 import { sampleMemberType } from "./FindCard";
-import FindMemberCard from "./FindMemberCard";
+import FindMemberCard from "@/components/find/FindMemberCard";
 
 export default function FindCardMemberDetail({
   userId,

@@ -1,24 +1,24 @@
 "use client";
 
 import { Headset } from "lucide-react";
-import Avatar from "../common/Avatar";
-import FindCardContainer from "../common/container/FindCardContainer";
+import Avatar from "@/components/common/Avatar";
+import FindCardContainer from "@/components/common/container/FindCardContainer";
 import { PostDetail } from "@/types/post";
 import { twMerge } from "tailwind-merge";
-import TierSet from "../profile/TierSet";
+import TierSet from "@/components/profile/TierSet";
 import { isRank, isTier } from "@/types/tier";
-import IntroduceBubble from "../profile/IntroduceBubble";
+import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import PositionSet from "./PositionSet";
-import MostChampion from "../profile/MostChampion";
+import MostChampion from "@/components/profile/MostChampion";
 import Champion from "@/assets/images/test_champion_thumb.png";
-import WinRate from "../profile/WinRate";
-import { BoxButton } from "../common/button/BoxButton";
+import WinRate from "@/components/profile/WinRate";
+import { BoxButton } from "@/components/common/button/BoxButton";
 import formatRelativeTime from "@/utils/formatRelativeTime";
 import { useState } from "react";
 import { Position } from "@/types/position";
-import MiniProfile from "../profile/MiniProfile";
+import MiniProfile from "@/components/profile/MiniProfile";
 import * as HoverCard from "@radix-ui/react-hover-card";
-import SubTitleAndData from "./SubTitleAndData";
+import SubTitleAndData from "../SubTitleAndData";
 import FindCardMemberDetail from "./FindCardMemberDetail";
 
 interface FindCardProps {
@@ -111,7 +111,7 @@ export default function FindCard({ data }: FindCardProps) {
   const empty = options.recruitCount - filled;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex min-w-110 flex-col">
       <FindCardContainer className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="relative flex items-center gap-3">
@@ -159,14 +159,14 @@ export default function FindCard({ data }: FindCardProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <IntroduceBubble content={options.memo} />
+        <div className="flex flex-col gap-1 px-5">
+          <IntroduceBubble content={options.memo} type="message" />
           <span className="text-content-secondary text-right text-xs">
             {formatRelativeTime(statistics.createdAt)}
           </span>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-5">
           <PositionSet
             type="my"
             data={options.myPosition}
@@ -217,8 +217,8 @@ export default function FindCard({ data }: FindCardProps) {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M11.9668 10.7694C13.4008 9.67298 14.3258 7.94452 14.3258 6C14.3258 2.68629 11.6395 0 8.32584 0C5.01213 0 2.32584 2.68629 2.32584 6C2.32584 7.94452 3.25085 9.67298 4.68485 10.7694C3.67937 11.2142 2.75434 11.8436 1.96188 12.636C1.34995 13.248 0.835182 13.939 0.42761 14.6851C-0.324507 16.0619 -0.0177813 17.4657 0.829231 18.4584C1.64464 19.414 2.95086 20 4.32584 20H12.3258C13.7008 20 15.007 19.414 15.8224 18.4584C16.6695 17.4657 16.9762 16.0619 16.2241 14.6851C15.8165 13.939 15.3017 13.248 14.6898 12.636C13.8973 11.8436 12.9723 11.2142 11.9668 10.7694Z"
                     fill="#2FD3B1"
                   />
@@ -234,8 +234,8 @@ export default function FindCard({ data }: FindCardProps) {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M8.32584 2C6.1167 2 4.32584 3.79086 4.32584 6C4.32584 8.20914 6.1167 10 8.32584 10C10.535 10 12.3258 8.20914 12.3258 6C12.3258 3.79086 10.535 2 8.32584 2ZM11.9668 10.7694C13.4008 9.67298 14.3258 7.94452 14.3258 6C14.3258 2.68629 11.6395 0 8.32584 0C5.01213 0 2.32584 2.68629 2.32584 6C2.32584 7.94452 3.25085 9.67298 4.68485 10.7694C3.67937 11.2142 2.75434 11.8436 1.96188 12.636C1.34995 13.248 0.835182 13.939 0.42761 14.6851C-0.324507 16.0619 -0.0177813 17.4657 0.829231 18.4584C1.64464 19.414 2.95086 20 4.32584 20H12.3258C13.7008 20 15.007 19.414 15.8224 18.4584C16.6695 17.4657 16.9762 16.0619 16.2241 14.6851C15.8165 13.939 15.3017 13.248 14.6898 12.636C13.8973 11.8436 12.9723 11.2142 11.9668 10.7694ZM8.32584 12C6.46932 12 4.68885 12.7375 3.37609 14.0503C2.90009 14.5263 2.49977 15.0637 2.18279 15.6439C1.87583 16.2058 1.97485 16.7198 2.35064 17.1602C2.75804 17.6376 3.49168 18 4.32584 18H12.3258C13.16 18 13.8936 17.6376 14.301 17.1602C14.6768 16.7198 14.7758 16.2058 14.4689 15.6439C14.1519 15.0637 13.7516 14.5263 13.2756 14.0503C11.9628 12.7375 10.1824 12 8.32584 12Z"
                     fill="#62748E"
                   />
