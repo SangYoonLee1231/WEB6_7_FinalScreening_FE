@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "../css/globals.css";
-import Header from "@/components/common/nav/Header";
+import "@/css/globals.css";
+import { ThemeProvider } from "next-themes";
 
 const pretendard = localFont({
   src: "../fonts/pretendard/PretendardVariable.woff2",
@@ -21,14 +21,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${pretendard.variable}`}>
-      <body
-        className={`${pretendard.className} dark bg-bg-secondary font-medium`}
-      >
-        <Header />
-        <div className="m-auto min-h-dvh w-(--content-area) max-w-full">
-          <main>{children}</main>
-        </div>
+    <html
+      lang="ko"
+      className={`${pretendard.variable}`}
+      suppressHydrationWarning
+    >
+      <body className={`${pretendard.className} bg-bg-secondary font-medium`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

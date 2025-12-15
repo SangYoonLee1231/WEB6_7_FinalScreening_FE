@@ -1,6 +1,6 @@
 "use Client";
 
-import { Link } from 'lucide-react';
+import { Link } from "lucide-react";
 import { BoxButton } from "@/components/common/button/BoxButton";
 import TextInput from "@/components/common/TextInput";
 
@@ -8,13 +8,14 @@ export default function page() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="flex w-full max-w-md flex-col items-center">
-        <Link width={50} height={50} className="text-accent"/>
-        <p className="text-content-primary mt-2 mb-2 text-5xl font-bold">
-          회원가입
-        </p>
-        <p className="text-content-secondary text-center text-lg">
-          지금 가입하고 매치마이파티와 함께해요
-        </p>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <Link width={50} height={50} className="text-accent" />
+          <p className="text-content-primary text-5xl font-bold">회원가입</p>
+          <p className="text-content-secondary text-center text-lg">
+            지금 가입하고 매치마이파티와 함께해요
+          </p>
+        </div>
+
         <form className="mt-12 flex flex-col">
           <TextInput
             type="email"
@@ -63,12 +64,7 @@ export default function page() {
             </p>
           </label>
 
-          <BoxButton
-            text="회원가입"
-            tone="color"
-            size="xl"
-            className="text-xl"
-          >
+          <BoxButton text="회원가입" tone="color" size="xl" className="text-xl">
             회원가입
           </BoxButton>
         </form>
