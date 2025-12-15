@@ -37,7 +37,7 @@ const buttonVariants = cva(
         sm: "min-w-18 h-10 px-3.5 text-sm",
         md: "min-w-24 h-13 px-4 text-base",
         lg: "min-w-63 h-15 px-23.5 text-lg",
-        xl: "min-w-125 h-15 px-54.5 text-lg",
+        xl: "min-w-125 h-15 text-lg",
       },
       tone: {
         black: "bg-bg-tertiary hover:bg-bg-tertiary/50",

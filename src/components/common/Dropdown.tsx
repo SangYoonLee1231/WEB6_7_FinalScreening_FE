@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 
 interface DropDownProps {
   placeholder: string;
-  items: { value: string; label: string }[];
+  items: { value: string; label: string | React.ReactNode }[];
   value?: string;
   onValueChange: (value: string) => void;
   name: string;

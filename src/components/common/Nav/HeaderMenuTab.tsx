@@ -1,27 +1,41 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnchorHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
-export default function HeaderMenuTab({
-  text,
-  isActive,
-}: {
+interface HeaderMenuTabProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  gameType?: string;
   text: string;
-  isActive?: true;
-}) {
+  path: string;
+  isActive?: boolean;
+}
+
+export default function HeaderMenuTab({
+  gameType,
+  text,
+  path,
+  isActive,
+  ...props
+}: HeaderMenuTabProps) {
   return (
-    <li
-      className={twMerge(
-        "flex items-stretch",
-        isActive && "border-accent border-b-2",
-      )}
-    >
-      <span
+    <Link href={`/${gameType}/${path}`} {...props}>
+      <li
         className={twMerge(
-          "text-content-primary px-3 py-3 text-base font-semibold",
-          isActive && "text-accent",
+          "flex items-stretch",
+          isActive && "border-accent border-b-2",
         )}
       >
-        {text}
-      </span>
-    </li>
+        <span
+          className={twMerge(
+            "text-content-primary px-3 py-3 text-base font-semibold",
+            isActive && "text-accent",
+          )}
+        >
+          {text}
+        </span>
+      </li>
+    </Link>
   );
 }
