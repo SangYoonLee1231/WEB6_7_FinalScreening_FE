@@ -95,7 +95,7 @@ export default function Header({ type }: { type: "compact" | "full" }) {
 
           <ThemeToggleBtn />
           {type === "full" ? (
-            <Link href={`/${gameType}/profile`} className="flex">
+            <Link href={`/${gameType}/myprofile`} className="flex">
               <Avatar
                 src=""
                 type="profile"
