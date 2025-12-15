@@ -3,6 +3,8 @@ import Avatar from "../common/Avatar";
 import Image from "next/image";
 import { activePositionIcons, Position } from "@/types/position";
 import CircleBtn from "../common/button/CircleBtn";
+import InviteMemberModal from "./InviteMemberModal";
+import { useInviteStore } from "@/stores/inviteStore";
 
 type FindMemberCardType = "default" | "modal";
 interface FindMemberCardProps {
@@ -33,6 +35,7 @@ export default function FindMemberCard({
   data,
 }: FindMemberCardProps) {
   const isMaster = currentUserId === masterUser;
+  const { openInviteForm } = useInviteStore();
 
   if (data)
     return (
@@ -74,10 +77,16 @@ export default function FindMemberCard({
           <h4 className="flex items-center gap-1 font-bold">빈자리</h4>
         </div>
         {type === "modal" && isMaster && (
-          <CircleBtn className="bg-accent hover:bg-accent/50 h-5 w-5">
+          <CircleBtn
+            className="bg-accent hover:bg-accent/50 h-5 w-5"
+            onClick={() => {
+              openInviteForm();
+            }}
+          >
             <Plus />
           </CircleBtn>
         )}
+        <InviteMemberModal />
       </div>
     );
 }
