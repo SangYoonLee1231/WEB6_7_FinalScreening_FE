@@ -3,7 +3,7 @@
 import { PostDetail } from "@/types/post";
 import FindCardContainer from "../common/container/FindCardContainer";
 import FindMemberCard from "./FindMemberCard";
-import { sampleMemberType } from "./FindCard";
+import { sampleMemberType } from "@/components/find/main-card/FindCard";
 import StateBadge from "../common/StateBadge";
 import { BoxButton } from "../common/button/BoxButton";
 import ToggleBtn, { RecruitStatus } from "../common/button/ToggleBtn";
