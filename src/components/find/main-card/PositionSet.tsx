@@ -1,7 +1,8 @@
 import { activePositionIcons, Position, positionIcons } from "@/types/position";
 import Image from "next/image";
+import { twMerge } from "tailwind-merge";
 
-type PositionSetType = "my" | "looking";
+type PositionSetType = "my" | "find";
 type PositionSetSize = "default" | "mini";
 
 interface PositionSetProps {
@@ -9,6 +10,7 @@ interface PositionSetProps {
   size: PositionSetSize;
   data: Position | Position[];
   isActive: boolean;
+  className?: string;
 }
 
 export default function PositionSet({
@@ -16,29 +18,44 @@ export default function PositionSet({
   size = "default",
   data,
   isActive,
+  className,
 }: PositionSetProps) {
-  const h = size === "default" ? 40 : 24;
+  const h = size === "default" ? 40 : 30;
   return (
-    <div className="flex flex-col items-center justify-center gap-2 font-semibold">
-      <span className="text-sm">
+    <div
+      className={twMerge(
+        "flex flex-col items-center justify-center gap-2 font-semibold",
+        size === "mini" && "w-full justify-start gap-3",
+        className,
+      )}
+    >
+      <p className={twMerge("text-sm", size === "mini" && "w-full")}>
         {type === "my" ? "주 포지션" : "찾는 포지션"}
-      </span>
-      {typeof data === "object" ? (
-        data.map((d, index) => (
+      </p>
+      <div
+        className={twMerge(
+          "flex w-full items-center justify-center gap-4",
+          size === "mini" && "justify-start",
+          className,
+        )}
+      >
+        {typeof data === "object" ? (
+          data.map((d, index) => (
+            <Image
+              key={index}
+              src={isActive ? activePositionIcons[d] : positionIcons[d]}
+              alt={`${d} position icon`}
+              height={h}
+            />
+          ))
+        ) : (
           <Image
-            key={index}
-            src={isActive ? activePositionIcons[d] : positionIcons[d]}
-            alt={`${d} position icon`}
+            src={isActive ? activePositionIcons[data] : positionIcons[data]}
+            alt={`${data} position icon`}
             height={h}
           />
-        ))
-      ) : (
-        <Image
-          src={isActive ? activePositionIcons[data] : positionIcons[data]}
-          alt={`${data} position icon`}
-          height={h}
-        />
-      )}
+        )}
+      </div>
     </div>
   );
 }
