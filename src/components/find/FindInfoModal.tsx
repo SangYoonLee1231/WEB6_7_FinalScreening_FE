@@ -1,27 +1,24 @@
-"use client";
-
 import { PostDetail } from "@/types/post";
 import FindCardContainer from "../common/container/FindCardContainer";
 import FindMemberCard from "./FindMemberCard";
 import { sampleMemberType } from "@/components/find/main-card/FindCard";
 import StateBadge from "../common/StateBadge";
 import { BoxButton } from "../common/button/BoxButton";
-import ToggleBtn, { RecruitStatus } from "../common/button/ToggleBtn";
-import { useState } from "react";
 import FindLinkButton from "./FindLinkButton";
+
+interface FindInfoModalProps extends React.HTMLAttributes<HTMLDivElement> {
+  currentUserId: number;
+  postData: PostDetail;
+  memberData: sampleMemberType[];
+}
 
 export default function FindInfoModal({
   currentUserId,
   postData,
   memberData,
-}: {
-  currentUserId: number;
-  postData: PostDetail;
-  memberData: sampleMemberType[];
-}) {
+}: FindInfoModalProps) {
   const { writer, options, statistics } = postData;
   const isMaster = currentUserId === postData.writer.userId;
-  const [status, setStatus] = useState<RecruitStatus>("recruiting");
 
   return (
     <FindCardContainer className="flex h-123 w-110 flex-col items-center justify-between p-7.5">
@@ -38,8 +35,6 @@ export default function FindInfoModal({
           </div>
           <FindLinkButton />
         </div>
-
-        <ToggleBtn value={status} onChange={setStatus} size="sm" />
 
         {Array.from({ length: 3 }).map((_, i) => (
           <FindMemberCard
