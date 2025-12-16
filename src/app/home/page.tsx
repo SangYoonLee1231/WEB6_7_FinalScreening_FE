@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import lolLogo from "@/assets/images/games/lol/lol-logo.png";
 import lolBg from "@/assets/images/games/lol/lol-bg.jpg";
 import overwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
-import overwatchBg from "@/assets/images/games/overwatch/overwatch-bg.jpeg";
+import overwatchBg from "@/assets/images/games/overwatch/overwatch-bg.jpg";
 import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
 import valorantBg from "@/assets/images/games/valorant/valorant-bg.jpg";
 import { BoxButton } from "@/components/common/button/BoxButton";
