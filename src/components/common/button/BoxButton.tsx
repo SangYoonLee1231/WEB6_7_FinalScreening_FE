@@ -36,7 +36,7 @@ const buttonVariants = cva(
         sm_long: "min-w-63 px-26 h-10 text-sm",
         sm: "min-w-18 h-10 px-3.5 text-sm",
         md: "min-w-24 h-13 px-4 text-base",
-        lg: "min-w-63 h-15 px-23.5 text-lg",
+        lg: "min-w-63 h-15 px-10.5 text-lg",
         xl: "min-w-125 h-15 text-lg",
       },
       tone: {

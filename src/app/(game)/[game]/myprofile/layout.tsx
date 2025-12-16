@@ -8,7 +8,7 @@ export default function MyprofileLayout({
   return (
     <div className="flex gap-62.5 px-20 py-15">
       <MyProfileNav />
-      <div className="mt-16">{children}</div>
+      <div className="mt-16 w-full">{children}</div>
     </div>
   );
 }
