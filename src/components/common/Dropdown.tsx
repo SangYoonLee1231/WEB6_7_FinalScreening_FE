@@ -1,3 +1,5 @@
+"use client";
+
 import * as Select from "@radix-ui/react-select";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { twMerge } from "tailwind-merge";

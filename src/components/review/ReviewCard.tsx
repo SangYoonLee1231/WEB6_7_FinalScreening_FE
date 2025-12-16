@@ -15,6 +15,8 @@ import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
 import formatRelativeTime from "@/utils/formatRelativeTime";
 
 import type { EmojiType as Emotion } from "@/types/emoji";
+import IntroduceBubble from "../profile/IntroduceBubble";
+import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
 
 type ReviewMode = "received" | "written";
 type GameName = "lol" | "overwatch" | "valorant";
@@ -62,13 +64,12 @@ export default function ReviewCard({
   const gameLogoSrc = GAME_LOGO_MAP[gameName];
 
   return (
-    <article className="bg-bg-secondary border-border-primary w-full rounded-xl border px-4 py-3">
-      {/* 상단 바 */}
+    <HorizontalCardContainer>
       <button
         type="button"
         onClick={handleToggle}
         disabled={!isToggleable}
-        className="flex w-full items-center justify-between gap-3 text-left"
+        className="flex w-full cursor-pointer items-center justify-between gap-3 text-left"
       >
         {/* 좌측 그룹 */}
         <div className="flex flex-1 items-center gap-4">
@@ -92,9 +93,7 @@ export default function ReviewCard({
               </span>
             </div>
 
-            <div className="bg-bg-tertiary text-content-primary flex-1 rounded-md px-4 py-2 text-sm">
-              {content}
-            </div>
+            <IntroduceBubble content={content} />
           </div>
         </div>
 
@@ -133,7 +132,7 @@ export default function ReviewCard({
           </button>
         </div>
       )}
-    </article>
+    </HorizontalCardContainer>
   );
 }
 
