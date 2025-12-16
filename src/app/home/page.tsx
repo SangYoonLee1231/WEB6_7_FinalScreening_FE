@@ -62,7 +62,7 @@ export default function HomePage() {
   };
 
   return (
-    <section className="h-full w-full">
+    <section className="flex h-full w-full">
       <div className="flex h-full w-full flex-col items-center justify-center">
         {/* 콘텐츠 */}
 
