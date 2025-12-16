@@ -5,7 +5,7 @@ import { CircleAlert } from "lucide-react";
 import TextInput from "@/components/common/TextInput";
 import Dropdown from "@/components/common/Dropdown";
 import { BoxButton } from "@/components/common/button/BoxButton";
-import FormModalContainer from "../common/container/FormModalContainer";
+import FormModalContainer from "../../common/container/FormModalContainer";
 import * as Dialog from "@radix-ui/react-dialog";
 
 const items = [
