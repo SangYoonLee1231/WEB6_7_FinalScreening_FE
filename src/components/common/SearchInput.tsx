@@ -32,7 +32,6 @@ export default function SearchInput({
   inputSize,
   placeholder,
   className,
-  ...props
 }: SearchInputProps) {
   return (
     <div className={twMerge(searchInput({ inputSize }), className)}>
@@ -44,7 +43,6 @@ export default function SearchInput({
         type="text"
         placeholder={placeholder}
         className="placeholder:text-content-tertiary w-full py-2 outline-0"
-        {...props}
       />
     </div>
   );
