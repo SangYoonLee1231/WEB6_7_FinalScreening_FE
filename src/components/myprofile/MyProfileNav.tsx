@@ -17,7 +17,7 @@ export default function MyProfileNav() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-11">
+    <nav className="flex flex-col gap-11">
       <h1 className="text-content-main text-5xl font-bold">마이 프로필</h1>
       <ul className="flex flex-col gap-5.5">
         <MyProfileMenuTab
@@ -61,6 +61,6 @@ export default function MyProfileNav() {
           }}
         />
       </ul>
-    </div>
+    </nav>
   );
 }
