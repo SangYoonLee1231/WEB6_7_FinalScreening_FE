@@ -3,14 +3,18 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 type MenuStore = {
+  currentGame: string;
   currentMenu: string;
+  setCurrentGame: (game: string) => void;
   setMenu: (menu: string) => void;
 };
 
 export const useMenuStore = create<MenuStore>()(
   devtools(
     immer((set) => ({
+      currentGame: "lol",
       currentMenu: "find",
+      setCurrentGame: (game) => set({ currentGame: game }),
       setMenu: (menu) => set({ currentMenu: menu }),
     })),
   ),
