@@ -65,12 +65,8 @@ export default function ChatCard({
 
         // background
         isSelected
-          ? "border-accent bg-[rgba(47,211,177,0.1)]"
-          : "bg-bg-primary hover:bg-[rgba(47,211,177,0.1)]",
-
-        // < rgba를 사용한 이유 >
-        // 피그마의 정확한 색상을 재현하기 위해 rgba를 사용하는 것이 좋다고 합니다.
-        // 브라우저 호환 + 가독성 고려하면 rgba 버전이 가장 안전하다고 합니다.
+          ? "border-accent bg-accent/10"
+          : "bg-bg-primary hover:bg-accent/10",
 
         className ?? "",
       ]

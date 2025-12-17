@@ -1,6 +1,6 @@
 "use client";
 
-import * as Avatar from "@radix-ui/react-avatar";
+import Avatar from "@/components/common/Avatar";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 
@@ -65,20 +65,8 @@ export default function ChatBubble({
           className ?? "",
         ].join(" ")}
       >
-        {!isMe && (
-          <Avatar.Root className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
-            <Avatar.Image
-              src={avatarSrc}
-              alt={avatarAlt}
-              className="h-full w-full object-cover"
-            />
-            <Avatar.Fallback
-              className="bg-bg-quaternary text-content-main flex h-full w-full items-center justify-center text-sm"
-              delayMs={200}
-            >
-              {nickname?.[0] ?? "?"}
-            </Avatar.Fallback>
-          </Avatar.Root>
+        {!isMe && avatarSrc && (
+          <Avatar src={avatarSrc} type="profile" size="sm" />
         )}
 
         <div

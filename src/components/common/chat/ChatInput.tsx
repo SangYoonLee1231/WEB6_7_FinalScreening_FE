@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { twMerge } from "tailwind-merge";
-import Image from "next/image";
+import { Send } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 type ChatInputProps = {
@@ -91,7 +91,7 @@ export default function ChatInput({
                 !canSend && "cursor-not-allowed opacity-40",
               )}
             >
-              <Image src="/send.svg" alt="send" width={20} height={20} />
+              <Send className="text-bg-primary h-5 w-5" />
             </button>
           </Tooltip.Trigger>
 
