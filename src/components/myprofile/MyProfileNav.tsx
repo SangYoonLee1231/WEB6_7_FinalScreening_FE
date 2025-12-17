@@ -10,7 +10,7 @@ export default function MyProfileNav() {
   const { currentMenu, setMenu } = useMyProfileMenuStore();
 
   const pathName = usePathname().split("/");
-  const newPath = `/${pathName[1]}/${pathName[2]}`;
+  const newPath = `/${pathName[1]}/`;
 
   useEffect(() => {
     setGnbMenu("");
@@ -21,7 +21,7 @@ export default function MyProfileNav() {
       <h1 className="text-content-main text-5xl font-bold">마이 프로필</h1>
       <ul className="flex flex-col gap-5.5">
         <MyProfileMenuTab
-          path={`${newPath}/account`}
+          path={`account`}
           text="계정 관리"
           isActive={currentMenu === "account"}
           onClick={() => {
@@ -29,7 +29,7 @@ export default function MyProfileNav() {
           }}
         />
         <MyProfileMenuTab
-          path={`${newPath}/link`}
+          path={`link`}
           text="게임 아이디 연동"
           isActive={currentMenu === "link"}
           onClick={() => {
@@ -37,7 +37,7 @@ export default function MyProfileNav() {
           }}
         />
         <MyProfileMenuTab
-          path={`${newPath}/reviews`}
+          path={`reviews`}
           text="리뷰 조회"
           isActive={currentMenu === "reviews"}
           onClick={() => {
@@ -45,7 +45,7 @@ export default function MyProfileNav() {
           }}
         />
         <MyProfileMenuTab
-          path={`${newPath}/find-history`}
+          path={`find-history`}
           text="모집 참여 내역"
           isActive={currentMenu === "find-history"}
           onClick={() => {
@@ -53,7 +53,7 @@ export default function MyProfileNav() {
           }}
         />
         <MyProfileMenuTab
-          path={`${newPath}/ban`}
+          path={`ban`}
           text="차단 목록"
           isActive={currentMenu === "ban"}
           onClick={() => {

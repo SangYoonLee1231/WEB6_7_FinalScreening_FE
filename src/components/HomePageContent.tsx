@@ -4,7 +4,6 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
 import lolLogo from "@/assets/images/games/lol/lol-logo.png";
 import lolBg from "@/assets/images/games/lol/lol-bg.jpg";
 import overwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
@@ -12,6 +11,8 @@ import overwatchBg from "@/assets/images/games/overwatch/overwatch-bg.jpg";
 import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
 import valorantBg from "@/assets/images/games/valorant/valorant-bg.jpg";
 import { BoxButton } from "@/components/common/button/BoxButton";
+import { useMenuStore } from "@/stores/menuStore";
+import { useRouter } from "next/navigation";
 
 const games = [
   {
@@ -34,9 +35,11 @@ const games = [
   },
 ];
 
-export default function HomePage() {
+export default function HomePageContent() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
+  const router = useRouter();
+  const { setCurrentGame } = useMenuStore();
 
   const current = games[index];
 
@@ -146,6 +149,10 @@ export default function HomePage() {
               tone="gradient_positive"
               text="이 게임으로 듀오 찾기"
               className="w-auto shrink-0 self-center px-10 py-5 text-xl font-bold"
+              onClick={() => {
+                setCurrentGame(current.id);
+                router.push(current.id);
+              }}
             />
           </div>
         </div>
