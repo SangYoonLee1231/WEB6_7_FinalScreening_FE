@@ -1,13 +1,11 @@
-"use Client";
-
 import logo from "@/assets/images/logo.svg";
 import { BoxButton } from "@/components/common/button/BoxButton";
-import TextInput from "@/components/common/TextInput";
 import Image from "next/image";
 import googleIcon from "@/assets/icons/google.svg";
 import discordIcon from "@/assets/icons/discord.svg";
 import CircleBtn from "@/components/common/button/CircleBtn";
 import Link from "next/link";
+import LoginForm from "@/components/auth/login/LoginForm";
 
 export default function page() {
   return (
@@ -18,33 +16,7 @@ export default function page() {
           로그인하고 나에게 딱 맞는 듀오를 찾아보세요
         </p>
         {/* 로그인 Form */}
-        <div className="flex flex-col">
-          <TextInput
-            type="email"
-            placeholder="이메일 주소"
-            className="outline-border-primary h-15 w-125 outline-1"
-          />
-          <TextInput
-            type="password"
-            placeholder="비밀번호"
-            className="outline-border-primary mt-4 mb-2 h-15 w-125 outline-1"
-          />
-          <div className="flex flex-row gap-1 text-left text-base">
-            <p className="text-content-secondary ml-2">
-              비밀번호를 잊으셨나요?
-            </p>
-            <a href="#" className="text-accent hover:underline">
-              비밀번호 찾기
-            </a>
-          </div>
-          <BoxButton
-            type="submit"
-            text="로그인"
-            tone="black"
-            size="xl"
-            className="mt-5 text-xl font-bold"
-          />
-        </div>
+        <LoginForm />
 
         {/* 회원가입 */}
         <p className="text-content-secondary mt-6 mb-6 text-base">
