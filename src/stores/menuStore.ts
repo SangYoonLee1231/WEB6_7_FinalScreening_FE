@@ -15,3 +15,17 @@ export const useMenuStore = create<MenuStore>()(
     })),
   ),
 );
+
+type MyProfileMenuStore = {
+  currentMenu: string;
+  setMenu: (menu: string) => void;
+};
+
+export const useMyProfileMenuStore = create<MyProfileMenuStore>()(
+  devtools(
+    immer((set) => ({
+      currentMenu: "account",
+      setMenu: (menu) => set({ currentMenu: menu }),
+    })),
+  ),
+);

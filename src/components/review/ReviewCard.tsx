@@ -4,8 +4,6 @@ import Image, { type StaticImageData } from "next/image";
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-import HorizontalCardContainer from "@/components/common/container/HorizontalCardContainer";
-
 import emojiGood from "@/assets/images/emoji/emoji_good.png";
 import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
 import emojiBad from "@/assets/images/emoji/emoji_bad.png";
@@ -17,6 +15,8 @@ import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
 import formatRelativeTime from "@/utils/formatRelativeTime";
 
 import type { EmojiType as Emotion } from "@/types/emoji";
+import IntroduceBubble from "../profile/IntroduceBubble";
+import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
 
 type ReviewMode = "received" | "written";
 type GameName = "lol" | "overwatch" | "valorant";
@@ -64,13 +64,12 @@ export default function ReviewCard({
   const gameLogoSrc = GAME_LOGO_MAP[gameName];
 
   return (
-    <HorizontalCardContainer className="w-full px-4 py-3">
-      {/* 상단 바 */}
+    <HorizontalCardContainer>
       <button
         type="button"
         onClick={handleToggle}
         disabled={!isToggleable}
-        className="flex w-full items-center justify-between gap-3 text-left"
+        className="flex w-full cursor-pointer items-center justify-between gap-3 text-left"
       >
         {/* 좌측 그룹 */}
         <div className="flex flex-1 items-center gap-4">
@@ -94,9 +93,7 @@ export default function ReviewCard({
               </span>
             </div>
 
-            <div className="bg-bg-tertiary text-content-primary flex-1 rounded-md px-4 py-2 text-sm">
-              {content}
-            </div>
+            <IntroduceBubble content={content} />
           </div>
         </div>
 
@@ -145,27 +142,27 @@ import ReviewCard from "@/components/review/ReviewCard";
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-4">
-      // 받은 리뷰
+    <>
+      // 받은 리뷰 리스트
       <ReviewCard
         mode="received"
-        gameName="lol"
+        gameIconSrc="/lol.png"
         communityName="커뮤니티 닉네임"
         content="리뷰내용"
         emotion="good"
         createdAt="2025-12-12T00:12:00.000Z"
       />
 
-      // 작성한 리뷰
+      // 작성한 리뷰 리스트
       <ReviewCard
         mode="written"
-        gameName="valorant"
+        gameIconSrc="/lol.png"
         communityName="커뮤니티 닉네임"
         content="리뷰내용"
         emotion="bad"
         createdAt="2025-12-11T00:11:00.000Z"
       />
-    </div>
+    </>
   );
 }
 

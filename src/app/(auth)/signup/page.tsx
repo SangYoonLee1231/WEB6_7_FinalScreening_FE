@@ -6,8 +6,8 @@ import TextInput from "@/components/common/TextInput";
 
 export default function page() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="flex w-full max-w-md flex-col items-center">
+    <section className="flex h-full w-full">
+      <div className="flex h-full w-full flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-4">
           <Link width={50} height={50} className="text-accent" />
           <p className="text-content-primary text-5xl font-bold">회원가입</p>
@@ -69,6 +69,6 @@ export default function page() {
           </BoxButton>
         </form>
       </div>
-    </div>
+    </section>
   );
 }

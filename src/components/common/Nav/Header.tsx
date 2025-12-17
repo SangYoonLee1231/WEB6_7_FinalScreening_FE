@@ -2,16 +2,16 @@
 
 import Image from "next/image";
 import logo from "@/assets/images/logo.svg";
-import HeaderMenuTab from "./HeaderMenuTab";
 import Link from "next/link";
 import Avatar from "../Avatar";
 import { usePathname } from "next/navigation";
-import ThemeToggleBtn from "./ThemeToggleBtn";
-
 import { Bell } from "lucide-react";
-import GameSelectDropdown from "./GameSelectDropdown";
 import { useMenuStore } from "@/stores/menuStore";
 import { BoxButton } from "../button/BoxButton";
+import HeaderMenuTab from "./HeaderMenuTab";
+import GameSelectDropdown from "./GameSelectDropdown";
+import ThemeToggleBtn from "./ThemeToggleBtn";
+import { twMerge } from "tailwind-merge";
 
 export default function Header({ type }: { type: "compact" | "full" }) {
   const gameType = usePathname().split("/")[1];
@@ -95,12 +95,15 @@ export default function Header({ type }: { type: "compact" | "full" }) {
 
           <ThemeToggleBtn />
           {type === "full" ? (
-            <Link href={`/${gameType}/profile`} className="flex">
+            <Link href={`/${gameType}/myprofile`} className="flex">
               <Avatar
                 src=""
                 type="profile"
                 size="sm"
-                className="hover:border-accent hover:border-2"
+                className={twMerge(
+                  "hover:border-accent hover:border-2",
+                  currentMenu === "profile" && "border-accent border-2",
+                )}
               />
             </Link>
           ) : (

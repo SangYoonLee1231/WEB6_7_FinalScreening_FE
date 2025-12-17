@@ -4,31 +4,29 @@ import Link from "next/link";
 import { AnchorHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
-interface HeaderMenuTabProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  gameType?: string;
+interface MyProfileMenuTabProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   text: string;
   path: string;
   isActive?: boolean;
 }
 
-export default function HeaderMenuTab({
-  gameType,
+export default function MyProfileMenuTab({
   text,
   path,
   isActive,
   ...props
-}: HeaderMenuTabProps) {
+}: MyProfileMenuTabProps) {
   return (
-    <Link href={`/${gameType}/${path}`} {...props}>
+    <Link href={path} {...props}>
       <li
         className={twMerge(
           "flex items-stretch",
-          isActive && "border-accent border-b-2",
+          isActive && "border-accent border-r-2",
         )}
       >
         <span
           className={twMerge(
-            "text-content-primary px-3 py-3 text-base font-semibold",
+            "text-content-primary p-2 text-xl font-medium",
             isActive && "text-accent",
           )}
         >
