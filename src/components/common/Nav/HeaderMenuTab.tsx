@@ -5,21 +5,19 @@ import { AnchorHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface HeaderMenuTabProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  gameType?: string;
   text: string;
   path: string;
   isActive?: boolean;
 }
 
 export default function HeaderMenuTab({
-  gameType,
   text,
   path,
   isActive,
   ...props
 }: HeaderMenuTabProps) {
   return (
-    <Link href={`/${gameType}/${path}`} {...props}>
+    <Link href={`/${path}`} {...props}>
       <li
         className={twMerge(
           "flex items-stretch",

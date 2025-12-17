@@ -15,7 +15,7 @@ import { twMerge } from "tailwind-merge";
 
 export default function Header({ type }: { type: "compact" | "full" }) {
   const gameType = usePathname().split("/")[1];
-  const { currentMenu, setMenu } = useMenuStore();
+  const { currentGame, currentMenu, setMenu } = useMenuStore();
   return (
     <nav className="bg-bg-primary flex h-(--header-h) justify-center">
       <div className="flex h-full w-(--content-area) items-center justify-between">
@@ -30,7 +30,7 @@ export default function Header({ type }: { type: "compact" | "full" }) {
           </Link>
         ) : (
           <div className="flex items-center gap-13">
-            <Link href={`/${gameType}`}>
+            <Link href={`/`}>
               <Image
                 src={logo}
                 alt="logo"
@@ -41,16 +41,14 @@ export default function Header({ type }: { type: "compact" | "full" }) {
 
             <ul className="flex gap-5">
               <HeaderMenuTab
-                gameType={gameType}
                 text="듀오 찾기"
-                path=""
+                path={`${currentGame}/find`}
                 isActive={currentMenu === "find"}
                 onClick={() => {
                   setMenu("find");
                 }}
               />
               <HeaderMenuTab
-                gameType={gameType}
                 text="유저 검색"
                 path="search"
                 isActive={currentMenu === "search"}
@@ -59,7 +57,6 @@ export default function Header({ type }: { type: "compact" | "full" }) {
                 }}
               />
               <HeaderMenuTab
-                gameType={gameType}
                 text="유저 리뷰"
                 path="reviews"
                 isActive={currentMenu === "reviews"}
@@ -68,7 +65,6 @@ export default function Header({ type }: { type: "compact" | "full" }) {
                 }}
               />
               <HeaderMenuTab
-                gameType={gameType}
                 text="채팅"
                 path="chat"
                 isActive={currentMenu === "chat"}
@@ -95,7 +91,7 @@ export default function Header({ type }: { type: "compact" | "full" }) {
 
           <ThemeToggleBtn />
           {type === "full" ? (
-            <Link href={`/${gameType}/myprofile`} className="flex">
+            <Link href={`/myprofile`} className="flex">
               <Avatar
                 src=""
                 type="profile"
