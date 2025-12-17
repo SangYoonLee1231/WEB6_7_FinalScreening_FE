@@ -5,15 +5,17 @@ import { BoxButton } from "@/components/common/button/BoxButton";
 import CircleBtn from "@/components/common/button/CircleBtn";
 import TextInput from "@/components/common/TextInput";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
-import { useMenuStore } from "@/stores/menuStore";
+import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 import { CircleAlert, Pencil } from "lucide-react";
 import { useEffect } from "react";
 
 export default function AccountPageContent() {
   const { setMenu } = useMenuStore();
+  const { setMenu: setProfileMenu } = useMyProfileMenuStore();
 
   useEffect(() => {
     setMenu("profile");
+    setProfileMenu("account");
   }, []);
   return (
     <div className="flex w-125 flex-col gap-11 [&_h3]:text-xl [&_h3]:font-semibold">

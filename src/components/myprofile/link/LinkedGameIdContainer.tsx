@@ -1,9 +1,20 @@
+"use client";
+
 import { BoxButton } from "@/components/common/button/BoxButton";
 import LinkedGameIdCard from "./LinkedGameIdCard";
 import LinkGameIdBox from "./LinkGameIdBox";
+import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
+import { useEffect } from "react";
 
 export default function LinkedGameIdContainer() {
   const hasData = false;
+  const { setMenu } = useMenuStore();
+  const { setMenu: setProfileMenu } = useMyProfileMenuStore();
+
+  useEffect(() => {
+    setMenu("profile");
+    setProfileMenu("link");
+  }, []);
 
   return (
     <div>

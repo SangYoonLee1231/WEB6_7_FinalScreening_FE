@@ -1,12 +1,20 @@
 "use client";
-import ToggleBtn, { RecruitStatus } from "@/components/common/button/ToggleBtn";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MyReviewFilterToggle, { MessageDirection } from "./MyReviewFilterToggle";
 import ReviewPercent from "./ReviewPercent";
 import ReviewCard from "./ReviewCard";
+import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 
 export default function MyProfileReviewContainer() {
-  const [status, setStatus] = useState<MessageDirection>("sent");
+  const [status, setStatus] = useState<MessageDirection>("received");
+  const { setMenu } = useMenuStore();
+  const { setMenu: setProfileMenu } = useMyProfileMenuStore();
+
+  useEffect(() => {
+    setMenu("profile");
+    setProfileMenu("reviews");
+  }, []);
+
   return (
     <div>
       <MyReviewFilterToggle
