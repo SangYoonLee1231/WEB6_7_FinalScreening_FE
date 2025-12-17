@@ -11,8 +11,8 @@ import Link from "next/link";
 
 export default function page() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="flex w-full max-w-md flex-col items-center">
+    <section className="flex h-full w-full">
+      <div className="flex h-full w-full flex-col items-center justify-center">
         <Image src={logo} alt="match-my-duo logo" width={400} height={153} />
         <p className="text-content-secondary mt-5 mb-6 text-center text-lg">
           로그인하고 나에게 딱 맞는 듀오를 찾아보세요
@@ -94,6 +94,6 @@ export default function page() {
           </CircleBtn>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
