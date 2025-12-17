@@ -1,6 +1,10 @@
 import { Fab } from "@/components/common/Fab";
 
-export default function LolLayout({ children }: { children: React.ReactNode }) {
+export default function GameLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       {children}

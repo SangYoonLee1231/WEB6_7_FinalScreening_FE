@@ -17,7 +17,7 @@ export default function Header({ type }: { type: "compact" | "full" }) {
   const gameType = usePathname().split("/")[1];
   const { currentGame, currentMenu, setMenu } = useMenuStore();
   return (
-    <nav className="bg-bg-primary flex h-(--header-h) justify-center">
+    <nav className="bg-bg-primary flex h-(--header-h) shrink-0 justify-center">
       <div className="flex h-full w-(--content-area) items-center justify-between">
         {type === "compact" ? (
           <Link href={`/`}>
