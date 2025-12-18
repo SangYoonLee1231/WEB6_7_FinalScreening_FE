@@ -56,7 +56,10 @@ export default function SearchPage() {
             </div>
             <div className="flex flex-col gap-2">
               {userListMock.users.map((user) => (
-                <HorizontalCardContainer className="flex h-19 w-222.5 flex-row justify-between items-center" key={user.userId}>
+                <HorizontalCardContainer
+                  className="grid h-19 w-full items-center grid-cols-[160px_1fr_190px_40px] gap-8"
+                  key={user.userId}
+                >
                   <div className="flex flex-row gap-2">
                     <Avatar
                       size="xs"
@@ -68,34 +71,30 @@ export default function SearchPage() {
                   <IntroduceBubble
                     type="message"
                     content={user.bio}
-                    className="h-11 w-100"
+                    className="w-full h-11 overflow-hidden"
                   />
                   {user.gameAccount.linked ? (
-                    <div className="border-accent/50 bg-accent/10 flex h-8 w-47.5 flex-row items-center gap-4 rounded-xl border px-4 py-2">
+                    <div className="border-accent/50 bg-accent/10 flex h-8 flex-row items-center justify-center gap-1 rounded-xl border px-4 py-2 whitespace-nowrap">
                       {/* 아이콘 */}
                       <Link className="text-accent" size={14} />
 
                       {/* 텍스트 */}
-                      <div className="flex items-center gap-4">
-                        <span className="text-content-primary text-sm">
-                          {user.gameAccount.gameName}
-                        </span>
-                        <span className="text-content-second text-xs">
-                          {user.gameAccount.tagLine}
-                        </span>
-                      </div>
+                      <span className="text-content-primary text-sm">
+                        {user.gameAccount.gameName}
+                      </span>
+                      <span className="text-content-second text-xs">
+                        {user.gameAccount.tagLine}
+                      </span>
                     </div>
                   ) : (
-                    <div className="border-border-primary bg-bg-secondary flex h-8 w-47.5 flex-row items-center gap-4 rounded-xl border px-4 py-2">
+                    <div className="border-border-primary bg-bg-secondary flex h-8 flex-row items-center justify-center gap-1 rounded-xl border px-4 py-2 whitespace-nowrap">
                       {/* 아이콘 */}
                       <Link className="text-content-primary" size={14} />
 
                       {/* 텍스트 */}
-                      <div className="flex items-center gap-4">
-                        <span className="text-content-primary text-sm">
-                          연동된 아이디 없음
-                        </span>
-                      </div>
+                      <span className="text-content-primary text-sm">
+                        연동 데이터 없음
+                      </span>
                     </div>
                   )}
                   <ChevronRight size={30} className="text-content-secondary" />
