@@ -113,7 +113,7 @@ export function Fab() {
                 <FindInfoModal
                   currentUserId={20}
                   postData={postDetailMock}
-                  memberData={members}
+                  memberData={[]}
                 />
               ) : (
                 <></>

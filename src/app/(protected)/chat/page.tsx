@@ -8,14 +8,13 @@ import ChatCard from "@/components/common/chat/ChatCard";
 import ChatFrame, {
   type ChatMessage,
 } from "@/components/common/chat/ChatFrame";
-
-import type { PostState } from "@/types/post";
+import { PostStatus } from "@/types/post";
 
 type ChatRoom = {
   id: string;
   game: string;
   title: string;
-  state: PostState;
+  state: PostStatus;
   headerUser: {
     profileImageUrl: string | null;
     gameNickname: string;

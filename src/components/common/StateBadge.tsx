@@ -1,4 +1,4 @@
-import { PostState } from "@/types/post";
+import { PostStatus } from "@/types/post";
 import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
@@ -21,7 +21,7 @@ interface StateBadgeProps
   extends
     React.ComponentPropsWithoutRef<"img">,
     VariantProps<typeof stateBadgeVariant> {
-  state: PostState;
+  state: PostStatus;
   className?: string;
 }
 
