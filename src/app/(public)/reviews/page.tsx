@@ -10,6 +10,7 @@ import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
 import emojiBad from "@/assets/images/emoji/emoji_bad.png";
 import Image from "next/image";
 import { EmojiType as Expression } from "@/types/emoji";
+import IntroduceBubble from "@/components/profile/IntroduceBubble";
 
 const items = [
   {
@@ -81,7 +82,7 @@ export default function ReviewsPage() {
   return (
     <section className="flex h-full w-full">
       <div className="flex h-full w-full flex-col items-center">
-        <div className="flex h-full w-3/4 flex-col">
+        <div className="flex h-full w-full flex-col">
           <div>
             <SearchInput
               inputSize="md"
@@ -105,7 +106,7 @@ export default function ReviewsPage() {
               <BoxButton
                 tone="gradient_positive"
                 text="리뷰 작성하러 가기"
-                className="h-8 w-34 text-sm font-semibold"
+                className="h-10 w-34 text-sm font-semibold"
               />
             </div>
           </div>
@@ -145,9 +146,7 @@ export default function ReviewsPage() {
                   </div>
 
                   {/* 리뷰 내용 */}
-                  <HorizontalCardContainer className="bg-bg-tertiary h-11 max-w-100 truncate border-none py-3 text-sm">
-                    {review.content}
-                  </HorizontalCardContainer>
+                  <IntroduceBubble content={review.content} className="truncate"/>
 
                   {/* Time */}
                   <span className="text-content-secondary text-right">
