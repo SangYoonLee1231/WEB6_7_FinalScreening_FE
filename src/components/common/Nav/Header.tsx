@@ -1,18 +1,15 @@
 "use client";
 
-import * as Popover from "@radix-ui/react-popover";
 import Image from "next/image";
 import logo from "@/assets/images/logo.svg";
 import Link from "next/link";
-import Avatar from "../Avatar";
 import { Bell } from "lucide-react";
 import { useMenuStore } from "@/stores/menuStore";
-import { BoxButton } from "../button/BoxButton";
 import HeaderMenuTab from "./HeaderMenuTab";
 import GameSelectDropdown from "./GameSelectDropdown";
 import ThemeToggleBtn from "./ThemeToggleBtn";
-import { twMerge } from "tailwind-merge";
-import LogoutBtn from "@/components/auth/logout/LogoutBtn";
+import ProfilePopover from "./ProfilePopover";
+import { BoxButton } from "../button/BoxButton";
 
 export default function Header({ type }: { type: "compact" | "full" }) {
   const { currentGame, currentMenu, setMenu } = useMenuStore();
@@ -26,6 +23,7 @@ export default function Header({ type }: { type: "compact" | "full" }) {
               alt="logo"
               width={140}
               className="h-auto object-contain"
+              priority
             />
           </Link>
         ) : (
@@ -36,6 +34,7 @@ export default function Header({ type }: { type: "compact" | "full" }) {
                 alt="logo"
                 width={140}
                 className="h-auto object-contain"
+                priority
               />
             </Link>
 
@@ -91,62 +90,7 @@ export default function Header({ type }: { type: "compact" | "full" }) {
 
           <ThemeToggleBtn />
           {type === "full" ? (
-            <Popover.Root>
-              <Popover.Trigger asChild>
-                <button className="cursor-pointer">
-                  <Avatar
-                    src=""
-                    type="profile"
-                    size="sm"
-                    className={twMerge(
-                      "hover:border-accent hover:border-2",
-                      currentMenu === "profile" && "border-accent border-2",
-                    )}
-                  />
-                </button>
-              </Popover.Trigger>
-              <Popover.Portal>
-                <Popover.Content
-                  className="data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade bg-bg-primary border-border-primary rounded-xl border p-2 will-change-[transform,opacity]"
-                  sideOffset={5}
-                >
-                  <div className="[&>:is(a,button)]:hover:bg-bg-secondary flex flex-col gap-1 text-sm [&>:is(a,button)]:cursor-pointer [&>:is(a,button)]:rounded-xl [&>:is(a,button)]:px-3 [&>:is(a,button)]:py-2">
-                    <Popover.Close asChild>
-                      <Link href={`/myprofile`}>계정 관리</Link>
-                    </Popover.Close>
-                    <Popover.Close asChild>
-                      <Link href={`/myprofile/link`}>게임 아이디 연동</Link>
-                    </Popover.Close>
-                    <Popover.Close asChild>
-                      <Link href={`/myprofile/reviews`}>리뷰 조회</Link>
-                    </Popover.Close>
-                    <Popover.Close asChild>
-                      <Link href={`/myprofile/find-history`}>
-                        모집 참여 내역
-                      </Link>
-                    </Popover.Close>
-                    <Popover.Close asChild>
-                      <Link href={`/myprofile/ban`}>차단 목록</Link>
-                    </Popover.Close>
-                    <hr
-                      aria-hidden="true"
-                      className="text-bg-tertiary w-full"
-                    />
-                    <LogoutBtn className="text-left" />
-                  </div>
-                  <Popover.Arrow
-                    className="fill-border-primary"
-                    width={14}
-                    height={8}
-                  />
-                  <Popover.Arrow
-                    className="fill-bg-primary -mt-px mr-px"
-                    width={12}
-                    height={7}
-                  />
-                </Popover.Content>
-              </Popover.Portal>
-            </Popover.Root>
+            <ProfilePopover currentMenu={currentMenu} />
           ) : (
             <Link href="/login">
               <BoxButton text="로그인" tone="color" size="sm" />
