@@ -1,4 +1,90 @@
+import { PostPartyDetail } from "@/types/party";
+import { PostListResponse } from "@/types/post";
 import { PostDetail } from "@/types/post";
+
+export const postListResponseMock: PostListResponse = {
+  posts: [
+    {
+      postId: 123,
+
+      gameModeId: 1,
+      gameMode: "SR",
+
+      queueType: "DUO",
+
+      myPosition: "JUNGLE",
+      lookingPositions: ["MID"],
+
+      mic: true,
+
+      recruitCount: 2,
+      currentParticipants: 1,
+
+      status: "RECRUITING",
+
+      memo: "정글 듀오 구합니다!",
+      createdAt: "2025-12-10T12:30:12",
+
+      writer: {
+        userId: 10,
+
+        communityNickname: "커뮤니티닉네임",
+        communityProfileImageUrl: "",
+
+        gameAccount: {
+          gameType: "LEAGUE_OF_LEGENDS",
+          gameNickname: "게임닉네임",
+          gameTag: "KR1",
+          profileIconUrl:
+            "https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/1234.png",
+        },
+
+        gameSummary: {
+          tier: "DIAMOND",
+          division: "I",
+          winRate: 70.0, // 해당 파트에서 아직 미구현이라 이렇게 표시해둠
+          kda: 3.78, // 해당 파트에서 아직 미구현이라 이렇게 표시해둠
+          favoriteChampions: ["141", "64", "234"], // 해당 파트에서 아직 미구현이라 이렇게 표시해둠        }
+        },
+      },
+      participants: [
+        {
+          userId: 10,
+          communityNickname: "커뮤니티닉네임",
+          communityProfileImageUrl: "",
+          role: "LEADER",
+        },
+        {
+          userId: 20,
+          communityNickname: "참여자닉네임",
+          communityProfileImageUrl: "https://...",
+          role: "MEMBER",
+        },
+      ],
+    },
+  ],
+  nextCursor: 122,
+  hasNext: true,
+};
+
+export const PostPartyDetailMock: PostPartyDetail = {
+  partyId: 9007199254740991,
+  postId: 9007199254740991,
+  status: "ACTIVE",
+  currentCount: 1073741824,
+  maxCount: 1073741824,
+  createdAt: "2025-12-18T04:48:43.452Z",
+  isJoined: true,
+  members: [
+    {
+      partyMemberId: 9007199254740991,
+      userId: 9007199254740991,
+      nickname: "string",
+      profileImage: "string",
+      role: "LEADER",
+    },
+  ],
+};
 
 export const postDetailMock: PostDetail = {
   postId: 101,

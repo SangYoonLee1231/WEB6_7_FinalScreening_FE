@@ -5,24 +5,27 @@ import ToggleBtn from "@/components/common/button/ToggleBtn";
 import Dropdown from "@/components/common/Dropdown";
 import FindCard from "@/components/find/main-card/FindCard";
 import PositionFilterBtns from "@/components/find/PositionFilterBtns";
-import { postDetailMock } from "@/mocks/post.mock";
 import { useEffect, useState } from "react";
 import FindCreateForm from "./FindCreateForm";
 import FindDetailModal from "./FindDetailModal";
 import { useMenuStore } from "@/stores/menuStore";
+import { Post } from "@/types/post";
+import { Unlink } from "lucide-react";
+import { postListResponseMock } from "@/mocks/post.mock";
 
-export default function FindPageContent() {
+export default function FindPageContent({ postData }: { postData: Post[] }) {
   // 라우팅으로 변경 예정
   const [isOpenFindCreateForm, setIsOpenFindCreateForm] = useState(false);
   const [isOpenFindDetailModal, setIsOpenFindDetailModal] = useState(false);
   const { setMenu } = useMenuStore();
+  const postDataMock = postListResponseMock.posts;
 
   useEffect(() => {
     setMenu("find");
   }, []);
 
   return (
-    <div className="flex flex-col gap-7.5">
+    <div className="flex h-full flex-col gap-7.5">
       <ToggleBtn value="recruiting" onChange={() => {}} className="mt-17.5" />
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -79,21 +82,31 @@ export default function FindPageContent() {
           }}
         />
       </div>
-      <div className="flex flex-wrap justify-between gap-y-7.5 px-7.5">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <FindCard
-            key={index}
-            data={postDetailMock}
-            onClick={() => setIsOpenFindDetailModal(true)}
+      {postDataMock.length < 1 ? (
+        <div className="m-auto flex w-full flex-col items-center justify-center gap-10.5">
+          <Unlink size={160} className="text-bg-tertiary" />
+          <p className="text-content-secondary text-[32px] font-bold">
+            등록된 모집글이 없습니다
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-wrap justify-between gap-y-7.5 px-7.5">
+          {postDataMock.map((post, index) => (
+            <FindCard
+              key={index}
+              data={post}
+              onClick={() => setIsOpenFindDetailModal(true)}
+            />
+          ))}
+
+          <FindDetailModal
+            isOpen={isOpenFindDetailModal}
+            onOpenChange={(open: boolean) => {
+              setIsOpenFindDetailModal(open);
+            }}
           />
-        ))}
-        <FindDetailModal
-          isOpen={isOpenFindDetailModal}
-          onOpenChange={(open: boolean) => {
-            setIsOpenFindDetailModal(open);
-          }}
-        />
-      </div>
+        </div>
+      )}
     </div>
   );
 }

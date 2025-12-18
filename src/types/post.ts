@@ -1,6 +1,56 @@
 import { Position } from "./position";
 
-export type PostState = "RECRUITING" | "FILLED" | "GAME_FINISHED";
+export type QueueType = "DUO" | "FLEX" | string;
+export type PostStatus = "RECRUITING" | "FILLED" | "GAME_FINISHED";
+
+export interface PostListResponse {
+  posts: Post[];
+  nextCursor: number | string | null;
+  hasNext: boolean;
+}
+
+export interface Post {
+  postId: number | string;
+  gameModeId: number | string;
+  gameMode: string;
+  queueType: QueueType;
+  myPosition: Position;
+  lookingPositions: Position[];
+  mic: boolean;
+  recruitCount: number;
+  currentParticipants: number;
+  status: PostStatus;
+  memo: string;
+  createdAt: string; // ISO
+  writer: Writer;
+  participants: Participant[];
+}
+
+export interface Writer {
+  userId: number | string;
+  communityNickname: string;
+  communityProfileImageUrl: string;
+  gameAccount: {
+    gameType: string;
+    gameNickname: string;
+    gameTag: string;
+    profileIconUrl: string;
+  };
+  gameSummary: {
+    tier: string;
+    division: string;
+    winRate: number;
+    kda: number;
+    favoriteChampions: string[];
+  };
+}
+
+export interface Participant {
+  userId: number | string;
+  communityNickname: string;
+  communityProfileImageUrl: string;
+  role: string;
+}
 
 export type PostDetail = {
   postId: number;
@@ -30,7 +80,7 @@ export type PostDetail = {
     duoChampions: null;
   };
   statistics: {
-    status: PostState;
+    status: PostStatus;
     currentMemberCount: number;
     createdAt: string;
     updatedAt: string;

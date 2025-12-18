@@ -4,10 +4,10 @@ import * as React from "react";
 import * as Popover from "@radix-ui/react-popover";
 import "@/css/pab.css";
 import FindInfoModal from "../find/FindInfoModal";
-import { postDetailMock } from "@/mocks/post.mock";
-import { sampleMemberType } from "../find/main-card/FindCard";
 import CircleBtn from "./button/CircleBtn";
 import { MessageCircleMore, Plus, Users } from "lucide-react";
+import { postDetailMock } from "@/mocks/post.mock";
+import { sampleMemberType } from "../find/main-card/FindCard";
 
 type View = "actions" | "find" | "chat";
 

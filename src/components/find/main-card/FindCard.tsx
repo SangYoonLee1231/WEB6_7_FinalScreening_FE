@@ -3,7 +3,7 @@
 import { Headset } from "lucide-react";
 import Avatar from "@/components/common/Avatar";
 import FindCardContainer from "@/components/common/container/FindCardContainer";
-import { PostDetail } from "@/types/post";
+import { Post, PostDetail } from "@/types/post";
 import { twMerge } from "tailwind-merge";
 import TierSet from "@/components/profile/TierSet";
 import { isRank, isTier } from "@/types/tier";
@@ -22,7 +22,7 @@ import SubTitleAndData from "../SubTitleAndData";
 import FindCardMemberDetail from "./FindCardMemberDetail";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
-  data: PostDetail;
+  data: Post;
 }
 
 export interface sampleMemberType {
@@ -42,11 +42,35 @@ export interface sampleMemberType {
 }
 
 export default function FindCard({ data, ...props }: FindCardProps) {
+  console.log(data);
   const [isOpen, setIsOpen] = useState(false);
-  const { writer, options, statistics } = data;
-  const [tier, rank] = writer.gameAccount.tier.split(" ");
+  const {
+    createdAt,
+    currentParticipants,
+    gameMode,
+    gameModeId,
+    lookingPositions,
+    memo,
+    mic,
+    myPosition,
+    participants,
+    postId,
+    queueType,
+    recruitCount,
+    status,
+    writer,
+  } = data;
+  const {
+    communityNickname,
+    communityProfileImageUrl,
+    gameAccount,
+    gameSummary,
+    userId,
+  } = writer;
+  const { gameNickname, gameTag, gameType, profileIconUrl } = gameAccount;
+  const { division, favoriteChampions, kda, tier, winRate } = gameSummary;
   const validTier = isTier(tier) ? tier : "UNRANKED";
-  const validRank = isRank(rank) ? rank : "";
+  const validRank = isRank(division) ? division : "";
 
   // 샘플 데이터
 
@@ -55,7 +79,6 @@ export default function FindCard({ data, ...props }: FindCardProps) {
     { id: 1, src: Champion.src, percent: 50 },
     { id: 2, src: Champion.src, percent: 50 },
   ];
-  const userId = writer.userId;
   const members: sampleMemberType[] = [
     {
       userId: 20,
@@ -107,9 +130,6 @@ export default function FindCard({ data, ...props }: FindCardProps) {
     },
   ];
 
-  const filled = statistics.currentMemberCount;
-  const empty = options.recruitCount - filled;
-
   return (
     <div className="flex min-w-110 cursor-pointer flex-col" {...props}>
       <FindCardContainer className="flex flex-col gap-3">
@@ -119,7 +139,7 @@ export default function FindCard({ data, ...props }: FindCardProps) {
               <HoverCard.Trigger asChild>
                 <Avatar
                   type="profile"
-                  src={writer.profileImageUrl}
+                  src={profileIconUrl}
                   size="md"
                   className="cursor-pointer"
                 />
@@ -135,20 +155,18 @@ export default function FindCard({ data, ...props }: FindCardProps) {
 
             <div>
               <div className="flex items-center gap-1">
-                <h3 className="text-lg">{writer.gameAccount.summonerName}</h3>
-                <h3 className="text-content-secondary text-sm">
-                  {writer.gameAccount.tag}
-                </h3>
+                <h3 className="text-lg">{gameNickname}</h3>
+                <h3 className="text-content-secondary text-sm">{gameTag}</h3>
                 <Headset
                   size={18}
                   strokeWidth={3}
                   className={twMerge(
                     "text-content-secondary",
-                    options.mic && "text-accent",
+                    mic && "text-accent",
                   )}
                 />
               </div>
-              <h4 className="text-accent/50 text-sm">{writer.nickname}</h4>
+              <h4 className="text-accent/50 text-sm">{communityNickname}</h4>
             </div>
           </div>
           <TierSet
@@ -160,22 +178,22 @@ export default function FindCard({ data, ...props }: FindCardProps) {
         </div>
 
         <div className="flex flex-col gap-1 px-5">
-          <IntroduceBubble content={options.memo} type="message" />
+          <IntroduceBubble content={memo} type="message" />
           <span className="text-content-secondary text-right text-xs">
-            {formatRelativeTime(statistics.createdAt)}
+            {formatRelativeTime(createdAt)}
           </span>
         </div>
 
         <div className="flex items-center justify-between px-5">
           <PositionSet
             type="my"
-            data={options.myPosition}
+            data={myPosition}
             isActive={true}
             size="default"
           />
           <PositionSet
-            type="looking"
-            data={options.lookingPositions}
+            type="find"
+            data={lookingPositions}
             isActive={true}
             size="default"
           />
@@ -185,16 +203,10 @@ export default function FindCard({ data, ...props }: FindCardProps) {
 
         <div className="flex justify-between gap-10">
           <div className="flex flex-col gap-1">
-            <SubTitleAndData
-              title="승률"
-              data={`${writer.gameAccount.winRate}%`}
-            />
-            <WinRate type="horizontal" winRate={writer.gameAccount.winRate} />
+            <SubTitleAndData title="승률" data={`${winRate}%`} />
+            <WinRate type="horizontal" winRate={winRate} />
           </div>
-          <SubTitleAndData
-            title="KDA"
-            data={writer.gameAccount.kda.toString()}
-          />
+          <SubTitleAndData title="KDA" data={kda.toString()} />
         </div>
 
         <div
@@ -206,11 +218,11 @@ export default function FindCard({ data, ...props }: FindCardProps) {
         >
           <SubTitleAndData
             title="인원"
-            data={`${statistics.currentMemberCount}/${options.recruitCount}`}
+            data={`${currentParticipants}/${recruitCount}`}
           />
           <div className="flex justify-between">
             <div className="flex items-center gap-5">
-              {Array.from({ length: filled }).map((_, i) => (
+              {Array.from({ length: currentParticipants }).map((_, i) => (
                 <svg
                   key={`filledMember${i}`}
                   width="17"
@@ -227,23 +239,25 @@ export default function FindCard({ data, ...props }: FindCardProps) {
                   />
                 </svg>
               ))}
-              {Array.from({ length: empty }).map((_, i) => (
-                <svg
-                  key={`emptyMember${i}`}
-                  width="17"
-                  height="20"
-                  viewBox="0 0 17 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M8.32584 2C6.1167 2 4.32584 3.79086 4.32584 6C4.32584 8.20914 6.1167 10 8.32584 10C10.535 10 12.3258 8.20914 12.3258 6C12.3258 3.79086 10.535 2 8.32584 2ZM11.9668 10.7694C13.4008 9.67298 14.3258 7.94452 14.3258 6C14.3258 2.68629 11.6395 0 8.32584 0C5.01213 0 2.32584 2.68629 2.32584 6C2.32584 7.94452 3.25085 9.67298 4.68485 10.7694C3.67937 11.2142 2.75434 11.8436 1.96188 12.636C1.34995 13.248 0.835182 13.939 0.42761 14.6851C-0.324507 16.0619 -0.0177813 17.4657 0.829231 18.4584C1.64464 19.414 2.95086 20 4.32584 20H12.3258C13.7008 20 15.007 19.414 15.8224 18.4584C16.6695 17.4657 16.9762 16.0619 16.2241 14.6851C15.8165 13.939 15.3017 13.248 14.6898 12.636C13.8973 11.8436 12.9723 11.2142 11.9668 10.7694ZM8.32584 12C6.46932 12 4.68885 12.7375 3.37609 14.0503C2.90009 14.5263 2.49977 15.0637 2.18279 15.6439C1.87583 16.2058 1.97485 16.7198 2.35064 17.1602C2.75804 17.6376 3.49168 18 4.32584 18H12.3258C13.16 18 13.8936 17.6376 14.301 17.1602C14.6768 16.7198 14.7758 16.2058 14.4689 15.6439C14.1519 15.0637 13.7516 14.5263 13.2756 14.0503C11.9628 12.7375 10.1824 12 8.32584 12Z"
-                    fill="#62748E"
-                  />
-                </svg>
-              ))}
+              {Array.from({ length: recruitCount - currentParticipants }).map(
+                (_, i) => (
+                  <svg
+                    key={`emptyMember${i}`}
+                    width="17"
+                    height="20"
+                    viewBox="0 0 17 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M8.32584 2C6.1167 2 4.32584 3.79086 4.32584 6C4.32584 8.20914 6.1167 10 8.32584 10C10.535 10 12.3258 8.20914 12.3258 6C12.3258 3.79086 10.535 2 8.32584 2ZM11.9668 10.7694C13.4008 9.67298 14.3258 7.94452 14.3258 6C14.3258 2.68629 11.6395 0 8.32584 0C5.01213 0 2.32584 2.68629 2.32584 6C2.32584 7.94452 3.25085 9.67298 4.68485 10.7694C3.67937 11.2142 2.75434 11.8436 1.96188 12.636C1.34995 13.248 0.835182 13.939 0.42761 14.6851C-0.324507 16.0619 -0.0177813 17.4657 0.829231 18.4584C1.64464 19.414 2.95086 20 4.32584 20H12.3258C13.7008 20 15.007 19.414 15.8224 18.4584C16.6695 17.4657 16.9762 16.0619 16.2241 14.6851C15.8165 13.939 15.3017 13.248 14.6898 12.636C13.8973 11.8436 12.9723 11.2142 11.9668 10.7694ZM8.32584 12C6.46932 12 4.68885 12.7375 3.37609 14.0503C2.90009 14.5263 2.49977 15.0637 2.18279 15.6439C1.87583 16.2058 1.97485 16.7198 2.35064 17.1602C2.75804 17.6376 3.49168 18 4.32584 18H12.3258C13.16 18 13.8936 17.6376 14.301 17.1602C14.6768 16.7198 14.7758 16.2058 14.4689 15.6439C14.1519 15.0637 13.7516 14.5263 13.2756 14.0503C11.9628 12.7375 10.1824 12 8.32584 12Z"
+                      fill="#62748E"
+                    />
+                  </svg>
+                ),
+              )}
             </div>
             <BoxButton
               size="xs"
@@ -257,9 +271,10 @@ export default function FindCard({ data, ...props }: FindCardProps) {
 
       {isOpen && (
         <FindCardMemberDetail
-          userId={userId}
-          postData={data}
-          memberData={members}
+          userId={Number(userId)}
+          currentParticipants={currentParticipants}
+          recruitCount={recruitCount}
+          participantsData={participants}
         />
       )}
     </div>
