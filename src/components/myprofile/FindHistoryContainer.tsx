@@ -4,8 +4,18 @@ import { Crown } from "lucide-react";
 import CircleBtn from "../common/button/CircleBtn";
 import Dropdown from "../common/Dropdown";
 import FindHistoryCard from "./FindHistoryCard";
+import { useEffect } from "react";
+import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 
 export default function FindHistoryContainer() {
+  const { setMenu } = useMenuStore();
+  const { setMenu: setProfileMenu } = useMyProfileMenuStore();
+
+  useEffect(() => {
+    setMenu("profile");
+    setProfileMenu("find-history");
+  }, []);
+
   return (
     <div>
       <div className="mb-5 flex items-center gap-2">
