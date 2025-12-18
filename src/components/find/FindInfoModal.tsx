@@ -36,7 +36,7 @@ export default function FindInfoModal({
           <FindLinkButton />
         </div>
 
-        {Array.from({ length: 3 }).map((_, i) => (
+        {/* {Array.from({ length: 3 }).map((_, i) => (
           <FindMemberCard
             type="modal"
             key={`member${i}`}
@@ -44,7 +44,7 @@ export default function FindInfoModal({
             masterUser={postData.writer.userId}
             data={memberData[i]}
           />
-        ))}
+        ))} */}
       </div>
       <BoxButton
         size="sm_long"

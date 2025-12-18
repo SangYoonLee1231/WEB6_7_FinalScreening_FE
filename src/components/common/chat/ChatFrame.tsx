@@ -13,7 +13,7 @@ import ChatBubble, {
 } from "@/components/common/chat/ChatBubble";
 import ChatInput from "@/components/common/chat/ChatInput";
 
-import type { PostState } from "@/types/post";
+import type { PostStatus } from "@/types/post";
 
 // '오늘' 같은 날짜 구분 뱃지
 function DateDivider({ label }: { label: string }) {
@@ -46,7 +46,7 @@ export type ChatFrameProps = {
   widthClassName?: string;
   headerUser: ChatHeaderUser;
   title: React.ReactNode;
-  state: PostState;
+  state: PostStatus;
   messages: ChatMessage[];
   onSend: (message: string) => void | Promise<void>;
   inputPlaceholder?: string;

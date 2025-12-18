@@ -8,7 +8,7 @@ export default function GameLayout({
   return (
     <>
       {children}
-      <Fab />
+      {/* <Fab /> */}
     </>
   );
 }

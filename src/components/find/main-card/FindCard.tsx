@@ -42,7 +42,6 @@ export interface sampleMemberType {
 }
 
 export default function FindCard({ data, ...props }: FindCardProps) {
-  console.log(data);
   const [isOpen, setIsOpen] = useState(false);
   const {
     createdAt,
