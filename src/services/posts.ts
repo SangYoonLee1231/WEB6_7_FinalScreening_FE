@@ -1,4 +1,4 @@
-import { API_BASE } from "@/lib/client";
+import { API_BASE } from "@/lib/clientApi";
 import { PostListResponse } from "@/types/post";
 
 export async function GetPosts() {

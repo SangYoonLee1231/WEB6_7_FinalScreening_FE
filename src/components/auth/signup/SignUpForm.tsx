@@ -14,7 +14,7 @@ import {
   type SignUpForm,
 } from "@/lib/validation/signupSchema";
 import { useRouter } from "next/navigation";
-import { sendEmailCode, signUp, verifyEmailCode } from "@/lib/api/auth/signUp";
+import { sendEmailCode, signUp, verifyEmailCode } from "@/app/api/auth/signUp";
 
 export default function SignUpForm() {
   const [isCodeSent, setIsCodeSent] = useState(false);

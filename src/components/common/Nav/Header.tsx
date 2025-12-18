@@ -12,6 +12,7 @@ import HeaderMenuTab from "./HeaderMenuTab";
 import GameSelectDropdown from "./GameSelectDropdown";
 import ThemeToggleBtn from "./ThemeToggleBtn";
 import { twMerge } from "tailwind-merge";
+import LogoutBtn from "@/components/auth/logout/LogoutBtn";
 
 export default function Header({ type }: { type: "compact" | "full" }) {
   const { currentGame, currentMenu, setMenu } = useMenuStore();
@@ -131,9 +132,7 @@ export default function Header({ type }: { type: "compact" | "full" }) {
                       aria-hidden="true"
                       className="text-bg-tertiary w-full"
                     />
-                    <button className="flex" onClick={() => {}}>
-                      로그아웃
-                    </button>
+                    <LogoutBtn className="text-left" />
                   </div>
                   <Popover.Arrow
                     className="fill-border-primary"
