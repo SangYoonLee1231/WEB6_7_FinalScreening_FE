@@ -2,20 +2,21 @@ import { twMerge } from "tailwind-merge";
 import LogoutBtn from "@/components/auth/logout/LogoutBtn";
 import Avatar from "../Avatar";
 import * as Popover from "@radix-ui/react-popover";
-import { BoxButton } from "../button/BoxButton";
 import Link from "next/link";
 
 export default function ProfilePopover({
   currentMenu,
+  profileImage,
 }: {
   currentMenu: string;
+  profileImage: string;
 }) {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
         <button className="cursor-pointer">
           <Avatar
-            src=""
+            src={profileImage}
             type="profile"
             size="sm"
             className={twMerge(
