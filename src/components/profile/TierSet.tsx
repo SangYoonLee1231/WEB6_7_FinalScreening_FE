@@ -7,7 +7,7 @@ type TierSetType = "default" | "mini";
 interface TierSetProps {
   tier: Tier | "UNRANKED";
   rank: Rank | "";
-  type: TierSetType;
+  type?: TierSetType;
   className?: string;
 }
 

@@ -17,6 +17,7 @@ import formatRelativeTime from "@/utils/formatRelativeTime";
 import type { EmojiType as Emotion } from "@/types/emoji";
 import IntroduceBubble from "../profile/IntroduceBubble";
 import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
+import Avatar from "../common/Avatar";
 
 type ReviewMode = "received" | "written";
 type GameName = "lol" | "overwatch" | "valorant";
@@ -40,6 +41,7 @@ interface ReviewCardProps {
   content: string;
   emotion: Emotion; // 밖에서는 이 값만 넘기면 됨
   createdAt: string; // ISO 날짜 문자열
+  profileImageURL: string;
 }
 
 export default function ReviewCard({
@@ -49,6 +51,7 @@ export default function ReviewCard({
   content,
   emotion,
   createdAt,
+  profileImageURL,
 }: ReviewCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -87,7 +90,7 @@ export default function ReviewCard({
           {/* 커뮤니티 닉네임 + 내용 */}
           <div className="flex flex-1 items-center gap-3">
             <div className="flex shrink-0 items-center gap-2">
-              <div className="bg-bg-quaternary h-8 w-8 rounded-full" />
+              <Avatar type="profile" src={profileImageURL} />
               <span className="text-content-primary text-sm">
                 {communityName}
               </span>
