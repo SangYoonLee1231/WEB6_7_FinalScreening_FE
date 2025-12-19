@@ -26,13 +26,15 @@ type WinRateType = "horizontal" | "donut";
 export default function WinRate({
   type,
   winRate = 50,
+  className,
 }: {
   type: WinRateType;
   winRate?: number;
+  className?: string;
 }) {
   if (type === "donut")
     return (
-      <div className="flex flex-col items-center justify-center">
+      <div className={twMerge("flex flex-col items-center justify-center", className)}>
         <ResponsiveContainer
           width="100%"
           aspect={1}
@@ -68,7 +70,7 @@ export default function WinRate({
           </PieChart>
         </ResponsiveContainer>
 
-        <span className="text-content-secondary text-sm">
+        <span className="text-content-secondary text-xs">
           {data[0].value}W {data[1].value}L
         </span>
       </div>
@@ -82,7 +84,7 @@ export default function WinRate({
       },
     ];
     return (
-      <div className={twMerge("mb-3.5 flex h-7 min-w-62.5")}>
+      <div className={twMerge("mb-3.5 flex h-7 min-w-62.5", className)}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={horizontalData}
