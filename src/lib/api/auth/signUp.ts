@@ -1,5 +1,4 @@
-import { P } from "node_modules/framer-motion/dist/types.d-DagZKalS";
-import { API_BASE } from "../../client";
+import { API_BASE } from "@/lib/clientApi";
 
 export async function signUp({
   email,
