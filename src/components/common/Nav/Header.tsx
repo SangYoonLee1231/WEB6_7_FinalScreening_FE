@@ -10,8 +10,14 @@ import GameSelectDropdown from "./GameSelectDropdown";
 import ThemeToggleBtn from "./ThemeToggleBtn";
 import ProfilePopover from "./ProfilePopover";
 import { BoxButton } from "../button/BoxButton";
+import { MyProfile } from "@/types/profile";
 
-export default function Header({ type }: { type: "compact" | "full" }) {
+interface HeaderProps {
+  type: "compact" | "full";
+  userData: MyProfile | null;
+}
+
+export default function Header({ type, userData }: HeaderProps) {
   const { currentGame, currentMenu, setMenu } = useMenuStore();
   return (
     <nav className="bg-bg-primary flex h-(--header-h) shrink-0 justify-center">
@@ -89,8 +95,11 @@ export default function Header({ type }: { type: "compact" | "full" }) {
           )}
 
           <ThemeToggleBtn />
-          {type === "full" ? (
-            <ProfilePopover currentMenu={currentMenu} />
+          {userData ? (
+            <ProfilePopover
+              currentMenu={currentMenu}
+              profileImage={userData.profile_image ?? ""}
+            />
           ) : (
             <Link href="/login">
               <BoxButton text="로그인" tone="color" size="sm" />

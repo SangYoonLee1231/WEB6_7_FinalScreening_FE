@@ -16,7 +16,7 @@ export async function POST() {
 
   const response = NextResponse.json({ ok: true });
 
-  response.cookies.set("access_token", "", {
+  response.cookies.set("accessToken", "", {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
@@ -24,7 +24,7 @@ export async function POST() {
     maxAge: 0,
   });
 
-  response.cookies.set("refresh_token", "", {
+  response.cookies.set("refreshToken", "", {
     httpOnly: true,
     secure: true,
     sameSite: "lax",

@@ -63,8 +63,6 @@ export default function SignUpForm() {
     try {
       const res = await sendEmailCode(parsed.data.email);
 
-      console.log(res.ok);
-
       if (!res.ok) {
         setError("email", { message: res.message });
         return;
