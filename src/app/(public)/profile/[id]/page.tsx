@@ -72,10 +72,7 @@ export default function ProfilePage() {
                 <TierSet
                   tier="DIAMOND"
                   rank="I"
-                  className="w-27"
-                  type="default"
                 />
-                <p className="text-content-secondary text-sm">RANK</p>
               </div>
             </HorizontalCardContainer>
             <HorizontalCardContainer className="flex flex-col items-center justify-center gap-8 border-none px-12 py-6">
@@ -84,10 +81,7 @@ export default function ProfilePage() {
                 <TierSet
                   tier="DIAMOND"
                   rank="I"
-                  className="w-27"
-                  type="default"
                 />
-                <p className="text-content-secondary text-sm">RANK</p>
               </div>
             </HorizontalCardContainer>
             <HorizontalCardContainer className="flex flex-col items-center justify-center gap-5.5 border-none px-12 py-6">
