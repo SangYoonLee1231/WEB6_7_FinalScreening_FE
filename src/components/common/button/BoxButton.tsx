@@ -27,7 +27,7 @@ export function BoxButton({
 }
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center rounded-xl font-bold text-white transition overflow-hidden hover:cursor-pointer",
+  "relative inline-flex items-center justify-center rounded-xl font-bold text-content-main transition overflow-hidden hover:cursor-pointer",
 
   {
     variants: {
