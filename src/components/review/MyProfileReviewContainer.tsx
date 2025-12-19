@@ -41,6 +41,7 @@ export default function MyProfileReviewContainer() {
                 content="리뷰내용"
                 emotion="good"
                 createdAt="2025-12-12T00:12:00.000Z"
+                profileImageURL=""
               />
               <ReviewCard
                 mode="received"
@@ -49,6 +50,7 @@ export default function MyProfileReviewContainer() {
                 content="리뷰내용"
                 emotion="normal"
                 createdAt="2025-12-12T00:12:00.000Z"
+                profileImageURL=""
               />
               <ReviewCard
                 mode="received"
@@ -57,6 +59,7 @@ export default function MyProfileReviewContainer() {
                 content="리뷰내용"
                 emotion="bad"
                 createdAt="2025-12-12T00:12:00.000Z"
+                profileImageURL=""
               />
             </div>
           </div>
@@ -74,6 +77,7 @@ export default function MyProfileReviewContainer() {
               content="리뷰내용"
               emotion="good"
               createdAt="2025-12-12T00:12:00.000Z"
+              profileImageURL=""
             />
             <ReviewCard
               mode="written"
@@ -82,6 +86,7 @@ export default function MyProfileReviewContainer() {
               content="리뷰내용"
               emotion="normal"
               createdAt="2025-12-12T00:12:00.000Z"
+              profileImageURL=""
             />
             <ReviewCard
               mode="written"
@@ -90,6 +95,7 @@ export default function MyProfileReviewContainer() {
               content="리뷰내용"
               emotion="bad"
               createdAt="2025-12-12T00:12:00.000Z"
+              profileImageURL=""
             />
           </div>
         </div>
