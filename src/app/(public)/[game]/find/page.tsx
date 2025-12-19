@@ -1,7 +1,9 @@
 import FindPageContent from "@/components/find/FindPageContent";
 import { GetPosts } from "@/services/posts";
+import { getMyProfile } from "@/services/users";
 
 export default async function page() {
   const { posts: postData } = await GetPosts();
-  return <FindPageContent postData={postData} />;
+  const isLogin = await getMyProfile();
+  return <FindPageContent postData={postData} isLogin={!!isLogin} />;
 }

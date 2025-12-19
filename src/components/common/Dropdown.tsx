@@ -6,10 +6,10 @@ import { twMerge } from "tailwind-merge";
 
 interface DropDownProps {
   placeholder: string;
-  items: { value: string; label: string | React.ReactNode }[];
+  items: { value: string; label: string | number | React.ReactNode }[];
   value?: string;
   onValueChange: (value: string) => void;
-  name: string;
+  name?: string;
   className?: string;
 }
 
@@ -22,7 +22,7 @@ export default function Dropdown({
   className,
 }: DropDownProps) {
   return (
-    <Select.Root value={value} onValueChange={onValueChange} name={name}>
+    <Select.Root defaultValue={value} onValueChange={onValueChange} name={name}>
       <Select.Trigger
         className={twMerge(
           "border-border-primary bg-bg-primary text-content-primary data-placeholder:text-content-tertiary flex cursor-pointer items-center justify-between rounded-xl border px-4 py-2.5 text-sm outline-0",

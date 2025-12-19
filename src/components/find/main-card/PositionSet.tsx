@@ -1,4 +1,5 @@
 import { activePositionIcons, Position, positionIcons } from "@/types/position";
+import { Asterisk } from "lucide-react";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
@@ -20,7 +21,7 @@ export default function PositionSet({
   isActive,
   className,
 }: PositionSetProps) {
-  const h = size === "default" ? 40 : 30;
+  const h = size === "default" ? 30 : 20;
   return (
     <div
       className={twMerge(
@@ -40,14 +41,33 @@ export default function PositionSet({
         )}
       >
         {typeof data === "object" ? (
-          data.map((d, index) => (
-            <Image
-              key={index}
-              src={isActive ? activePositionIcons[d] : positionIcons[d]}
-              alt={`${d} position icon`}
-              height={h}
-            />
-          ))
+          data.map((d, index) => {
+            if (d === "ANY")
+              return (
+                <Asterisk
+                  key={index}
+                  size={h}
+                  viewBox="4.5 4.5 15 15"
+                  className={
+                    isActive ? "text-accent" : "text-content-secondary"
+                  }
+                />
+              );
+            return (
+              <Image
+                key={index}
+                src={isActive ? activePositionIcons[d] : positionIcons[d]}
+                alt={`${d} position icon`}
+                height={h}
+              />
+            );
+          })
+        ) : data === "ANY" ? (
+          <Asterisk
+            size={h}
+            viewBox="4.5 4.5 15 15"
+            className={isActive ? "text-accent" : "text-content-secondary"}
+          />
         ) : (
           <Image
             src={isActive ? activePositionIcons[data] : positionIcons[data]}
@@ -58,15 +78,4 @@ export default function PositionSet({
       </div>
     </div>
   );
-}
-
-type PositionIconProps = {
-  position: Position;
-  className?: string;
-};
-
-export function PositionIcon({ position, className }: PositionIconProps) {
-  const Icon = positionIcons[position];
-
-  return <Icon className={className} />;
 }
