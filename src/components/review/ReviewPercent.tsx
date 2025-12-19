@@ -19,6 +19,7 @@ export default function ReviewPercent({
   ratios,
 }: ReviewPercentProps) {
   const reviewData = [{ name: "percentBar", ...ratios }];
+  const totalReviewNum = reviewData[0].GOOD + reviewData[0].NORMAL + reviewData[0].BAD;
   return (
     <div
       className={twMerge(
@@ -78,20 +79,20 @@ export default function ReviewPercent({
         <div className="flex items-center gap-2">
           <Image src={good} alt="good review emoji" />
           <span className="">
-            {reviewData[0].GOOD}개<span className="text-[#10B5DC]"> (75%)</span>
+            {reviewData[0].GOOD}개<span className="text-[#10B5DC]">({reviewData[0].GOOD / totalReviewNum * 100}%)</span>
           </span>
         </div>
         <div className="flex items-center gap-2">
           <Image src={normal} alt="normal review emoji" />
           <span className="">
             {reviewData[0].NORMAL}개
-            <span className="text-[#FFA106]"> (75%)</span>
+            <span className="text-[#FFA106]">({reviewData[0].NORMAL / totalReviewNum * 100}%)</span>
           </span>
         </div>
         <div className="flex items-center gap-2">
           <Image src={bad} alt="bad review emoji" />
           <span className="">
-            {reviewData[0].BAD}개<span className="text-[#FC3665]"> (75%)</span>
+            {reviewData[0].BAD}개<span className="text-[#FC3665]">({reviewData[0].BAD / totalReviewNum * 100}%)</span>
           </span>
         </div>
       </div>
