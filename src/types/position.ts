@@ -9,7 +9,14 @@ import AdcActive from "@/assets/icons/role/bot-active.svg";
 import Support from "@/assets/icons/role/sup.svg";
 import SupportActive from "@/assets/icons/role/sup-active.svg";
 
-export const POSITION = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
+export const POSITION = [
+  "ANY",
+  "TOP",
+  "JUNGLE",
+  "MID",
+  "ADC",
+  "SUPPORT",
+] as const;
 
 export type Position = (typeof POSITION)[number];
 

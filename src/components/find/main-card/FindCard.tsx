@@ -3,10 +3,10 @@
 import { Headset } from "lucide-react";
 import Avatar from "@/components/common/Avatar";
 import FindCardContainer from "@/components/common/container/FindCardContainer";
-import { Post, PostDetail } from "@/types/post";
+import { Post } from "@/types/post";
 import { twMerge } from "tailwind-merge";
 import TierSet from "@/components/profile/TierSet";
-import { isRank, isTier } from "@/types/tier";
+import { isTier } from "@/types/tier";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import PositionSet from "./PositionSet";
 import MostChampion from "@/components/profile/MostChampion";
@@ -66,68 +66,28 @@ export default function FindCard({ data, ...props }: FindCardProps) {
     gameSummary,
     userId,
   } = writer;
-  const { gameNickname, gameTag, gameType, profileIconUrl } = gameAccount;
-  const { division, favoriteChampions, kda, tier, winRate } = gameSummary;
-  const validTier = isTier(tier) ? tier : "UNRANKED";
-  const validRank = isRank(division) ? division : "";
+  // const { gameNickname, gameTag, gameType, profileIconUrl } = gameAccount;
+  // const { division, favoriteChampions, kda, tier, winRate } = gameSummary;
 
-  // 샘플 데이터
+  /* ------------------ writer 데이터 문제 해결 되기 전까지 임시 데이터 ------------------ */
 
+  const gameNickname = "Hide on bush";
+  const gameTag = "KR1";
+  const profileIconUrl =
+    "https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/6.png";
+  const division = "";
+  const kda = 9.9;
+  const tier = "CHALLENGER";
+  const winRate = 80;
   const champions = [
     { id: 0, src: Champion.src, percent: 50 },
     { id: 1, src: Champion.src, percent: 50 },
     { id: 2, src: Champion.src, percent: 50 },
   ];
-  const members: sampleMemberType[] = [
-    {
-      userId: 20,
-      nickname: "커뮤니티닉네임",
-      profileImageUrl: "https://cdn.example.com/profile/20.png",
-      // 프로필에서 사용자가 업로드한 이미지
-      // 업로드 안 했으면 null
 
-      comment: "롤만 하는 개발자입니다.",
+  /* ---------------------------------------------------------------------------------- */
 
-      gameAccount: {
-        summonerName: "게임닉네임",
-        tag: "#KR1",
-        tier: "EMERALD IV",
-        winRate: 52.3, // 시즌 전체 승률(%)
-        kda: 3.21, // 계산된 KDA
-
-        favoriteChampions: ["다리우스", "가렌", "야스오"],
-        // Riot API 기반 '최근 선호 챔피언 Top3'
-        // 대부분 유저는 값이 있음,
-        // 데이터가 없는 신규 계정일 때만 null 가능
-
-        mainPosition: "JUNGLE", // TOP/JUNGLE/MID/ADC/SUPPORT
-      },
-    },
-    {
-      userId: 21,
-      nickname: "홍길동",
-      profileImageUrl: "https://cdn.example.com/profile/20.png",
-      // 프로필에서 사용자가 업로드한 이미지
-      // 업로드 안 했으면 null
-
-      comment: "롤만 하는 개발자입니다.",
-
-      gameAccount: {
-        summonerName: "동길홍",
-        tag: "#KR1",
-        tier: "EMERALD IV",
-        winRate: 52.3, // 시즌 전체 승률(%)
-        kda: 3.21, // 계산된 KDA
-
-        favoriteChampions: ["다리우스", "가렌", "야스오"],
-        // Riot API 기반 '최근 선호 챔피언 Top3'
-        // 대부분 유저는 값이 있음,
-        // 데이터가 없는 신규 계정일 때만 null 가능
-
-        mainPosition: "MID", // TOP/JUNGLE/MID/ADC/SUPPORT
-      },
-    },
-  ];
+  const validTier = isTier(tier) ? tier : "UNRANKED";
 
   return (
     <div className="flex min-w-110 cursor-pointer flex-col" {...props}>
@@ -170,7 +130,7 @@ export default function FindCard({ data, ...props }: FindCardProps) {
           </div>
           <TierSet
             tier={validTier}
-            rank={validRank}
+            rank={division}
             type="mini"
             className="text-xs"
           />
@@ -193,7 +153,7 @@ export default function FindCard({ data, ...props }: FindCardProps) {
           <PositionSet
             type="find"
             data={lookingPositions}
-            isActive={true}
+            isActive={false}
             size="default"
           />
           <MostChampion data={champions} type="mastery" size="sm" />

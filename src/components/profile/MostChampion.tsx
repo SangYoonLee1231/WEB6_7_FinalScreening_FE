@@ -47,25 +47,12 @@ export default function MostChampion({
       </p>
       <div className="flex items-center justify-between">
         {data?.map((champ) => (
-          <div key={champ.id} className="relative flex">
-            {" "}
-            <Avatar
-              key={champ.id}
-              type="champion"
-              src={champ.src}
-              size={size === "sm" ? "sm" : "lg"}
-            />
-            <div className="bg-bg-tertiary absolute right-0 bottom-0 flex items-center justify-center">
-              <span
-                className={twMerge(
-                  "text-accent px-1 py-0.5 text-[8px]",
-                  size === "lg" && "px-1.5 text-[11px]",
-                )}
-              >
-                {champ.percent}%
-              </span>
-            </div>
-          </div>
+          <Avatar
+            key={champ.id}
+            type="champion"
+            src={champ.src}
+            size={size === "sm" ? "sm" : "lg"}
+          />
         ))}
       </div>
     </div>
