@@ -1,5 +1,4 @@
-import { P } from "node_modules/framer-motion/dist/types.d-DagZKalS";
-import { API_BASE } from "../../../lib/clientApi";
+import { API_BASE } from "@/lib/clientApi";
 
 export async function signUp({
   email,
@@ -20,7 +19,7 @@ export async function signUp({
       email: email,
       password: password,
       passwordConfirm: passwordConfirm,
-      verification_code: code,
+      verificationCode: code,
     }),
   });
 
@@ -44,6 +43,11 @@ export async function sendEmailCode(email: string) {
   );
 
   if (!res.ok) {
+    if (res.status === 409)
+      return {
+        ok: res.ok,
+        message: "이미 존재하는 이메일입니다.",
+      };
     return {
       ok: res.ok,
       message: "이메일 전송에 실패했습니다.",

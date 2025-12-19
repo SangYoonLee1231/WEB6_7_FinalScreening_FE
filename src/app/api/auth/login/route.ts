@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   // 2) 여기서 "프론트 도메인" 쿠키로 심는다 (Set-Cookie는 Vercel이 내려줌)
   const response = NextResponse.json({ ok: true });
 
-  response.cookies.set("access_token", accessToken, {
+  response.cookies.set("accessToken", accessToken, {
     httpOnly: true,
     secure: true,
     sameSite: "lax", // 프론트 도메인 쿠키면 보통 lax로 충분
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     // maxAge: 60 * 5, // 5분
   });
 
-  response.cookies.set("refresh_token", refreshToken, {
+  response.cookies.set("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
