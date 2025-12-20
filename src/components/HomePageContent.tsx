@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import lolLogo from "@/assets/images/games/lol/lol-logo.png";
 import lolBg from "@/assets/images/games/lol/lol-bg.jpg";
@@ -39,7 +39,11 @@ export default function HomePageContent() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const router = useRouter();
-  const { setCurrentGame } = useMenuStore();
+  const { setCurrentGame, setMenu } = useMenuStore();
+
+  useEffect(() => {
+    setMenu("");
+  }, []);
 
   const current = games[index];
 

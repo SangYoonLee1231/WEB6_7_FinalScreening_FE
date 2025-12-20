@@ -4,11 +4,14 @@ import FormModalContainer from "../../common/container/FormModalContainer";
 import * as Dialog from "@radix-ui/react-dialog";
 import FindCreateForm from "./FindCreateForm";
 import { useRouter } from "next/navigation";
+import { Post } from "@/types/post";
 
 export default function FindCreateFormContainer({
   type,
+  initialPost,
 }: {
   type: "create" | "modify";
+  initialPost?: Post;
 }) {
   const router = useRouter();
 
@@ -28,7 +31,7 @@ export default function FindCreateFormContainer({
             <Dialog.Title className="mb-7.5 text-2xl font-bold">
               모집글 {type === "create" ? "작성" : "수정"}
             </Dialog.Title>
-            <FindCreateForm />
+            <FindCreateForm initialPost={initialPost} />
             <Dialog.Description className="sr-only">
               모집할 내용을 작성해주세요.
             </Dialog.Description>

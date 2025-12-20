@@ -27,6 +27,7 @@ import AuthErrorMsg from "../../auth/AuthErrorMsg";
 import { useRouter } from "next/navigation";
 import ClientApi from "@/lib/clientApi";
 import { useMenuStore } from "@/stores/menuStore";
+import { Post } from "@/types/post";
 
 type PostCreateForm = {
   gameModeId: GameMode;
@@ -38,7 +39,11 @@ type PostCreateForm = {
   memo: string;
 };
 
-export default function FindCreateForm() {
+export default function FindCreateForm({
+  initialPost,
+}: {
+  initialPost?: Post;
+}) {
   const router = useRouter();
   const { currentGame } = useMenuStore();
   const {
@@ -52,8 +57,10 @@ export default function FindCreateForm() {
     formState: { errors, isSubmitting },
   } = useForm<PostCreateForm>({
     defaultValues: {
-      gameModeId: "1",
-      queueType: "DUO",
+      gameModeId: initialPost
+        ? (String(initialPost?.gameModeId) as GameMode)
+        : "1",
+      queueType: initialPost?.queueType ?? "DUO",
       mic: false,
       recruitCount: "1",
       myPosition: "ANY",
@@ -62,7 +69,6 @@ export default function FindCreateForm() {
     },
     mode: "onChange",
   });
-
   const queueType = watch("queueType");
   const recruitCount = watch("recruitCount");
 

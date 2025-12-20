@@ -1,19 +1,20 @@
 import { Participant, Post, PostDetail } from "@/types/post";
 import FindCardContainer from "../../common/container/FindCardContainer";
-import { sampleMemberType } from "./FindCard";
-import FindMemberCard from "@/components/find/FindMemberCard";
+import FindMemberCard from "@/components/find/main-card/FindMemberCard";
 
 export default function FindCardMemberDetail({
-  userId,
+  currentUserId,
   participantsData,
   currentParticipants,
   recruitCount,
 }: {
-  userId: number;
+  currentUserId: number | null;
   participantsData: Participant[];
   currentParticipants: number;
   recruitCount: number;
 }) {
+  const leaderId = participantsData.find((p) => p.role === "LEADER")?.userId;
+
   return (
     <FindCardContainer className="flex flex-col gap-5 border-t-0">
       <div className="flex flex-col">
@@ -26,8 +27,8 @@ export default function FindCardMemberDetail({
         <FindMemberCard
           key={`member${i}`}
           type="default"
-          currentUserId={Number(p.userId)}
-          masterUser={userId}
+          currentUserId={currentUserId ? Number(currentUserId) : null}
+          leaderId={Number(leaderId) ?? 0}
           data={p}
         />
       ))}

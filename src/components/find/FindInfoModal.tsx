@@ -1,7 +1,5 @@
 import { PostDetail } from "@/types/post";
 import FindCardContainer from "../common/container/FindCardContainer";
-import FindMemberCard from "./FindMemberCard";
-import { sampleMemberType } from "@/components/find/main-card/FindCard";
 import StateBadge from "../common/StateBadge";
 import { BoxButton } from "../common/button/BoxButton";
 import FindLinkButton from "./FindLinkButton";
@@ -9,13 +7,11 @@ import FindLinkButton from "./FindLinkButton";
 interface FindInfoModalProps extends React.HTMLAttributes<HTMLDivElement> {
   currentUserId: number;
   postData: PostDetail;
-  memberData: sampleMemberType[];
 }
 
 export default function FindInfoModal({
   currentUserId,
   postData,
-  memberData,
 }: FindInfoModalProps) {
   const { writer, options, statistics } = postData;
   const isMaster = currentUserId === postData.writer.userId;
