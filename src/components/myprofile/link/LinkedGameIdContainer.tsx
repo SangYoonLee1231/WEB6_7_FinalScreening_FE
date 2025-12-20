@@ -4,12 +4,18 @@ import { BoxButton } from "@/components/common/button/BoxButton";
 import LinkedGameIdCard from "./LinkedGameIdCard";
 import LinkGameIdBox from "./LinkGameIdBox";
 import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { GameAccount } from "@/types/user";
+import LinkGameIdFormModal from "./LinkGameIdFormModal";
 
-export default function LinkedGameIdContainer() {
-  const hasData = false;
+export default function LinkedGameIdContainer({
+  gameAccountData,
+}: {
+  gameAccountData: GameAccount[] | null;
+}) {
   const { setMenu } = useMenuStore();
   const { setMenu: setProfileMenu } = useMyProfileMenuStore();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setMenu("profile");
@@ -18,35 +24,28 @@ export default function LinkedGameIdContainer() {
 
   return (
     <div>
-      {hasData ? (
-        <LinkGameIdBox />
-      ) : (
+      {gameAccountData === null || gameAccountData?.length ? (
         <div className="flex flex-col gap-3">
           <div className="space-y-2">
-            <LinkedGameIdCard
-              game="lol"
-              userData={{
-                nickname: "닉네임",
-                tag: "1234",
-                time: "2025-02-18T10:30:00",
-              }}
-            />
-            <LinkedGameIdCard
-              game="valorant"
-              userData={{
-                nickname: "닉네임",
-                tag: "1234",
-                time: "2025-02-18T10:30:00",
-              }}
-            />
+            {gameAccountData?.map((g, index) => (
+              <LinkedGameIdCard key={index} gameAccountData={g} />
+            ))}
           </div>
           <BoxButton
             text="새로운 아이디 연동"
             tone="color"
             size="lg"
             className="self-center"
+            onClick={() => setIsOpen(true)}
+          />
+          <LinkGameIdFormModal
+            isOpen={isOpen}
+            onOpenChange={(open) => setIsOpen(open)}
+            mode="link"
           />
         </div>
+      ) : (
+        <LinkGameIdBox />
       )}
     </div>
   );

@@ -1,12 +1,14 @@
 import LinkedGameIdContainer from "@/components/myprofile/link/LinkedGameIdContainer";
+import { getGameAccount } from "@/services/users";
 
 import { CircleAlert } from "lucide-react";
 
 export default async function LinkPage() {
+  const gameAccountData = await getGameAccount();
   return (
     <div className="flex flex-col gap-11 [&_h3]:text-xl [&_h3]:font-semibold">
       <h2 className="text-4xl font-bold">게임 아이디 연동</h2>
-      <LinkedGameIdContainer />
+      <LinkedGameIdContainer gameAccountData={gameAccountData} />
       <div className="space-y-1">
         <p className="text-content-secondary flex items-center gap-2 text-base">
           <CircleAlert size={18} />
