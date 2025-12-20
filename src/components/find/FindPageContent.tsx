@@ -5,8 +5,7 @@ import ToggleBtn from "@/components/common/button/ToggleBtn";
 import Dropdown from "@/components/common/Dropdown";
 import FindCard from "@/components/find/main-card/FindCard";
 import PositionFilterBtns from "@/components/find/PositionFilterBtns";
-import { useEffect, useState } from "react";
-import FindDetailModal from "./main-card/FindDetailModal";
+import { useEffect } from "react";
 import { useMenuStore } from "@/stores/menuStore";
 import { Post } from "@/types/post";
 import { Unlink } from "lucide-react";
@@ -17,13 +16,16 @@ import { useRouter } from "next/navigation";
 import { QUEUE_TYPES, QUEUE_TYPES_LABEL } from "@/types/party";
 import { TIERS, TIERS_LABEL } from "@/types/tier";
 import { MyProfile } from "@/types/profile";
+import { GameAccount } from "@/types/user";
 
 export default function FindPageContent({
   postData,
   loginData,
+  gameAccountData,
 }: {
   postData: Post[];
   loginData: MyProfile | null;
+  gameAccountData: GameAccount[] | null;
 }) {
   const router = useRouter();
 
@@ -122,6 +124,11 @@ export default function FindPageContent({
                 alert("로그인이 필요한 기능입니다.");
                 return;
               }
+              if (gameAccountData?.length === 0) {
+                alert("게임 아이디 연동 후 이용할 수 있는 기능입니다.");
+                router.push(`/myprofile/link`);
+                return;
+              }
               router.push(`/${currentGame}/post`);
             }}
           />
@@ -141,8 +148,8 @@ export default function FindPageContent({
               key={index}
               data={post}
               // users/me api 수정되면 주석 해제
-              // currentUserId={loginData?.id ?? null}
-              currentUserId={1}
+              currentUserId={loginData?.id ?? null}
+              // currentUserId={1}
             />
           ))}
         </div>

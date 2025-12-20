@@ -237,8 +237,8 @@ export default function FindCard({
       <FindDetailModal
         postData={data}
         // users/me api 수정되면 주석 해제
-        // currentUserId={loginData?.id ?? null}
-        currentUserId={1}
+        currentUserId={currentUserId}
+        // currentUserId={1}
         isOpen={isOpenFindDetailModal}
         onOpenChange={(open: boolean) => {
           setIsOpenFindDetailModal(open);

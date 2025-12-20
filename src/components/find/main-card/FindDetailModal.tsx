@@ -1,3 +1,5 @@
+"use client";
+
 import HorizontalCardContainer from "../../common/container/HorizontalCardContainer";
 import Avatar from "../../common/Avatar";
 import FormModalContainer from "../../common/container/FormModalContainer";
@@ -9,6 +11,9 @@ import { twMerge } from "tailwind-merge";
 import PositionSet from "./PositionSet";
 import { Post } from "@/types/post";
 import { GAME_MODE_META, QUEUE_TYPES_LABEL } from "@/types/party";
+import { useMenuStore } from "@/stores/menuStore";
+import { useRouter } from "next/navigation";
+import { deletePost } from "@/services/posts.client";
 
 interface FindDetailModalProps {
   postData: Post;
@@ -30,6 +35,9 @@ export default function FindDetailModal({
   gameAccount,
 }: FindDetailModalProps) {
   const { gameNickname, gameTag, profileIconUrl } = gameAccount;
+  const router = useRouter();
+  const { currentGame } = useMenuStore();
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Portal>
@@ -122,8 +130,25 @@ export default function FindDetailModal({
               {currentUserId === postData.writer.userId && (
                 <Dialog.Close asChild>
                   <div className="space-x-2">
-                    <BoxButton text="수정" size="sm" tone="color" />
-                    <BoxButton text="삭제" size="sm" tone="negative" />
+                    <BoxButton
+                      text="수정"
+                      size="sm"
+                      tone="color"
+                      onClick={() => {
+                        router.push(
+                          `/${currentGame}/modify/${postData.postId}`,
+                        );
+                      }}
+                    />
+                    <BoxButton
+                      text="삭제"
+                      size="sm"
+                      tone="negative"
+                      onClick={async () => {
+                        await deletePost(postData.postId);
+                        router.push(`/${currentGame}/find`);
+                      }}
+                    />
                   </div>
                 </Dialog.Close>
               )}
