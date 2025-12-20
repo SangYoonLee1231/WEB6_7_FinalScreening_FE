@@ -10,8 +10,8 @@ export interface PostListResponse {
 }
 
 export interface Post {
-  postId: number | string;
-  gameModeId: number | string;
+  postId: number;
+  gameModeId: number;
   gameMode: string;
   queueType: QueueType;
   myPosition: Position;

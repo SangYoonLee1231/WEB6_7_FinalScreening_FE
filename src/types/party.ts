@@ -45,7 +45,7 @@ export interface MyPartySummary {
 
 export const GAME_MODE_IDS = ["1", "2"] as const;
 export type GameMode = (typeof GAME_MODE_IDS)[number];
-export const GAME_MODE_META = {
+export const GAME_MODE_META: Record<string, { label: string; icon: any }> = {
   "1": {
     label: "소환사의 협곡",
     icon: gameIconLol,
