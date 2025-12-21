@@ -1,21 +1,20 @@
 export type UserList = {
   totalCount: number;
+  users: SearchUser[];
+};
 
-  users: {
-    userId: number;
-
-    nickname: string;
-    profileImageUrl: null;
-    bio: string;
-    gameAccount:
-      | {
-          linked: true;
-
-          gameName: string;
-          tagLine: string;
-        }
-      | {
-          linked: false;
-        };
-  }[];
+export type SearchUser = {
+  userId: number;
+  nickname: string;
+  profileImageUrl: null;
+  bio: string;
+  gameAccount:
+    | {
+        linked: true;
+        gameName: string;
+        tagLine: string;
+      }
+    | {
+        linked: false;
+      };
 };
