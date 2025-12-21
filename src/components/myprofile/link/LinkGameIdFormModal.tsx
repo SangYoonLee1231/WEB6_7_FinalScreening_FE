@@ -1,28 +1,96 @@
 "use client";
 
-import { useState } from "react";
 import { CircleAlert } from "lucide-react";
 import TextInput from "@/components/common/TextInput";
 import Dropdown from "@/components/common/Dropdown";
 import { BoxButton } from "@/components/common/button/BoxButton";
 import FormModalContainer from "../../common/container/FormModalContainer";
 import * as Dialog from "@radix-ui/react-dialog";
+import { LinkGameAccount, ModifyGameAccount } from "@/services/user.client";
+import { Controller, useForm } from "react-hook-form";
+import AuthErrorMsg from "@/components/auth/AuthErrorMsg";
+import { useRouter } from "next/navigation";
+import { GameAccount } from "@/types/user";
+import { useEffect } from "react";
 
-const items = [
-  { value: "lol", label: "리그 오브 레전드" },
-  { value: "overwatch", label: "오버 워치" },
-  { value: "valorant", label: "발로란트" },
-];
+const items = [{ value: "LEAGUE_OF_LEGEND", label: "리그 오브 레전드" }];
+
+type FormValues = {
+  gameType: string;
+  gameNickname: string;
+  gameTag: string;
+};
 
 export default function LinkGameIdFormModal({
   isOpen,
   onOpenChange,
+  mode,
+  initialData,
 }: {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  mode: "link" | "modify";
+  initialData?: GameAccount;
 }) {
+  const router = useRouter();
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<FormValues>({
+    mode: "onSubmit",
+  });
+
+  const onSubmit = async (data: FormValues) => {
+    const normalizedTag = data.gameTag.replace(/^#/, "").trim();
+
+    const payload = {
+      gameType: data.gameType,
+      gameNickname: data.gameNickname.trim(),
+      gameTag: normalizedTag,
+    };
+
+    if (mode === "link") {
+      await LinkGameAccount(payload);
+    } else {
+      if (initialData?.updatedAt) {
+        const updatedAt = new Date(initialData.updatedAt);
+        const threeMonthsLater = new Date(updatedAt);
+
+        threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3);
+
+        if (new Date() < threeMonthsLater) {
+          alert("연동된 계정은 3개월 단위로 변경할 수 있습니다.");
+          return;
+        }
+      }
+      await ModifyGameAccount(String(initialData?.gameAccountId), payload);
+    }
+
+    reset();
+    onOpenChange(false);
+    router.replace("/myprofile/link");
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    reset({
+      gameType: initialData?.gameType ?? items[0].value,
+      gameNickname: initialData?.gameNickname ?? "",
+      gameTag: initialData?.gameTag ?? "",
+    });
+  }, [isOpen, initialData, reset]);
+
   return (
-    <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={(open) => {
+        onOpenChange(open);
+      }}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 bg-black/60" />
         <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-1/2 left-1/2 max-h-[85vh] w-[90vw] max-w-123.5 -translate-x-1/2 -translate-y-1/2 rounded-md focus:outline-none">
@@ -36,36 +104,72 @@ export default function LinkGameIdFormModal({
             </Dialog.Description>
 
             <form
-              action=""
+              onSubmit={handleSubmit(onSubmit)}
               className="[&>div>label]:text-content-secondary space-y-3 [&>.gameIdFormRow]:flex [&>.gameIdFormRow]:flex-col [&>.gameIdFormRow]:gap-2 [&>div>label]:text-sm"
             >
               <div className="gameIdFormRow">
                 <label htmlFor="gameType">게임 종류</label>
-                <Dropdown
-                  placeholder="연동할 게임 종류를 선택해주세요"
-                  items={items}
-                  onValueChange={() => {}}
+                <Controller
                   name="gameType"
-                  className="w-full"
+                  control={control}
+                  rules={{ required: "게임 종류를 선택해주세요." }}
+                  render={({ field }) => (
+                    <Dropdown
+                      placeholder="연동할 게임 종류를 선택해주세요"
+                      items={
+                        items as unknown as { value: string; label: string }[]
+                      }
+                      name={field.name}
+                      className="w-full"
+                      value={field.value}
+                      onValueChange={(value: string) => field.onChange(value)}
+                    />
+                  )}
                 />
+                {errors.gameType?.message && (
+                  <AuthErrorMsg message={errors.gameType?.message} />
+                )}
               </div>
 
               <div className="gameIdFormRow">
                 <label htmlFor="gameNickname">닉네임</label>
                 <TextInput
+                  id="gameNickname"
                   placeholder="닉네임"
                   className="h-10 text-sm"
-                  id="gameNickname"
+                  {...register("gameNickname", {
+                    required: "닉네임을 입력해주세요.",
+                    validate: (value) =>
+                      value.replace(/\s/g, "").length > 0 ||
+                      "공백만 입력할 수는 없습니다.",
+                    minLength: {
+                      value: 2,
+                      message: "닉네임은 2자 이상이어야 합니다.",
+                    },
+                  })}
                 />
+                {errors.gameNickname?.message && (
+                  <AuthErrorMsg message={errors.gameNickname?.message} />
+                )}
               </div>
 
               <div className="gameIdFormRow">
                 <label htmlFor="gameTag">태그</label>
                 <TextInput
-                  placeholder="#을 뺀 숫자만 입력해주세요"
+                  id="gameTag"
+                  placeholder="#을 뺀 태그명을 입력해주세요"
                   className="h-10 text-sm"
-                  id="gameIdFormRow"
+                  {...register("gameTag", {
+                    required: "태그를 입력해주세요.",
+                    pattern: {
+                      value: /^[A-Za-z0-9가-힣]+$/,
+                      message: "태그는 공백 없이 문자/숫자만 입력해주세요.",
+                    },
+                  })}
                 />
+                {errors.gameTag?.message && (
+                  <AuthErrorMsg message={errors.gameTag?.message} />
+                )}
               </div>
 
               <div className="text-negative flex items-center gap-2 text-base">
@@ -76,9 +180,13 @@ export default function LinkGameIdFormModal({
               </div>
 
               <div className="mt-7.5 flex justify-end gap-2">
-                <Dialog.Close asChild>
-                  <BoxButton text="연동" size="sm" tone="color" />
-                </Dialog.Close>
+                <BoxButton
+                  text={isSubmitting ? "연동 중..." : "연동"}
+                  size="sm"
+                  tone="color"
+                  disabled={isSubmitting}
+                />
+
                 <Dialog.Close asChild>
                   <BoxButton
                     text="닫기"
