@@ -8,8 +8,11 @@ import { useQuery } from "@tanstack/react-query";
 import { UserList } from "@/types/userList";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingBouncy from "@/components/common/loading/LoadingBouncy";
+import { useMenuStore } from "@/stores/menuStore";
 
 export default function SearchPage() {
+  const { setMenu } = useMenuStore();
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialNickname = useMemo(() => searchParams.get("nickname") ?? "", []);
@@ -21,6 +24,8 @@ export default function SearchPage() {
 
   // 디바운스 값이 바뀔 때만 URL을 replace
   useEffect(() => {
+    setMenu("search");
+
     const nickname = debounced.trim();
     const current = searchParams.get("nickname") ?? "";
 

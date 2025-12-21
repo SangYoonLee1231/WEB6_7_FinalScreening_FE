@@ -49,33 +49,21 @@ export default function Header({ type, userData }: HeaderProps) {
                 text="듀오 찾기"
                 path={`${currentGame}/find`}
                 isActive={currentMenu === "find"}
-                onClick={() => {
-                  setMenu("find");
-                }}
               />
               <HeaderMenuTab
                 text="유저 검색"
                 path="search"
                 isActive={currentMenu === "search"}
-                onClick={() => {
-                  setMenu("search");
-                }}
               />
               <HeaderMenuTab
                 text="유저 리뷰"
                 path="reviews"
                 isActive={currentMenu === "reviews"}
-                onClick={() => {
-                  setMenu("reviews");
-                }}
               />
               <HeaderMenuTab
                 text="채팅"
                 path="chat"
                 isActive={currentMenu === "chat"}
-                onClick={() => {
-                  setMenu("chat");
-                }}
               />
             </ul>
           </div>
