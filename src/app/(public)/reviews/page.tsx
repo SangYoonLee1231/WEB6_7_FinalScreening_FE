@@ -2,7 +2,6 @@
 
 import Avatar from "@/components/common/Avatar";
 import { BoxButton } from "@/components/common/button/BoxButton";
-import HorizontalCardContainer from "@/components/common/container/HorizontalCardContainer";
 import Dropdown from "@/components/common/Dropdown";
 import SearchInput from "@/components/common/SearchInput";
 import emojiGood from "@/assets/images/emoji/emoji_good.png";
@@ -11,6 +10,8 @@ import emojiBad from "@/assets/images/emoji/emoji_bad.png";
 import Image from "next/image";
 import { EmojiType as Expression } from "@/types/emoji";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
+import { useEffect } from "react";
+import { useMenuStore } from "@/stores/menuStore";
 
 const items = [
   {
@@ -79,6 +80,12 @@ const EMOJI_SRC_MAP: Record<Expression, string> = {
 };
 
 export default function ReviewsPage() {
+  const { setMenu } = useMenuStore();
+
+  useEffect(() => {
+    setMenu("reviews");
+  }, []);
+
   return (
     <section className="flex h-full w-full flex-col items-center">
       <div>

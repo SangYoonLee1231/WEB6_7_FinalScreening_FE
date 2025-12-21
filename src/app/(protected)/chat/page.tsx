@@ -9,6 +9,7 @@ import ChatFrame, {
   type ChatMessage,
 } from "@/components/common/chat/ChatFrame";
 import { PostStatus } from "@/types/post";
+import { useMenuStore } from "@/stores/menuStore";
 
 type ChatRoom = {
   id: string;
@@ -145,6 +146,12 @@ function EmptyChatPanel() {
 }
 
 export default function ChatPage({ params }: { params: { game: string } }) {
+  const { setMenu } = useMenuStore();
+
+  React.useEffect(() => {
+    setMenu("chat");
+  }, []);
+
   const game = params.game;
 
   const [rooms, setRooms] = React.useState<ChatRoom[]>(() =>

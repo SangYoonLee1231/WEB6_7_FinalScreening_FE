@@ -5,3 +5,10 @@ export interface MyProfile {
   nickname: string;
   comment: string | null;
 }
+
+export interface UserProfile {
+  id: number;
+  nickname: string;
+  profile_image: string | null;
+  comment: string | null;
+}
