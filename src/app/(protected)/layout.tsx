@@ -1,3 +1,4 @@
+import { Fab } from "@/components/common/Fab";
 import Header from "@/components/common/Nav/Header";
 import { getMyProfile } from "@/services/users";
 
@@ -14,6 +15,7 @@ export default async function Layout({
       <div className="m-auto w-(--content-area) max-w-full flex-1">
         <main className="h-full w-full">{children}</main>
       </div>
+      <Fab />
     </div>
   );
 }

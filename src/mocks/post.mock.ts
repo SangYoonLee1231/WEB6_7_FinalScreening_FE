@@ -20,7 +20,7 @@ export const postListResponseMock: PostListResponse = {
       recruitCount: 2,
       currentParticipants: 1,
 
-      status: "RECRUITING",
+      status: "RECRUIT",
 
       memo: "정글 듀오 구합니다!",
       createdAt: "2025-12-10T12:30:12",
@@ -82,6 +82,7 @@ export const PostPartyDetailMock: PostPartyDetail = {
       nickname: "string",
       profileImage: "string",
       role: "LEADER",
+      joinedAt: "2025-12-18T04:48:43.452Z",
     },
   ],
 };
@@ -132,7 +133,7 @@ export const postDetailMock: PostDetail = {
   },
 
   statistics: {
-    status: "RECRUITING", // RECRUITING / FILLED / GAME_FINISHED
+    status: "RECRUIT",
     currentMemberCount: 1, // 현재 참여 인원 (파티 쪽과 조인해서 계산)
     createdAt: "2025-02-18T10:30:00",
     updatedAt: "2025-02-18T10:30:00",

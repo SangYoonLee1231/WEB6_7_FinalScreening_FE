@@ -41,7 +41,7 @@ function buildMockRooms(game: string): ChatRoom[] {
       id: "room-1",
       game,
       title: "칼바람나라락 같이 하실 분 매너유저만",
-      state: "RECRUITING",
+      state: "RECRUIT",
       headerUser: {
         profileImageUrl: "/dummy-profile.png",
         gameNickname: "게임닉네임",
@@ -73,7 +73,7 @@ function buildMockRooms(game: string): ChatRoom[] {
       id: "room-2",
       game,
       title: "칼바람나라락 같이 하실 분 매너유저만",
-      state: "RECRUITING",
+      state: "RECRUIT",
       headerUser: {
         profileImageUrl: "/dummy-profile-2.png",
         gameNickname: "게임닉네임",

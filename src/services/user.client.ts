@@ -23,6 +23,10 @@ export async function LinkGameAccount({
   });
 
   if (!res.ok) {
+    if (res.status === 404) {
+      alert("해당 게임 계정을 찾을 수 없습니다. 닉네임과 태그를 확인해주세요.");
+      return res.ok;
+    }
     if (res.status === 409) {
       alert("이미 해당 게임 계정이 등록되어 있습니다.");
       return res.ok;

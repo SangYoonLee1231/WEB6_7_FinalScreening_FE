@@ -4,9 +4,20 @@ import gameIconAram from "@/assets/images/game-icon-aram.svg";
 export type PartyStatus = "ACTIVE" | "INACTIVE" | "CLOSED" | string;
 export type PartyRole = "LEADER" | "MEMBER" | string;
 
+export interface PartyMembersResponse {
+  status: string;
+  message: string;
+  data: {
+    partyId: number;
+    currentCount: number;
+    maxCount: number;
+    members: PostPartyMemberDetail[];
+  };
+}
+
 export interface PostPartyDetail {
-  partyId: number | string;
-  postId: number | string;
+  partyId: number;
+  postId: number;
   status: string;
   currentCount: number;
   maxCount: number;
@@ -16,11 +27,12 @@ export interface PostPartyDetail {
 }
 
 export interface PostPartyMemberDetail {
-  partyMemberId: number | string;
-  userId: number | string;
+  partyMemberId: number;
+  userId: number;
   nickname: string;
   profileImage: string;
   role: PartyMemberRole;
+  joinedAt: string;
 }
 
 export type PartyMemberRole = "LEADER" | "MEMBER";
@@ -34,8 +46,9 @@ export interface MyPartyListResponse {
 }
 
 export interface MyPartySummary {
-  partyId: number | string;
-  postId: number | string;
+  partyId: number;
+  gameModeId: number;
+  postId: number;
   postTitle: string;
   gameMode: string;
   status: PartyStatus;
@@ -69,3 +82,15 @@ export const RECRUIT_COUNT_OPTIONS: Record<QueueType, readonly number[]> = {
   FLEX: [2, 3, 5],
   NORMAL: [2, 3, 4, 5],
 } as const;
+
+export interface PartyCandidatesResponse {
+  status: string;
+  message: string;
+  data: Candidate[];
+}
+
+export interface Candidate {
+  userId: number;
+  nickname: string;
+  profileImage: string;
+}

@@ -1,45 +1,71 @@
+"use client";
+
 import { Crown, Minus, Plus } from "lucide-react";
 import Avatar from "../../common/Avatar";
 import CircleBtn from "../../common/button/CircleBtn";
 import InviteMemberModal from "../InviteMemberModal";
 import { useInviteStore } from "@/stores/inviteStore";
-import { Participant } from "@/types/post";
+import { PostPartyMemberDetail } from "@/types/party";
+import { kickOutMember } from "@/services/party.client";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 type FindMemberCardType = "default" | "modal";
 interface FindMemberCardProps {
   type: FindMemberCardType;
-  currentUserId: number | null;
-  leaderId: number;
-  data: Participant;
+  PartyMemberData: PostPartyMemberDetail | null;
+  isLeader: boolean;
+  postId: number;
+  partyId: number;
+  currentCount: number;
+  maxCount: number;
 }
 
 export default function FindMemberCard({
   type = "default",
-  currentUserId,
-  leaderId,
-  data,
+  PartyMemberData,
+  isLeader,
+  postId,
+  partyId,
+  currentCount,
+  maxCount,
 }: FindMemberCardProps) {
-  const isLeader = currentUserId === leaderId;
   const { openInviteForm } = useInviteStore();
-  const { userId, communityNickname, communityProfileImageUrl, role } = data;
+  const router = useRouter();
+  const qc = useQueryClient();
 
-  if (data)
+  if (PartyMemberData)
     return (
       <div className="bg-accent/10 border-accent/50 flex items-center justify-between rounded-xl border px-4 py-2">
         <div className="flex items-center gap-2">
-          <Avatar type="profile" src={communityProfileImageUrl} size="sm" />
+          <Avatar type="profile" src={PartyMemberData.profileImage} size="sm" />
           <div className="flex items-center">
             <h4 className="flex items-center gap-1 font-bold">
-              {communityNickname}
+              {PartyMemberData.nickname}
             </h4>
           </div>
         </div>
-        {role === "LEADER" ? (
+        {PartyMemberData.role === "LEADER" ? (
           <Crown size={18} strokeWidth={3} className="text-accent" />
         ) : (
           type === "default" &&
           isLeader && (
-            <CircleBtn className="bg-negative hover:bg-negative/50 h-5 w-5">
+            <CircleBtn
+              className="bg-negative hover:bg-negative/50 h-5 w-5"
+              onClick={async (e) => {
+                e.stopPropagation();
+                await kickOutMember({
+                  partyId: partyId,
+                  memberId: PartyMemberData.partyMemberId,
+                });
+
+                await qc.invalidateQueries({
+                  queryKey: [postId, "party"],
+                });
+
+                router.refresh();
+              }}
+            >
               <Minus />
             </CircleBtn>
           )
@@ -63,7 +89,12 @@ export default function FindMemberCard({
             <Plus />
           </CircleBtn>
         )}
-        <InviteMemberModal />
+        <InviteMemberModal
+          postId={postId}
+          partyId={partyId}
+          currentCount={currentCount}
+          maxCount={maxCount}
+        />
       </div>
     );
 }
