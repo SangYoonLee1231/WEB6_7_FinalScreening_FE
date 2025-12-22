@@ -1,52 +1,111 @@
-import { PostDetail } from "@/types/post";
+"use client";
+
+import { PostStatus } from "@/types/post";
 import FindCardContainer from "../common/container/FindCardContainer";
 import StateBadge from "../common/StateBadge";
 import { BoxButton } from "../common/button/BoxButton";
 import FindLinkButton from "./FindLinkButton";
+import { closeParty, getPartyMembers } from "@/services/party.client";
+import { useQuery } from "@tanstack/react-query";
+import LoadingBouncy from "../common/loading/LoadingBouncy";
+import FindMemberCard from "./main-card/FindMemberCard";
+import { useMyParties } from "@/hooks/useMyParties";
+import { Unlink } from "lucide-react";
+import { GAME_MODE_META } from "@/types/party";
 
-interface FindInfoModalProps extends React.HTMLAttributes<HTMLDivElement> {
-  currentUserId: number;
-  postData: PostDetail;
-}
+export default function FindInfoModal() {
+  const { data, isLoading, error, refetch } = useMyParties();
 
-export default function FindInfoModal({
-  currentUserId,
-  postData,
-}: FindInfoModalProps) {
-  const { writer, options, statistics } = postData;
-  const isMaster = currentUserId === postData.writer.userId;
+  const currentPartyData =
+    data?.data.parties.filter(
+      (party) => party.status === "RECRUIT" || party.status === "ACTIVE",
+    )[0] ?? null;
+
+  const currentPartyId = currentPartyData?.partyId;
+
+  const postId = currentPartyData?.postId;
+
+  const {
+    data: partyMembersResponse,
+    isLoading: partyMembersLoading,
+    error: partyMembersError,
+    refetch: partyMembersRefetch,
+  } = useQuery({
+    queryKey: [currentPartyId, "PartyMembers"],
+    queryFn: () => getPartyMembers(currentPartyId ?? null),
+    enabled: !!currentPartyId,
+  });
+
+  const partyMembersData = partyMembersResponse?.data;
 
   return (
     <FindCardContainer className="flex h-123 w-110 flex-col items-center justify-between p-7.5">
-      <div className="flex w-full flex-col gap-5">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center justify-between text-xl">
-            <h5 className="text-content-primary flex items-center gap-2 font-bold">
-              모집 정보
-              {!isMaster && (
-                <StateBadge state={statistics.status} className="px-3 py-1.5" />
-              )}
-            </h5>
-            <span className="font-semibold">{`${statistics.currentMemberCount}/${options.recruitCount}`}</span>
-          </div>
-          <FindLinkButton />
+      {!currentPartyData ? (
+        <div className="flex h-full flex-col items-center justify-center gap-8">
+          <Unlink size={100} className="text-bg-tertiary" />
+          <p className="text-content-secondary text-lg font-bold">
+            참여중인 파티가 없습니다
+          </p>
         </div>
+      ) : isLoading && partyMembersLoading ? (
+        <div className="flex h-full items-center">
+          <LoadingBouncy />
+        </div>
+      ) : (
+        <>
+          <div className="flex w-full flex-col gap-3">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between text-xl">
+                <h5 className="text-content-primary flex items-center gap-2 font-bold">
+                  모집 정보
+                  {currentPartyData?.myRole === "LEADER" && (
+                    <StateBadge
+                      state={currentPartyData.status as PostStatus}
+                      className="px-3 py-1.5"
+                    />
+                  )}
+                </h5>
+                <span className="font-semibold">{`${partyMembersData?.currentCount}/${partyMembersData?.maxCount}`}</span>
+              </div>
+              <FindLinkButton
+                gameMode={
+                  GAME_MODE_META[currentPartyData?.gameModeId].label ?? ""
+                }
+                postTitle={currentPartyData?.postTitle ?? ""}
+              />
+            </div>
 
-        {/* {Array.from({ length: 3 }).map((_, i) => (
-          <FindMemberCard
-            type="modal"
-            key={`member${i}`}
-            currentUserId={currentUserId}
-            masterUser={postData.writer.userId}
-            data={memberData[i]}
+            {Array.from({ length: partyMembersData?.maxCount ?? 0 }).map(
+              (_, i) => (
+                <FindMemberCard
+                  type="modal"
+                  key={`member${i}`}
+                  postId={postId!}
+                  partyId={currentPartyId!}
+                  PartyMemberData={partyMembersData?.members[i] ?? null}
+                  isLeader={currentPartyData?.myRole === "LEADER"}
+                  currentCount={partyMembersData?.currentCount!}
+                  maxCount={partyMembersData?.maxCount!}
+                />
+              ),
+            )}
+          </div>
+          <BoxButton
+            size="sm_long"
+            tone="gradient_negative"
+            text={
+              currentPartyData?.myRole === "LEADER"
+                ? "파티 종료"
+                : "파티 나가기"
+            }
+            onClick={async () => {
+              if (currentPartyData?.myRole === "LEADER") {
+                await closeParty(currentPartyData?.partyId!);
+              }
+            }}
           />
-        ))} */}
-      </div>
-      <BoxButton
-        size="sm_long"
-        tone="gradient_negative"
-        text={isMaster ? "파티 종료" : "파티 나가기"}
-      />
+        </>
+      )}
     </FindCardContainer>
   );
 }

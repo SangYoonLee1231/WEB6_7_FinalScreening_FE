@@ -5,15 +5,14 @@ import { twMerge } from "tailwind-merge";
 const stateBadgeVariant = cva("rounded-xl px-4 py-2 inline-flex text-sm", {
   variants: {
     state: {
-      RECRUITING: "text-accent bg-accent/10 border border-accent/50",
-      FILLED:
+      RECRUIT: "text-accent bg-accent/10 border border-accent/50",
+      ACTIVE:
         "text-content-primary bg-bg-secondary border border-border-primary",
-      GAME_FINISHED:
-        "text-negative bg-negative/10 border border-border-negative/50",
+      CLOSED: "text-negative bg-negative/10 border border-border-negative/50",
     },
   },
   defaultVariants: {
-    state: "RECRUITING",
+    state: "RECRUIT",
   },
 });
 
@@ -29,9 +28,9 @@ export default function StateBadge({ state, className }: StateBadgeProps) {
   return (
     <div className={twMerge(stateBadgeVariant({ state }), className)}>
       <span>
-        {state === "RECRUITING"
+        {state === "RECRUIT"
           ? "모집중"
-          : state === "FILLED"
+          : state === "ACTIVE"
             ? "모집완료"
             : "게임완료"}
       </span>

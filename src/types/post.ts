@@ -1,7 +1,7 @@
 import { QueueType } from "./party";
 import { Position } from "./position";
 
-export type PostStatus = "RECRUITING" | "FILLED" | "GAME_FINISHED";
+export type PostStatus = "RECRUIT" | "ACTIVE" | "CLOSED";
 
 export interface PostListResponse {
   posts: Post[];

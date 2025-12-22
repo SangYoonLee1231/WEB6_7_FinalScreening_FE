@@ -6,7 +6,6 @@ import "@/css/pab.css";
 import FindInfoModal from "../find/FindInfoModal";
 import CircleBtn from "./button/CircleBtn";
 import { MessageCircleMore, Plus, Users } from "lucide-react";
-import { postDetailMock } from "@/mocks/post.mock";
 
 type View = "actions" | "find" | "chat";
 
@@ -57,7 +56,7 @@ export function Fab() {
                   </CircleBtn>
                 </>
               ) : view === "find" ? (
-                <FindInfoModal currentUserId={20} postData={postDetailMock} />
+                <FindInfoModal />
               ) : (
                 <></>
               )}
