@@ -23,7 +23,7 @@ const introduceBubble = cva(
 );
 
 interface IntroduceBubbleProps extends VariantProps<typeof introduceBubble> {
-  content: string;
+  content: string | null;
   className?: string;
 }
 
@@ -35,7 +35,9 @@ export default function IntroduceBubble({
 }: IntroduceBubbleProps) {
   return (
     <div className={twMerge(introduceBubble({ type, size }), className)}>
-      <span className="shrink-0 break-words">{content}</span>
+      <span className="shrink-0 break-words">
+        {content ?? "아직 자기소개를 작성하지 않았어요."}
+      </span>
     </div>
   );
 }

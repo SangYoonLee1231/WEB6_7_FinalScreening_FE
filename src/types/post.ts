@@ -1,6 +1,6 @@
+import { QueueType } from "./party";
 import { Position } from "./position";
 
-export type QueueType = "DUO" | "FLEX" | string;
 export type PostStatus = "RECRUITING" | "FILLED" | "GAME_FINISHED";
 
 export interface PostListResponse {
@@ -10,8 +10,8 @@ export interface PostListResponse {
 }
 
 export interface Post {
-  postId: number | string;
-  gameModeId: number | string;
+  postId: number;
+  gameModeId: number;
   gameMode: string;
   queueType: QueueType;
   myPosition: Position;

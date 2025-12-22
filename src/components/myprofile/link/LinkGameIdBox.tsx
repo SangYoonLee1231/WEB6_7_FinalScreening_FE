@@ -3,11 +3,11 @@
 import { BoxButton } from "@/components/common/button/BoxButton";
 import { Link2Off } from "lucide-react";
 import { useState } from "react";
-import LinkedGameIdCard from "./LinkedGameIdCard";
 import LinkGameIdFormModal from "./LinkGameIdFormModal";
 
 export default function LinkGameIdBox() {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="bg-bg-primary flex flex-col items-center gap-8 rounded-xl py-14">
       <div className="bg-accent/10 flex h-20 w-20 items-center justify-center rounded-full">
@@ -28,6 +28,7 @@ export default function LinkGameIdBox() {
         onClick={() => setIsOpen(true)}
       />
       <LinkGameIdFormModal
+        mode="link"
         isOpen={isOpen}
         onOpenChange={(open) => setIsOpen(open)}
       />

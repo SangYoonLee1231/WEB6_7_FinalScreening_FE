@@ -10,7 +10,7 @@ import Master from "@/assets/images/tiers/Rank=Master.png";
 import Grandmaster from "@/assets/images/tiers/Rank=Grandmaster.png";
 import Challenger from "@/assets/images/tiers/Rank=Challenger.png";
 
-const TIERS = [
+export const TIERS = [
   "IRON",
   "BRONZE",
   "SILVER",
@@ -24,6 +24,18 @@ const TIERS = [
 ] as const;
 
 export type Tier = (typeof TIERS)[number];
+export const TIERS_LABEL: Record<Tier, string> = {
+  IRON: "아이언",
+  BRONZE: "브론즈",
+  SILVER: "실버",
+  GOLD: "골드",
+  PLATINUM: "플래티넘",
+  EMERALD: "에메랄드",
+  DIAMOND: "다이아몬드",
+  MASTER: "마스터",
+  GRANDMASTER: "그랜드마스터",
+  CHALLENGER: "챌린저",
+};
 
 export function isTier(value: string): value is Tier {
   return TIERS.includes(value as Tier);
@@ -47,6 +59,6 @@ const RANKS = ["I", "II", "III", "IV"] as const;
 
 export type Rank = (typeof RANKS)[number];
 
-export function isRank(value: string): value is Rank {
+export function isRank(value: string): boolean {
   return RANKS.includes(value as Rank);
 }

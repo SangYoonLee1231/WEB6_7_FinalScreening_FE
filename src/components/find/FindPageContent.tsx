@@ -5,24 +5,44 @@ import ToggleBtn from "@/components/common/button/ToggleBtn";
 import Dropdown from "@/components/common/Dropdown";
 import FindCard from "@/components/find/main-card/FindCard";
 import PositionFilterBtns from "@/components/find/PositionFilterBtns";
-import { useEffect, useState } from "react";
-import FindCreateForm from "./FindCreateForm";
-import FindDetailModal from "./FindDetailModal";
+import { useEffect } from "react";
 import { useMenuStore } from "@/stores/menuStore";
 import { Post } from "@/types/post";
 import { Unlink } from "lucide-react";
-import { postListResponseMock } from "@/mocks/post.mock";
+import gameIconLol from "@/assets/images/game-icon-lol.png";
+import gameIconAram from "@/assets/images/game-icon-aram.svg";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { QUEUE_TYPES, QUEUE_TYPES_LABEL } from "@/types/party";
+import { TIERS, TIERS_LABEL } from "@/types/tier";
+import { MyProfile } from "@/types/profile";
+import { GameAccount } from "@/types/user";
 
-export default function FindPageContent({ postData }: { postData: Post[] }) {
-  // 라우팅으로 변경 예정
-  const [isOpenFindCreateForm, setIsOpenFindCreateForm] = useState(false);
-  const [isOpenFindDetailModal, setIsOpenFindDetailModal] = useState(false);
-  const { setMenu } = useMenuStore();
-  const postDataMock = postListResponseMock.posts;
+export default function FindPageContent({
+  postData,
+  loginData,
+  gameAccountData,
+}: {
+  postData: Post[];
+  loginData: MyProfile | null;
+  gameAccountData: GameAccount[] | null;
+}) {
+  const router = useRouter();
+
+  const { currentGame, setMenu } = useMenuStore();
 
   useEffect(() => {
     setMenu("find");
   }, []);
+
+  /* ------------------ writer 데이터 문제 해결 되기 전까지 임시 데이터 ------------------ */
+  const gameAccount = {
+    gameNickname: "Hide on bush",
+    gameTag: "KR1",
+    profileIconUrl:
+      "https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/6.png",
+  };
+  /* ---------------------------------------------------------------------------------- */
 
   return (
     <div className="flex h-full flex-col gap-7.5">
@@ -34,31 +54,59 @@ export default function FindPageContent({ postData }: { postData: Post[] }) {
             name="gameMode"
             placeholder="게임 모드를 선택해주세요"
             onValueChange={() => {}}
+            value="1"
             items={[
-              { value: "SR", label: "소환사의 협곡" },
-              { value: "ARAM", label: "칼바람 나락" },
+              {
+                value: "1",
+                label: (
+                  <div className="flex items-center gap-2.5">
+                    {" "}
+                    <Image
+                      src={gameIconLol}
+                      alt={`lol icon`}
+                      width={20}
+                      className="object-cover"
+                    />
+                    <span>소환사의 협곡</span>
+                  </div>
+                ),
+              },
+              {
+                value: "2",
+                label: (
+                  <div className="flex items-center gap-2.5">
+                    <Image
+                      src={gameIconAram}
+                      alt={`aram icon`}
+                      width={20}
+                      className="object-cover"
+                    />
+                    <span>칼바람 나락</span>
+                  </div>
+                ),
+              },
             ]}
             className="min-w-50"
           />
           <Dropdown
             name="queueType"
             placeholder="큐 타입을 선택해주세요"
+            value={QUEUE_TYPES[0]}
             onValueChange={() => {}}
-            items={[
-              { value: "SOLO", label: "솔로 랭크" },
-              { value: "FLEX", label: "자유 랭크" },
-              { value: "GENERAL", label: "일반" },
-            ]}
+            items={QUEUE_TYPES.map((t) => ({
+              value: t,
+              label: QUEUE_TYPES_LABEL[t],
+            }))}
             className="min-w-50"
           />
           <Dropdown
             name="tiers"
             placeholder="티어를 선택해주세요"
+            value="ALL"
             onValueChange={() => {}}
             items={[
               { value: "ALL", label: "전체 티어" },
-              { value: "BRONZE", label: "브론즈" },
-              { value: "SILVER", label: "실버" },
+              ...TIERS.map((t) => ({ value: t, label: TIERS_LABEL[t] })),
             ]}
             className="min-w-50"
           />
@@ -71,18 +119,22 @@ export default function FindPageContent({ postData }: { postData: Post[] }) {
             size="sm"
             tone={"gradient_positive"}
             className="font-semibold"
-            onClick={() => setIsOpenFindCreateForm(true)}
+            onClick={() => {
+              if (!loginData) {
+                alert("로그인이 필요한 기능입니다.");
+                return;
+              }
+              if (gameAccountData?.length === 0) {
+                alert("게임 아이디 연동 후 이용할 수 있는 기능입니다.");
+                router.push(`/myprofile/link`);
+                return;
+              }
+              router.push(`/${currentGame}/post`);
+            }}
           />
         </div>
-        <FindCreateForm
-          type="create"
-          isOpen={isOpenFindCreateForm}
-          onOpenChange={(open: boolean) => {
-            setIsOpenFindCreateForm(open);
-          }}
-        />
       </div>
-      {postDataMock.length < 1 ? (
+      {postData.length < 1 ? (
         <div className="m-auto flex w-full flex-col items-center justify-center gap-10.5">
           <Unlink size={160} className="text-bg-tertiary" />
           <p className="text-content-secondary text-[32px] font-bold">
@@ -91,20 +143,15 @@ export default function FindPageContent({ postData }: { postData: Post[] }) {
         </div>
       ) : (
         <div className="flex flex-wrap justify-between gap-y-7.5 px-7.5">
-          {postDataMock.map((post, index) => (
+          {postData.map((post, index) => (
             <FindCard
               key={index}
               data={post}
-              onClick={() => setIsOpenFindDetailModal(true)}
+              // users/me api 수정되면 주석 해제
+              currentUserId={loginData?.id ?? null}
+              // currentUserId={1}
             />
           ))}
-
-          <FindDetailModal
-            isOpen={isOpenFindDetailModal}
-            onOpenChange={(open: boolean) => {
-              setIsOpenFindDetailModal(open);
-            }}
-          />
         </div>
       )}
     </div>

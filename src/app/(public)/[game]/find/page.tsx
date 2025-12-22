@@ -1,7 +1,17 @@
 import FindPageContent from "@/components/find/FindPageContent";
 import { GetPosts } from "@/services/posts";
+import { getGameAccount, getMyProfile } from "@/services/users";
 
 export default async function page() {
   const { posts: postData } = await GetPosts();
-  return <FindPageContent postData={postData} />;
+  const loginData = await getMyProfile();
+  const gameAccountData = await getGameAccount();
+
+  return (
+    <FindPageContent
+      postData={postData}
+      loginData={loginData ?? null}
+      gameAccountData={gameAccountData ?? null}
+    />
+  );
 }

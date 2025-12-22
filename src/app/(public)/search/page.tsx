@@ -1,38 +1,85 @@
 "use client";
 
 import SearchInput from "@/components/common/SearchInput";
-import { ChevronRight, Link } from "lucide-react";
-import { useState } from "react";
-import { userListMock } from "@/mocks/userList.mock";
-import { UserRoundSearch } from "lucide-react";
-import HorizontalCardContainer from "@/components/common/container/HorizontalCardContainer";
-import Avatar from "@/components/common/Avatar";
-import IntroduceBubble from "@/components/profile/IntroduceBubble";
+import { Link, UserRoundSearch } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import SearchUserList from "@/components/search/SearchUserList";
+import { useQuery } from "@tanstack/react-query";
+import { UserList } from "@/types/userList";
+import { useRouter, useSearchParams } from "next/navigation";
+import LoadingBouncy from "@/components/common/loading/LoadingBouncy";
+import { useMenuStore } from "@/stores/menuStore";
 
 export default function SearchPage() {
-  const [value, setValue] = useState("");
+  const { setMenu } = useMenuStore();
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialNickname = useMemo(() => searchParams.get("nickname") ?? "", []);
+
+  const [nickname, setNickname] = useState(initialNickname);
+  const debounced = useDebouncedValue(nickname, 300);
+
+  const enabled = debounced.trim().length > 0;
+
+  // 디바운스 값이 바뀔 때만 URL을 replace
+  useEffect(() => {
+    setMenu("search");
+
+    const nickname = debounced.trim();
+    const current = searchParams.get("nickname") ?? "";
+
+    // 값이 같으면 아무것도 하지 않기(무한루프 방지)
+    if (nickname === current) return;
+
+    // 빈값이면 파라미터 제거
+    if (!nickname) {
+      router.replace("/search");
+      return;
+    }
+
+    router.replace(`/search?nickname=${encodeURIComponent(nickname)}`);
+  }, [debounced, router, searchParams]);
+
+  const { data, isLoading, isFetching, error } = useQuery({
+    queryKey: ["search", debounced], // 입력값 기반 캐싱 키
+    queryFn: () => fetchSearch(debounced),
+    enabled, // 빈 값이면 요청 안 함
+    staleTime: 30_000,
+    gcTime: 5 * 60_000, // 캐시 보관 시간(5분)
+  });
+
+  const userListData = data ?? null;
+
+  const isSearching = isLoading || isFetching;
+  const hasResult = userListData && userListData.totalCount > 0;
+  const isEmpty = enabled && !isSearching && userListData?.totalCount === 0;
+
   return (
     <section className="flex h-full w-full flex-col items-center justify-center">
-      <div className="leading-1.4 flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-4">
         <Link size={50} className="text-accent" />
         <p className="text-content-main text-5xl font-bold">유저 검색</p>
-        {value.trim() === "" && (
-          <div className="text-content-secondary flex flex-row gap-1 text-xl">
-            <p>매치마이듀오 닉네임으로 유저의</p>
-            <p className="text-accent">리그오브레전드</p>
-            <p> 전적과 리뷰를 검색해보세요.</p>
-          </div>
+        {nickname.trim() === "" && (
+          <p className="text-content-secondary flex flex-row gap-1 text-xl">
+            매치마이듀오 닉네임으로 유저의
+            <span className="text-accent">리그오브레전드</span> 전적과 리뷰를
+            검색해보세요.
+          </p>
         )}
       </div>
       <SearchInput
         inputSize="lg"
         placeholder="매치마이듀오 닉네임"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={nickname}
+        onChange={(e) => setNickname(e.target.value)}
         className="border-border-primary mt-11 border"
       />
-      {userListMock.totalCount === 0 ? (
-        <div className="leading-1.4 mt-28 justify-items-center">
+
+      {isSearching && <LoadingBouncy />}
+
+      {(isEmpty || !!error) && (
+        <div className="leading-1.4 mt-11 justify-items-center">
           <UserRoundSearch
             size={168}
             strokeWidth={1}
@@ -45,63 +92,28 @@ export default function SearchPage() {
             다른 검색어로 다시 시도해보세요
           </p>
         </div>
-      ) : (
-        <div className="mt-12.5 flex flex-col items-center justify-items-center gap-7.5">
-          <div className="text-content-secondary flex flex-row text-xl">
-            <p className="text-accent">검색어</p>
-            <p className="mr-1">에 대한</p>
-            <p className="text-accent">{userListMock.totalCount}명</p>
-            <p>의 유저를 찾았어요</p>
-          </div>
-          <div className="flex flex-col gap-2">
-            {userListMock.users.map((user) => (
-              <HorizontalCardContainer
-                className="grid h-19 w-full grid-cols-[160px_1fr_190px_40px] items-center gap-8"
-                key={user.userId}
-              >
-                <div className="flex flex-row gap-2">
-                  <Avatar
-                    size="xs"
-                    type="profile"
-                    src={user.profileImageUrl ?? ""}
-                  />
-                  <p>{user.nickname}</p>
-                </div>
-                <IntroduceBubble
-                  type="message"
-                  content={user.bio}
-                  className="h-11 w-full overflow-hidden"
-                />
-                {user.gameAccount.linked ? (
-                  <div className="border-accent/50 bg-accent/10 flex h-8 flex-row items-center justify-center gap-1 rounded-xl border px-4 py-2 whitespace-nowrap">
-                    {/* 아이콘 */}
-                    <Link className="text-accent" size={14} />
-
-                    {/* 텍스트 */}
-                    <span className="text-content-primary text-sm">
-                      {user.gameAccount.gameName}
-                    </span>
-                    <span className="text-content-second text-xs">
-                      {user.gameAccount.tagLine}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="border-border-primary bg-bg-secondary flex h-8 flex-row items-center justify-center gap-1 rounded-xl border px-4 py-2 whitespace-nowrap">
-                    {/* 아이콘 */}
-                    <Link className="text-content-primary" size={14} />
-
-                    {/* 텍스트 */}
-                    <span className="text-content-primary text-sm">
-                      연동 데이터 없음
-                    </span>
-                  </div>
-                )}
-                <ChevronRight size={30} className="text-content-secondary" />
-              </HorizontalCardContainer>
-            ))}
-          </div>
-        </div>
       )}
+
+      {hasResult && <SearchUserList userListData={userListData} />}
     </section>
   );
+}
+
+function useDebouncedValue<T>(value: T, delay = 300) {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(id);
+  }, [value, delay]);
+
+  return debounced;
+}
+
+async function fetchSearch(keyword: string) {
+  const res = await fetch(
+    `/api/search?nickname=${encodeURIComponent(keyword)}`,
+  );
+  if (!res.ok) throw new Error("검색 실패");
+  return (await res.json()) as UserList;
 }

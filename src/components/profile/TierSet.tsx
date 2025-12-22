@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Rank, Tier, tierIcons } from "@/types/tier";
+import { isTier, Rank, Tier, tierIcons } from "@/types/tier";
 import { twMerge } from "tailwind-merge";
 import { romanToNumber } from "@/utils/romanToNumber";
 
@@ -17,6 +17,7 @@ export default function TierSet({
   type = "default",
   className,
 }: TierSetProps) {
+  const validRank = !!rank;
   return (
     <div
       className={twMerge(
@@ -29,7 +30,7 @@ export default function TierSet({
       <span className="text-content-secondary">
         {type === "default"
           ? `${tier} ${rank}`
-          : `${tier[0]}${romanToNumber(rank)}`}
+          : `${validRank ? tier[0] : tier}${validRank ? romanToNumber(rank) : ""}`}
       </span>
     </div>
   );
