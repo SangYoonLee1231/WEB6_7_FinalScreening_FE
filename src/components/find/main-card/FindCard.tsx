@@ -23,17 +23,23 @@ import FindDetailModal from "./FindDetailModal";
 import { CreateChat } from "@/services/chat.client";
 import { useQuery } from "@tanstack/react-query";
 import { getPartyDetail } from "@/services/party.client";
+import { GameAccount } from "@/types/user";
+import { useRouter } from "next/navigation";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
   currentUserId: number | null;
+  gameAccountData: GameAccount[] | null;
   data: Post;
 }
 
 export default function FindCard({
   currentUserId,
+  gameAccountData,
   data,
   ...props
 }: FindCardProps) {
+  const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenFindDetailModal, setIsOpenFindDetailModal] = useState(false);
   const { createdAt, lookingPositions, memo, mic, myPosition, postId, writer } =
@@ -225,6 +231,12 @@ export default function FindCard({
                 text="참여하기"
                 onClick={async (e) => {
                   e.stopPropagation();
+
+                  if (gameAccountData?.length === 0) {
+                    alert("게임 아이디 연동 후 이용할 수 있는 기능입니다.");
+                    router.push(`/myprofile/link`);
+                    return;
+                  }
 
                   // 채팅방 구현 후 수정 필요
                   const res = await CreateChat(postId);

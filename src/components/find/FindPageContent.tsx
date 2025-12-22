@@ -41,15 +41,6 @@ export default function FindPageContent({
     setMenu("find");
   }, []);
 
-  /* ------------------ writer 데이터 문제 해결 되기 전까지 임시 데이터 ------------------ */
-  const gameAccount = {
-    gameNickname: "Hide on bush",
-    gameTag: "KR1",
-    profileIconUrl:
-      "https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/6.png",
-  };
-  /* ---------------------------------------------------------------------------------- */
-
   if (isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -165,6 +156,7 @@ export default function FindPageContent({
             <FindCard
               key={index}
               data={post}
+              gameAccountData={gameAccountData ?? null}
               currentUserId={loginData?.id ?? null}
             />
           ))}
