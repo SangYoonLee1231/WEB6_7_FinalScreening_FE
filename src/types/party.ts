@@ -16,8 +16,8 @@ export interface PartyMembersResponse {
 }
 
 export interface PostPartyDetail {
-  partyId: number | string;
-  postId: number | string;
+  partyId: number;
+  postId: number;
   status: string;
   currentCount: number;
   maxCount: number;
@@ -27,8 +27,8 @@ export interface PostPartyDetail {
 }
 
 export interface PostPartyMemberDetail {
-  partyMemberId: number | string;
-  userId: number | string;
+  partyMemberId: number;
+  userId: number;
   nickname: string;
   profileImage: string;
   role: PartyMemberRole;
@@ -47,6 +47,7 @@ export interface MyPartyListResponse {
 
 export interface MyPartySummary {
   partyId: number;
+  gameModeId: number;
   postId: number;
   postTitle: string;
   gameMode: string;
@@ -81,3 +82,15 @@ export const RECRUIT_COUNT_OPTIONS: Record<QueueType, readonly number[]> = {
   FLEX: [2, 3, 5],
   NORMAL: [2, 3, 4, 5],
 } as const;
+
+export interface PartyCandidatesResponse {
+  status: string;
+  message: string;
+  data: Candidate[];
+}
+
+export interface Candidate {
+  userId: number;
+  nickname: string;
+  profileImage: string;
+}

@@ -3,13 +3,19 @@ import FindMemberCard from "@/components/find/main-card/FindMemberCard";
 import { PostPartyMemberDetail } from "@/types/party";
 
 export default function FindCardMemberDetail({
+  isLeader,
   currentCount,
   maxCount,
   partyMembersData,
+  postId,
+  partyId,
 }: {
+  isLeader: boolean;
   currentCount: number;
   maxCount: number;
   partyMembersData: PostPartyMemberDetail[];
+  postId: number;
+  partyId: number;
 }) {
   return (
     <FindCardContainer className="flex flex-col gap-5 border-t-0">
@@ -24,7 +30,11 @@ export default function FindCardMemberDetail({
           key={`member${i}`}
           type="default"
           PartyMemberData={p}
-          isLeader={p.role === "LEADER"}
+          isLeader={isLeader}
+          postId={postId}
+          partyId={partyId}
+          currentCount={currentCount}
+          maxCount={maxCount}
         />
       ))}
     </FindCardContainer>

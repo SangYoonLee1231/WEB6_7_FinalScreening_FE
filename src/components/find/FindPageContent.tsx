@@ -17,6 +17,8 @@ import { QUEUE_TYPES, QUEUE_TYPES_LABEL } from "@/types/party";
 import { TIERS, TIERS_LABEL } from "@/types/tier";
 import { MyProfile } from "@/types/profile";
 import { GameAccount } from "@/types/user";
+import { useMyParties } from "@/hooks/useMyParties";
+import LoadingBouncy from "../common/loading/LoadingBouncy";
 
 export default function FindPageContent({
   postData,
@@ -29,7 +31,11 @@ export default function FindPageContent({
 }) {
   const router = useRouter();
 
+  const { data, isLoading } = useMyParties();
   const { currentGame, setMenu } = useMenuStore();
+
+  const currentParty =
+    data?.data.parties.filter((party) => party.status === "RECRUIT")[0] ?? null;
 
   useEffect(() => {
     setMenu("find");
@@ -43,6 +49,14 @@ export default function FindPageContent({
       "https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/6.png",
   };
   /* ---------------------------------------------------------------------------------- */
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <LoadingBouncy />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col gap-7.5">
@@ -129,6 +143,10 @@ export default function FindPageContent({
                 router.push(`/myprofile/link`);
                 return;
               }
+              if (currentParty) {
+                alert("현재 모집중인 파티가 있습니다.");
+                return;
+              }
               router.push(`/${currentGame}/post`);
             }}
           />
@@ -147,9 +165,7 @@ export default function FindPageContent({
             <FindCard
               key={index}
               data={post}
-              // users/me api 수정되면 주석 해제
               currentUserId={loginData?.id ?? null}
-              // currentUserId={1}
             />
           ))}
         </div>

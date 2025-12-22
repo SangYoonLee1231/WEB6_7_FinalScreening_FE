@@ -1,23 +1,38 @@
+"use client";
+
 import { Crown, Minus, Plus } from "lucide-react";
 import Avatar from "../../common/Avatar";
 import CircleBtn from "../../common/button/CircleBtn";
 import InviteMemberModal from "../InviteMemberModal";
 import { useInviteStore } from "@/stores/inviteStore";
 import { PostPartyMemberDetail } from "@/types/party";
+import { kickOutMember } from "@/services/party.client";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 type FindMemberCardType = "default" | "modal";
 interface FindMemberCardProps {
   type: FindMemberCardType;
   PartyMemberData: PostPartyMemberDetail | null;
   isLeader: boolean;
+  postId: number;
+  partyId: number;
+  currentCount: number;
+  maxCount: number;
 }
 
 export default function FindMemberCard({
   type = "default",
   PartyMemberData,
   isLeader,
+  postId,
+  partyId,
+  currentCount,
+  maxCount,
 }: FindMemberCardProps) {
   const { openInviteForm } = useInviteStore();
+  const router = useRouter();
+  const qc = useQueryClient();
 
   if (PartyMemberData)
     return (
@@ -35,7 +50,22 @@ export default function FindMemberCard({
         ) : (
           type === "default" &&
           isLeader && (
-            <CircleBtn className="bg-negative hover:bg-negative/50 h-5 w-5">
+            <CircleBtn
+              className="bg-negative hover:bg-negative/50 h-5 w-5"
+              onClick={async (e) => {
+                e.stopPropagation();
+                await kickOutMember({
+                  partyId: partyId,
+                  memberId: PartyMemberData.partyMemberId,
+                });
+
+                await qc.invalidateQueries({
+                  queryKey: [postId, "party"],
+                });
+
+                router.refresh();
+              }}
+            >
               <Minus />
             </CircleBtn>
           )
@@ -59,7 +89,12 @@ export default function FindMemberCard({
             <Plus />
           </CircleBtn>
         )}
-        <InviteMemberModal />
+        <InviteMemberModal
+          postId={postId}
+          partyId={partyId}
+          currentCount={currentCount}
+          maxCount={maxCount}
+        />
       </div>
     );
 }

@@ -1,34 +1,29 @@
 "use client";
 
-import { PostDetail, PostStatus } from "@/types/post";
+import { PostStatus } from "@/types/post";
 import FindCardContainer from "../common/container/FindCardContainer";
 import StateBadge from "../common/StateBadge";
 import { BoxButton } from "../common/button/BoxButton";
 import FindLinkButton from "./FindLinkButton";
-import { getMyParties, getPartyMembers } from "@/services/party.client";
+import { closeParty, getPartyMembers } from "@/services/party.client";
 import { useQuery } from "@tanstack/react-query";
 import LoadingBouncy from "../common/loading/LoadingBouncy";
 import FindMemberCard from "./main-card/FindMemberCard";
+import { useMyParties } from "@/hooks/useMyParties";
+import { Unlink } from "lucide-react";
+import { GAME_MODE_META } from "@/types/party";
 
-interface FindInfoModalProps extends React.HTMLAttributes<HTMLDivElement> {
-  currentUserId: number;
-  postData: PostDetail;
-}
-
-export default function FindInfoModal({
-  currentUserId,
-  postData,
-}: FindInfoModalProps) {
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["me", "parties"],
-    queryFn: getMyParties,
-    staleTime: 30_000,
-  });
+export default function FindInfoModal() {
+  const { data, isLoading, error, refetch } = useMyParties();
 
   const currentPartyData =
-    data?.data.parties.filter((party) => party.status === "RECRUIT")[0] ?? null;
+    data?.data.parties.filter(
+      (party) => party.status === "RECRUIT" || party.status === "ACTIVE",
+    )[0] ?? null;
 
   const currentPartyId = currentPartyData?.partyId;
+
+  const postId = currentPartyData?.postId;
 
   const {
     data: partyMembersResponse,
@@ -39,14 +34,20 @@ export default function FindInfoModal({
     queryKey: [currentPartyId, "PartyMembers"],
     queryFn: () => getPartyMembers(currentPartyId ?? null),
     enabled: !!currentPartyId,
-    staleTime: 30_000,
   });
 
   const partyMembersData = partyMembersResponse?.data;
 
   return (
     <FindCardContainer className="flex h-123 w-110 flex-col items-center justify-between p-7.5">
-      {isLoading && partyMembersLoading ? (
+      {!currentPartyData ? (
+        <div className="flex h-full flex-col items-center justify-center gap-8">
+          <Unlink size={100} className="text-bg-tertiary" />
+          <p className="text-content-secondary text-lg font-bold">
+            참여중인 파티가 없습니다
+          </p>
+        </div>
+      ) : isLoading && partyMembersLoading ? (
         <div className="flex h-full items-center">
           <LoadingBouncy />
         </div>
@@ -68,8 +69,7 @@ export default function FindInfoModal({
               </div>
               <FindLinkButton
                 gameMode={
-                  // api 수정 후 gameModeId로 라벨명 매핑
-                  currentPartyData?.gameMode ? currentPartyData?.gameMode : ""
+                  GAME_MODE_META[currentPartyData?.gameModeId].label ?? ""
                 }
                 postTitle={currentPartyData?.postTitle ?? ""}
               />
@@ -80,8 +80,12 @@ export default function FindInfoModal({
                 <FindMemberCard
                   type="modal"
                   key={`member${i}`}
+                  postId={postId!}
+                  partyId={currentPartyId!}
                   PartyMemberData={partyMembersData?.members[i] ?? null}
                   isLeader={currentPartyData?.myRole === "LEADER"}
+                  currentCount={partyMembersData?.currentCount!}
+                  maxCount={partyMembersData?.maxCount!}
                 />
               ),
             )}
@@ -94,6 +98,11 @@ export default function FindInfoModal({
                 ? "파티 종료"
                 : "파티 나가기"
             }
+            onClick={async () => {
+              if (currentPartyData?.myRole === "LEADER") {
+                await closeParty(currentPartyData?.partyId!);
+              }
+            }}
           />
         </>
       )}

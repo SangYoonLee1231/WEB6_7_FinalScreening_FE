@@ -38,7 +38,7 @@ export default function FindCard({
   const [isOpenFindDetailModal, setIsOpenFindDetailModal] = useState(false);
   const { createdAt, lookingPositions, memo, mic, myPosition, postId, writer } =
     data;
-  const { communityNickname } = writer;
+  const { userId, communityNickname } = writer;
   // const { gameNickname, gameTag, profileIconUrl } = gameAccount;
   // const { division, favoriteChampions, kda, tier, winRate } = gameSummary;
 
@@ -48,9 +48,8 @@ export default function FindCard({
     error: partyDataError,
     refetch: partyDataRefetch,
   } = useQuery({
-    queryKey: [`post-${postId}`, "party"],
+    queryKey: [postId, "party"],
     queryFn: () => getPartyDetail(postId),
-    staleTime: 30_000,
   });
 
   const partyMembers = partyData?.members;
@@ -237,17 +236,18 @@ export default function FindCard({
 
         {isOpen && (
           <FindCardMemberDetail
+            isLeader={currentUserId === userId}
             currentCount={partyData?.currentCount!}
             maxCount={partyData?.maxCount!}
             partyMembersData={partyMembers!}
+            postId={postId}
+            partyId={Number(partyData?.partyId)}
           />
         )}
       </div>
       <FindDetailModal
         postData={data}
-        // users/me api 수정되면 주석 해제
-        currentUserId={currentUserId}
-        // currentUserId={1}
+        isLeader={currentUserId === userId}
         isOpen={isOpenFindDetailModal}
         onOpenChange={(open: boolean) => {
           setIsOpenFindDetailModal(open);

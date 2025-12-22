@@ -17,7 +17,7 @@ import { deletePost } from "@/services/posts.client";
 
 interface FindDetailModalProps {
   postData: Post;
-  currentUserId: number | null;
+  isLeader: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   gameAccount: {
@@ -29,7 +29,7 @@ interface FindDetailModalProps {
 
 export default function FindDetailModal({
   postData,
-  currentUserId,
+  isLeader,
   isOpen,
   onOpenChange,
   gameAccount,
@@ -124,10 +124,10 @@ export default function FindDetailModal({
             <div
               className={twMerge(
                 "mt-7.5 flex justify-end gap-2",
-                currentUserId === postData.writer.userId && "justify-between",
+                isLeader && "justify-between",
               )}
             >
-              {currentUserId === postData.writer.userId && (
+              {isLeader && (
                 <Dialog.Close asChild>
                   <div className="space-x-2">
                     <BoxButton

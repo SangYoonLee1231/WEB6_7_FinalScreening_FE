@@ -10,11 +10,11 @@ export async function CreateChat(postId: number) {
   });
 
   if (!res.ok) {
-    alert("모집글 생성에 실패했습니다.");
+    alert("채팅방 생성에 실패했습니다.");
     return null;
   }
 
   // 채팅방 구현 후 수정 필요
-  alert("모집글 생성이 완료되었습니다.");
+  alert("채팅방 생성이 완료되었습니다.");
   return (await res.json()) as createChatRoomResponse;
 }

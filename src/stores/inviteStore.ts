@@ -7,8 +7,8 @@ type InviteStore = {
   openInviteForm: () => void;
   closeInviteForm: () => void;
   setInviteOpen: (open: boolean) => void;
-  selectedMemberId: number | null;
-  setSelectMember: (id: number | null) => void;
+  selectedMemberIds: number[];
+  toggleSelectMember: (id: number) => void;
 };
 
 export const useInviteStore = create<InviteStore>()(
@@ -18,8 +18,19 @@ export const useInviteStore = create<InviteStore>()(
       openInviteForm: () => set({ isInviteOpen: true }),
       closeInviteForm: () => set({ isInviteOpen: false }),
       setInviteOpen: (open) => set({ isInviteOpen: open }),
-      selectedMemberId: null,
-      setSelectMember: (id) => set({ selectedMemberId: id }),
+      selectedMemberIds: [],
+      toggleSelectMember: (id) =>
+        set((state) => {
+          const exists = state.selectedMemberIds.includes(id);
+
+          if (exists) {
+            state.selectedMemberIds = state.selectedMemberIds.filter(
+              (memberId) => memberId !== id,
+            );
+          } else {
+            state.selectedMemberIds.push(id);
+          }
+        }),
     })),
   ),
 );
