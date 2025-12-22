@@ -1,5 +1,5 @@
 import { ServerApi } from "@/lib/serverApi";
-import { PostListResponse } from "@/types/post";
+import { Post, PostListResponse } from "@/types/post";
 
 export async function GetPosts() {
   const res = await ServerApi(`/api/v1/posts`, {
@@ -13,7 +13,7 @@ export async function GetPosts() {
   return (await res.json()) as PostListResponse;
 }
 
-export async function GetDetailPostId(postId: string) {
+export async function GetDetailPost(postId: string) {
   const res = await ServerApi(`/api/v1/posts/${postId}`);
 
   if (!res.ok) {
@@ -21,8 +21,5 @@ export async function GetDetailPostId(postId: string) {
     return;
   }
 
-  return (await res.json()) as {
-    postId: number;
-    isOwner: boolean;
-  };
+  return (await res.json()) as Post;
 }

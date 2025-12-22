@@ -1,5 +1,4 @@
 import FindCreateFormContainer from "@/components/find/post/FindCreateFormContainer";
-import { getMyProfile } from "@/services/users";
 
 export default async function PostCreatePage() {
   return (
