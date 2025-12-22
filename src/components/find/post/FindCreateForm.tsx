@@ -41,8 +41,10 @@ type PostCreateForm = {
 
 export default function FindCreateForm({
   initialPost,
+  type,
 }: {
   initialPost?: Post;
+  type: "create" | "modify";
 }) {
   const router = useRouter();
   const { currentGame } = useMenuStore();
@@ -61,11 +63,11 @@ export default function FindCreateForm({
         ? (String(initialPost?.gameModeId) as GameMode)
         : "1",
       queueType: initialPost?.queueType ?? "DUO",
-      mic: false,
-      recruitCount: "1",
-      myPosition: "ANY",
-      lookingPositions: ["ANY"],
-      memo: "",
+      mic: initialPost?.mic ?? false,
+      recruitCount: String(initialPost?.recruitCount) ?? "1",
+      myPosition: initialPost?.myPosition ?? "ANY",
+      lookingPositions: initialPost?.lookingPositions ?? ["ANY"],
+      memo: initialPost?.memo ?? "",
     },
     mode: "onChange",
   });
@@ -97,27 +99,51 @@ export default function FindCreateForm({
 
     let res: Response;
 
-    res = await ClientApi("/api/v1/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    if (type === "create") {
+      res = await ClientApi("/api/v1/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (!res.ok) {
-      alert("게시글 작성에 실패했습니다.");
+      if (!res.ok) {
+        alert("게시글 작성에 실패했습니다.");
 
-      if (res.status === 401) {
-        router.push("find");
-        router.refresh();
+        if (res.status === 401) {
+          router.push("find");
+          router.refresh();
+          return;
+        }
+
         return;
       }
 
-      return;
-    }
+      alert("게시글이 작성되었습니다.");
+    } else {
+      res = await ClientApi(`/api/v1/posts/${initialPost?.postId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    alert("게시글이 작성되었습니다..");
+      if (!res.ok) {
+        alert("게시글 수정에 실패했습니다.");
+
+        if (res.status === 401) {
+          router.push("find");
+          router.refresh();
+          return;
+        }
+
+        return;
+      }
+
+      alert("게시글이 수정되었습니다.");
+    }
 
     router.push(`/${currentGame}/find`);
   };

@@ -31,7 +31,7 @@ export default function FindCreateFormContainer({
             <Dialog.Title className="mb-7.5 text-2xl font-bold">
               모집글 {type === "create" ? "작성" : "수정"}
             </Dialog.Title>
-            <FindCreateForm initialPost={initialPost} />
+            <FindCreateForm initialPost={initialPost} type="modify" />
             <Dialog.Description className="sr-only">
               모집할 내용을 작성해주세요.
             </Dialog.Description>
