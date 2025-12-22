@@ -88,7 +88,7 @@ export default function FindHistoryCard({
           <span className="text-accent font-semibold">{gameMode}</span>
           <IntroduceBubble content={content} size="sm" />
 
-          <StateBadge state="RECRUITING" />
+          <StateBadge state="RECRUIT" />
 
           {/* 시간 + 화살표 */}
           <div className="text-content-secondary flex items-center gap-1 text-xs">
