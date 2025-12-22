@@ -12,9 +12,16 @@ import Image from "next/image";
 import LolLogo from "@/assets/images/games/lol/lol-logo.png";
 import { UserProfile } from "@/types/profile";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GameAccount } from "@/types/user";
 import { Unlink } from "lucide-react";
+
+type Ban = {
+  userId: number;
+  nickname: string;
+  profileImage: string;
+  blockedAt: string;
+};
 
 export default function ProfilePageContent({
   profileData,
@@ -25,6 +32,8 @@ export default function ProfilePageContent({
 }) {
   const router = useRouter();
   const rations = { GOOD: 3, NORMAL: 6, BAD: 1 };
+  const [isUserBlocked, setIsUserBlocked] = useState<boolean>(false);
+  const [isBlockedMsg, setIsBlockedMsg] = useState<string>("");
 
   useEffect(() => {
     if (!profileData) {
@@ -32,6 +41,7 @@ export default function ProfilePageContent({
       router.back();
       return;
     }
+    console.log("profileData", profileData);
   }, []);
 
   if (!profileData) return null;
@@ -43,6 +53,39 @@ export default function ProfilePageContent({
       item.gameType === "LEAGUE_OF_LEGEND" ||
       item.gameType === "리그 오브 레전드",
   )[0];
+
+  const userBanHandler = async () => {
+    const getBanRes = await fetch(
+      "http://localhost:8080/api/v1/users/me/blocks",
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      },
+    );
+    const banListData: Ban[] = await getBanRes.json();
+
+    const tempIsUserBlocked = banListData.some(
+      (ban) => ban.userId === profileData.id,
+    );
+
+    if (tempIsUserBlocked) {
+      setIsBlockedMsg("이미 차단된 사용자입니다");
+      return;
+    }
+    setIsBlockedMsg("");
+    const res = await fetch(
+      `http://localhost:8080/api/v1/users/${profileData.id}/blocks`,
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
+    if (res.ok) {
+      setIsBlockedMsg("차단되었습니다");
+      setIsUserBlocked(tempIsUserBlocked);
+    }
+  };
 
   return (
     <section className="flex h-full w-full">
@@ -62,11 +105,14 @@ export default function ProfilePageContent({
                 <span className="text-content-primary text-2xl font-semibold">
                   {nickname}
                 </span>
+                <span className="text-negative">{isBlockedMsg}</span>
                 <BoxButton
                   size="sm"
                   tone="negative"
                   className="w-12 py-3"
                   text="차단"
+                  onClick={userBanHandler}
+                  disabled={isUserBlocked}
                 />
               </div>
               <IntroduceBubble size="lg" content={comment} />
