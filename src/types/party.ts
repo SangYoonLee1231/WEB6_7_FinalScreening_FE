@@ -4,6 +4,17 @@ import gameIconAram from "@/assets/images/game-icon-aram.svg";
 export type PartyStatus = "ACTIVE" | "INACTIVE" | "CLOSED" | string;
 export type PartyRole = "LEADER" | "MEMBER" | string;
 
+export interface PartyMembersResponse {
+  status: string;
+  message: string;
+  data: {
+    partyId: number;
+    currentCount: number;
+    maxCount: number;
+    members: PostPartyMemberDetail[];
+  };
+}
+
 export interface PostPartyDetail {
   partyId: number | string;
   postId: number | string;
@@ -21,6 +32,7 @@ export interface PostPartyMemberDetail {
   nickname: string;
   profileImage: string;
   role: PartyMemberRole;
+  joinedAt: string;
 }
 
 export type PartyMemberRole = "LEADER" | "MEMBER";
@@ -34,8 +46,8 @@ export interface MyPartyListResponse {
 }
 
 export interface MyPartySummary {
-  partyId: number | string;
-  postId: number | string;
+  partyId: number;
+  postId: number;
   postTitle: string;
   gameMode: string;
   status: PartyStatus;

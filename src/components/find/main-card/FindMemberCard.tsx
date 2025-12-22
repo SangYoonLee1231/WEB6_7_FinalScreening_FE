@@ -3,38 +3,34 @@ import Avatar from "../../common/Avatar";
 import CircleBtn from "../../common/button/CircleBtn";
 import InviteMemberModal from "../InviteMemberModal";
 import { useInviteStore } from "@/stores/inviteStore";
-import { Participant } from "@/types/post";
+import { PostPartyMemberDetail } from "@/types/party";
 
 type FindMemberCardType = "default" | "modal";
 interface FindMemberCardProps {
   type: FindMemberCardType;
-  currentUserId: number | null;
-  leaderId: number;
-  data: Participant;
+  PartyMemberData: PostPartyMemberDetail | null;
+  isLeader: boolean;
 }
 
 export default function FindMemberCard({
   type = "default",
-  currentUserId,
-  leaderId,
-  data,
+  PartyMemberData,
+  isLeader,
 }: FindMemberCardProps) {
-  const isLeader = currentUserId === leaderId;
   const { openInviteForm } = useInviteStore();
-  const { userId, communityNickname, communityProfileImageUrl, role } = data;
 
-  if (data)
+  if (PartyMemberData)
     return (
       <div className="bg-accent/10 border-accent/50 flex items-center justify-between rounded-xl border px-4 py-2">
         <div className="flex items-center gap-2">
-          <Avatar type="profile" src={communityProfileImageUrl} size="sm" />
+          <Avatar type="profile" src={PartyMemberData.profileImage} size="sm" />
           <div className="flex items-center">
             <h4 className="flex items-center gap-1 font-bold">
-              {communityNickname}
+              {PartyMemberData.nickname}
             </h4>
           </div>
         </div>
-        {role === "LEADER" ? (
+        {PartyMemberData.role === "LEADER" ? (
           <Crown size={18} strokeWidth={3} className="text-accent" />
         ) : (
           type === "default" &&
