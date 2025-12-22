@@ -194,7 +194,7 @@ export default function ChatPage({ params }: { params: { game: string } }) {
     <main className="w-full px-6 py-8">
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:justify-center">
         {/* Left: Chat room list */}
-        <section className="w-full lg:w-[25rem]">
+        <section className="w-full lg:w-100">
           <Tabs.Root
             value={tab}
             onValueChange={(v) => setTab(v as "all" | "unread")}
@@ -204,7 +204,7 @@ export default function ChatPage({ params }: { params: { game: string } }) {
             </div>
 
             <Tabs.Content value="all" className="outline-none">
-              <div className="flex max-h-[70vh] flex-col gap-4 overflow-auto pr-1 lg:max-h-[38.125rem]">
+              <div className="flex max-h-[70vh] flex-col gap-4 overflow-auto pr-1 lg:max-h-152.5">
                 {filteredRooms.map((room) => (
                   <ChatCard
                     key={room.id}
@@ -224,7 +224,7 @@ export default function ChatPage({ params }: { params: { game: string } }) {
             </Tabs.Content>
 
             <Tabs.Content value="unread" className="outline-none">
-              <div className="flex max-h-[70vh] flex-col gap-4 overflow-auto pr-1 lg:max-h-[38.125rem]">
+              <div className="flex max-h-[70vh] flex-col gap-4 overflow-auto pr-1 lg:max-h-152.5">
                 {filteredRooms.length === 0 ? (
                   <p className="text-content-secondary px-2 py-6 text-sm">
                     안 읽은 채팅방이 없어요.
@@ -252,7 +252,7 @@ export default function ChatPage({ params }: { params: { game: string } }) {
         </section>
 
         {/* Right: Chat panel */}
-        <section className="w-full lg:w-[56.25rem]">
+        <section className="w-full lg:w-225">
           {selectedRoom ? (
             <ChatFrame
               widthClassName="w-full"
@@ -271,7 +271,7 @@ export default function ChatPage({ params }: { params: { game: string } }) {
               onSend={handleSend}
             />
           ) : (
-            <div className="h-[60vh] lg:h-[53.6875rem]">
+            <div className="h-[60vh] lg:h-214.75">
               <EmptyChatPanel />
             </div>
           )}
