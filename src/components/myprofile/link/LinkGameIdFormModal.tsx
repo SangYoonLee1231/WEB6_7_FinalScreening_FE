@@ -53,7 +53,9 @@ export default function LinkGameIdFormModal({
     };
 
     if (mode === "link") {
-      await LinkGameAccount(payload);
+      const ok = await LinkGameAccount(payload);
+
+      if (!ok) return;
     } else {
       if (initialData?.updatedAt) {
         const updatedAt = new Date(initialData.updatedAt);
