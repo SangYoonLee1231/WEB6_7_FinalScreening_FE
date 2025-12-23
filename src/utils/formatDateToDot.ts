@@ -8,3 +8,7 @@ dayjs.locale("ko");
 export default function formatDateToDot(date: string) {
   return dayjs(date).format("YYYY.MM.DD");
 }
+
+export function formatDateToDash(date: string) {
+  return dayjs(date).format("YYYY-MM-DD");
+}
