@@ -38,8 +38,6 @@ export default function FindInfoModal() {
 
   const partyMembersData = partyMembersResponse?.data;
 
-  console.log(currentPartyData);
-
   return (
     <FindCardContainer className="flex h-123 w-110 flex-col items-center justify-between p-7.5">
       {!currentPartyData ? (

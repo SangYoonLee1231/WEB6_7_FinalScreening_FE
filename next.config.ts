@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "ddragon.leagueoflegends.com",
       },
+      {
+        protocol: "https",
+        hostname: "opgg-static.akamaized.net",
+      },
     ],
   },
 };
