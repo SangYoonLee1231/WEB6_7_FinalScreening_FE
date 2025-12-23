@@ -70,5 +70,6 @@ export type ChatMessageDto = {
 
 export type createChatRoomResponse = {
   chatRoomId: number;
-  postId?: number;
+  postId: number;
+  otherUserId: number;
 };

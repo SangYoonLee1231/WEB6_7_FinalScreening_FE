@@ -5,9 +5,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { MessageCircle } from "lucide-react";
 
 import ChatCard from "@/components/common/chat/ChatCard";
-import ChatFrame, {
-  type ChatMessage,
-} from "@/components/common/chat/ChatFrame";
+import ChatFrame from "@/components/common/chat/ChatFrame";
 
 import { useMenuStore } from "@/stores/menuStore";
 
