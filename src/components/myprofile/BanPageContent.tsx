@@ -34,7 +34,6 @@ export default function BanPageContent() {
       });
 
       const data: Ban[] = await res.json();
-      // console.log("ban api response:", data);
       setBanList(data);
     };
 
@@ -56,14 +55,10 @@ export default function BanPageContent() {
         },
       );
 
-      console.log("res", res);
       if (res.ok) {
         setBanList(next);
       }
 
-      // const {status, code, message} = await res.json();
-      // console.log("ban delete api response:", status, code, message);
-      // setBanList();
     });
   };
   return (

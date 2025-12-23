@@ -37,11 +37,10 @@ export default function ProfilePageContent({
 
   useEffect(() => {
     if (!profileData) {
-      alert("유저 프로필을 불러올 수 없습니다.");
+      console.error("유저 프로필을 불러올 수 없습니다.");
       router.back();
       return;
     }
-    console.log("profileData", profileData);
   }, []);
 
   if (!profileData) return null;
