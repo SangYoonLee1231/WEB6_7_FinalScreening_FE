@@ -1,6 +1,6 @@
 import { MyProfile, UserProfile } from "@/types/profile";
 import { ServerApi } from "../lib/serverApi";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import { UserList } from "@/types/userList";
 
 export async function getMyProfile() {
