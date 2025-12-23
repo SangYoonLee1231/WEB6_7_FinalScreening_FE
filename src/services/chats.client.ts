@@ -1,5 +1,9 @@
 import ClientApi from "@/lib/clientApi";
-import type { ChatRoomsResponseDto } from "@/types/chat";
+import type {
+  ChatRoomsResponseDto,
+  ChatRoomDetailDto,
+  ChatMessagesResponseDto,
+} from "@/types/chat";
 
 // 내가 속한 채팅방 목록 조회 (cursor/size는 추후 확장 대비)
 export async function getChatRooms(params?: {
@@ -29,6 +33,27 @@ export async function getChatRooms(params?: {
   return (await res.json()) as ChatRoomsResponseDto;
 }
 
+// 채팅방 상세 조회
+export async function getChatRoomDetail(
+  chatId: string,
+): Promise<ChatRoomDetailDto> {
+  const res = await ClientApi(`/api/v1/chats/${chatId}`, {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(
+      `getChatRoomDetail failed(chatId=${chatId}): ${res.status} ${text}`,
+    );
+  }
+
+  return (await res.json()) as ChatRoomDetailDto;
+}
+
 // 채팅방 메시지 조회
 export async function getChatMessages(
   chatId: string,
@@ -36,7 +61,7 @@ export async function getChatMessages(
     cursor?: string;
     size?: number;
   },
-) {
+): Promise<ChatMessagesResponseDto> {
   const qs = new URLSearchParams();
 
   if (params?.size) qs.set("size", String(params.size));
@@ -61,5 +86,5 @@ export async function getChatMessages(
     );
   }
 
-  return await res.json();
+  return (await res.json()) as ChatMessagesResponseDto;
 }

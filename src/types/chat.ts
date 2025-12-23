@@ -1,27 +1,69 @@
 export type ChatRoomsResponseDto = {
-  chatRooms: ChatRoomListItemDto[];
+  chatRooms: {
+    chatRoomId: number;
+    isActive: boolean;
+    lastActivityAt: string;
+    unreadCount: number;
+    memo: string | null;
+    lastMessage: {
+      chatMessageId: number;
+      content: string;
+      createdAt: string;
+    } | null;
+    otherUser: {
+      userId: number;
+      nickname: string;
+      profileImage: string | null;
+    };
+  }[];
   nextCursor: string | null;
   hasNext: boolean;
 };
 
-export type ChatRoomListItemDto = {
+export type ChatRoomDetailDto = {
   chatRoomId: number;
   postId: number;
+  isOpen: boolean;
+  createdAt: string;
+  myRole: "SENDER" | "RECEIVER" | string;
+  otherLeft: boolean;
+  myLeft: boolean;
   otherUser: {
     userId: number;
     nickname: string;
     profileImage: string | null;
+    gameNickname: string;
+    gameTag: string;
   };
-  lastMessage: null | {
-    chatMessageId: number;
-    senderId: number;
-    content: string;
-    messageType: "TEXT" | string;
-    createdAt: string;
-  };
-  unreadCount: number;
   queueType: string;
-  memo: string | null;
-  isActive: boolean;
-  lastActivityAt: string;
+  memo: string;
+  postStatus: string;
+};
+
+export type ChatMessagesResponseDto = {
+  chatRoomId: number;
+  header: {
+    otherUser: {
+      userId: number;
+      nickname: string;
+      profileImage: string | null;
+    };
+    postSummary: {
+      postId: number;
+      queueType: string;
+      memo: string;
+    };
+    postStatus: string;
+  };
+  messages: ChatMessageDto[];
+  nextCursor: number | null;
+  hasNext?: boolean;
+};
+
+export type ChatMessageDto = {
+  chatMessageId: number;
+  senderId: number;
+  content: string;
+  messageType: string;
+  createdAt: string;
 };
