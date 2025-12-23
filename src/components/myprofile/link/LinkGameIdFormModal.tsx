@@ -6,12 +6,16 @@ import Dropdown from "@/components/common/Dropdown";
 import { BoxButton } from "@/components/common/button/BoxButton";
 import FormModalContainer from "../../common/container/FormModalContainer";
 import * as Dialog from "@radix-ui/react-dialog";
-import { LinkGameAccount, ModifyGameAccount } from "@/services/user.client";
+import {
+  LinkGameAccount,
+  ModifyGameAccount,
+} from "@/services/game-account/link.client";
 import { Controller, useForm } from "react-hook-form";
 import AuthErrorMsg from "@/components/auth/AuthErrorMsg";
 import { useRouter } from "next/navigation";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import { useEffect } from "react";
+import { gameAccountRefreshAll } from "@/services/game-account/data";
 
 const items = [{ value: "LEAGUE_OF_LEGEND", label: "리그 오브 레전드" }];
 
@@ -53,9 +57,11 @@ export default function LinkGameIdFormModal({
     };
 
     if (mode === "link") {
-      const ok = await LinkGameAccount(payload);
+      const { ok, data } = await LinkGameAccount(payload);
 
       if (!ok) return;
+
+      await gameAccountRefreshAll({ gameAccountId: data?.gameAccountId });
     } else {
       if (initialData?.updatedAt) {
         const updatedAt = new Date(initialData.updatedAt);

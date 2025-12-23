@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { QUEUE_TYPES, QUEUE_TYPES_LABEL } from "@/types/party";
 import { TIERS, TIERS_LABEL } from "@/types/tier";
 import { MyProfile } from "@/types/profile";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import { useMyParties } from "@/hooks/useMyParties";
 import LoadingBouncy from "../common/loading/LoadingBouncy";
 
