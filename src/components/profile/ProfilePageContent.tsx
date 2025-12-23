@@ -13,7 +13,7 @@ import LolLogo from "@/assets/images/games/lol/lol-logo.png";
 import { UserProfile } from "@/types/profile";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import { Unlink } from "lucide-react";
 
 export default function ProfilePageContent({

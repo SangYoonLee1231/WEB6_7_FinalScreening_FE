@@ -8,7 +8,7 @@ import { BoxButton } from "@/components/common/button/BoxButton";
 import { twMerge } from "tailwind-merge";
 import HorizontalCardContainer from "@/components/common/container/HorizontalCardContainer";
 import formatDateToDot from "@/utils/formatDateToDot";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import { UnlinkGameAccount } from "@/services/game-account/link.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

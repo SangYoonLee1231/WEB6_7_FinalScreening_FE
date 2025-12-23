@@ -13,7 +13,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import AuthErrorMsg from "@/components/auth/AuthErrorMsg";
 import { useRouter } from "next/navigation";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import { useEffect } from "react";
 
 const items = [{ value: "LEAGUE_OF_LEGEND", label: "리그 오브 레전드" }];
