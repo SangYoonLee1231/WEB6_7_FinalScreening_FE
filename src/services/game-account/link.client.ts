@@ -1,4 +1,5 @@
 import ClientApi from "@/lib/clientApi";
+import { GameAccount } from "@/types/game-account";
 
 type gameAccountRequestType = {
   gameType: string;
@@ -25,18 +26,18 @@ export async function LinkGameAccount({
   if (!res.ok) {
     if (res.status === 404) {
       alert("해당 게임 계정을 찾을 수 없습니다. 닉네임과 태그를 확인해주세요.");
-      return res.ok;
+      return { ok: res.ok, data: null };
     }
     if (res.status === 409) {
       alert("이미 해당 게임 계정이 등록되어 있습니다.");
-      return res.ok;
+      return { ok: res.ok, data: null };
     }
     alert("게임 아이디 연동에 실패했습니다.");
-    return res.ok;
+    return { ok: res.ok, data: null };
   }
 
   alert("게임 아이디를 연동했습니다.");
-  return res.ok;
+  return { ok: res.ok, data: (await res.json()) as GameAccount };
 }
 
 export async function ModifyGameAccount(
