@@ -9,7 +9,7 @@ import { twMerge } from "tailwind-merge";
 import HorizontalCardContainer from "@/components/common/container/HorizontalCardContainer";
 import formatDateToDot from "@/utils/formatDateToDot";
 import { GameAccount } from "@/types/user";
-import { UnlinkGameAccount } from "@/services/user.client";
+import { UnlinkGameAccount } from "@/services/game-account/link.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import LinkGameIdFormModal from "./LinkGameIdFormModal";

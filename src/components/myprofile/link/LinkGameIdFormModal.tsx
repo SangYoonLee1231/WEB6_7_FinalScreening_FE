@@ -6,7 +6,10 @@ import Dropdown from "@/components/common/Dropdown";
 import { BoxButton } from "@/components/common/button/BoxButton";
 import FormModalContainer from "../../common/container/FormModalContainer";
 import * as Dialog from "@radix-ui/react-dialog";
-import { LinkGameAccount, ModifyGameAccount } from "@/services/user.client";
+import {
+  LinkGameAccount,
+  ModifyGameAccount,
+} from "@/services/game-account/link.client";
 import { Controller, useForm } from "react-hook-form";
 import AuthErrorMsg from "@/components/auth/AuthErrorMsg";
 import { useRouter } from "next/navigation";
