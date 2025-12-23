@@ -12,7 +12,7 @@ import Image from "next/image";
 import LolLogo from "@/assets/images/games/lol/lol-logo.png";
 import { UserProfile } from "@/types/profile";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GameAccount } from "@/types/game-account";
 import { Unlink } from "lucide-react";
 import { useGetFavoriteChampions } from "@/hooks/useGetFavoriteChampions";
