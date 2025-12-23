@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { isTier, Rank, Tier, tierIcons } from "@/types/tier";
+import { Rank, Tier, tierIcons } from "@/types/tier";
 import { twMerge } from "tailwind-merge";
 import { romanToNumber } from "@/utils/romanToNumber";
 
@@ -29,7 +29,7 @@ export default function TierSet({
       <Image src={tierIcons[tier]} alt={`${tier} tier image`} />
       <span className="text-content-secondary">
         {type === "default"
-          ? `${tier} ${rank}`
+          ? `${tier} ${tier === "CHALLENGER" || tier === "GRANDMASTER" || tier === "MASTER" ? "" : rank}`
           : `${validRank ? tier[0] : tier}${validRank ? romanToNumber(rank) : ""}`}
       </span>
     </div>

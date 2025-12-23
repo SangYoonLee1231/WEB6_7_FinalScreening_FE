@@ -58,3 +58,14 @@ export type Match = {
   items: number[];
   itemImageUrls: (string | null)[];
 };
+
+export type Champion = {
+  rank: number;
+  championId: number;
+  championName: string;
+  championImageUrl: string;
+  totalGames: number;
+  wins: number;
+  losses: number;
+  winRate: number;
+};

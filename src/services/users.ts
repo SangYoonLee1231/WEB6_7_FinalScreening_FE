@@ -27,6 +27,14 @@ export async function getGameAccount() {
   return (await res.json()) as GameAccount[];
 }
 
+export async function getOtherGameAccount(gameAccountId: number) {
+  const res = await ServerApi(`/api/game-accounts/${gameAccountId}`);
+
+  if (!res.ok) return null;
+
+  return (await res.json()) as GameAccount;
+}
+
 export async function searchUsers(nickname: string) {
   const res = await ServerApi(`/api/v1/users/search?nickname=${nickname}`);
 

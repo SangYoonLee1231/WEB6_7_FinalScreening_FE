@@ -161,7 +161,7 @@ export default function FindCard({
               isActive={false}
               size="default"
             />
-            <MostChampion data={champions} type="mastery" size="sm" />
+            {/* <MostChampion data={champions} type="mastery" size="sm" /> */}
             {/* <MostChampion data={writer.gameAccount.favoriteChampions} />  */}
           </div>
 
