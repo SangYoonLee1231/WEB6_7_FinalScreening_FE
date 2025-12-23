@@ -15,7 +15,8 @@ import AuthErrorMsg from "@/components/auth/AuthErrorMsg";
 import { useRouter } from "next/navigation";
 import { GameAccount } from "@/types/game-account";
 import { useEffect } from "react";
-import { gameAccountRefreshAll } from "@/services/game-account/data";
+import { gameAccountRefreshAll } from "@/services/game-account/data.client";
+import { useMutation } from "@tanstack/react-query";
 
 const items = [{ value: "LEAGUE_OF_LEGEND", label: "리그 오브 레전드" }];
 
@@ -37,6 +38,7 @@ export default function LinkGameIdFormModal({
   initialData?: GameAccount;
 }) {
   const router = useRouter();
+
   const {
     control,
     register,
@@ -45,6 +47,16 @@ export default function LinkGameIdFormModal({
     reset,
   } = useForm<FormValues>({
     mode: "onSubmit",
+  });
+
+  const refreshAllMutation = useMutation({
+    mutationFn: ({
+      gameAccountId,
+      matchCount,
+    }: {
+      gameAccountId: number;
+      matchCount?: number;
+    }) => gameAccountRefreshAll({ gameAccountId, matchCount }),
   });
 
   const onSubmit = async (data: FormValues) => {
@@ -57,13 +69,15 @@ export default function LinkGameIdFormModal({
     };
 
     if (mode === "link") {
-      const { ok, data } = await LinkGameAccount(payload);
+      const { ok, data: linked } = await LinkGameAccount(payload);
 
       if (!ok) return;
 
-      await gameAccountRefreshAll({ gameAccountId: data?.gameAccountId });
-    } else {
-      if (initialData?.updatedAt) {
+      refreshAllMutation.mutate({
+        gameAccountId: linked.gameAccountId,
+      });
+    } else if (initialData) {
+      if (initialData.updatedAt) {
         const updatedAt = new Date(initialData.updatedAt);
         const threeMonthsLater = new Date(updatedAt);
 
@@ -74,8 +88,12 @@ export default function LinkGameIdFormModal({
           return;
         }
       }
-      await ModifyGameAccount(String(initialData?.gameAccountId), payload);
-    }
+      await ModifyGameAccount(String(initialData.gameAccountId), payload);
+
+      refreshAllMutation.mutate({
+        gameAccountId: initialData.gameAccountId,
+      });
+    } else alert("수정할 계정을 찾을 수 없습니다.");
 
     reset();
     onOpenChange(false);

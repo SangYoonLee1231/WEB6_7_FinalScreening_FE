@@ -76,6 +76,18 @@ export const QUEUE_TYPES_LABEL: Record<QueueType, string> = {
   FLEX: "자유 랭크",
   NORMAL: "일반",
 };
+export const QUEUE_IDS = [400, 420, 430, 440, 490, 450, 900, 1700] as const;
+export type queueId = (typeof QUEUE_IDS)[number];
+export const QUEUE_NAME: Record<queueId, string> = {
+  400: "일반 게임",
+  420: "솔로 랭크",
+  430: "일반 게임",
+  440: "자유 랭크",
+  490: "빠른 대전",
+  450: "무작위 총력전",
+  900: "우르프",
+  1700: "아레나",
+};
 
 export const RECRUIT_COUNT_OPTIONS: Record<QueueType, readonly number[]> = {
   DUO: [2],
