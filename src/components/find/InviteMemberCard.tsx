@@ -1,25 +1,26 @@
-import formatRelativeTime from "@/utils/formatRelativeTime";
 import Avatar from "../common/Avatar";
 import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
-import { SampleDataType } from "./InviteMemberModal";
 import { Check } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { useInviteStore } from "@/stores/inviteStore";
 import React from "react";
+import { Candidate } from "@/types/party";
 
-function InviteMemberCard({ data }: { data: SampleDataType }) {
-  const isChecked = useInviteStore((s) => s.selectedMemberId === data.id);
-  const setSelectMember = useInviteStore((s) => s.setSelectMember);
+function InviteMemberCard({ data }: { data: Candidate }) {
+  const isChecked = useInviteStore((s) =>
+    s.selectedMemberIds.includes(data.userId),
+  );
+  const toggleSelectMember = useInviteStore((s) => s.toggleSelectMember);
 
   return (
-    <label htmlFor={`user${data.id}`}>
+    <label htmlFor={`user${data.userId}`}>
       <input
-        type="radio"
+        type="checkbox"
         name="user"
-        id={`user${data.id}`}
-        value={data.id}
+        id={`user${data.userId}`}
+        value={data.userId}
         checked={isChecked}
-        onChange={() => setSelectMember(data.id)}
+        onChange={() => toggleSelectMember(data.userId)}
         className="sr-only"
       />
       <HorizontalCardContainer className="flex items-center justify-between">
@@ -28,9 +29,10 @@ function InviteMemberCard({ data }: { data: SampleDataType }) {
           <div className="flex items-center gap-1">
             <span className="text-base font-bold">{data.nickname}</span>
             <span className="text-content-secondary text-xs">·</span>
-            <span className="text-content-secondary text-xs">
+            {/* 채팅 구현 후 수정
+             <span className="text-content-secondary text-xs">
               {formatRelativeTime(data.lastUpdatedAt)} 대화
-            </span>
+            </span> */}
           </div>
         </div>
         <div

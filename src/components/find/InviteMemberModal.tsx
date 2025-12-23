@@ -1,45 +1,37 @@
+"use client";
+
 import { BoxButton } from "../common/button/BoxButton";
 import FormModalContainer from "../common/container/FormModalContainer";
 import * as Dialog from "@radix-ui/react-dialog";
 import InviteMemberCard from "./InviteMemberCard";
 import { useInviteStore } from "@/stores/inviteStore";
+import { getCandidates, inviteMember } from "@/services/party.client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { UserX } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export interface SampleDataType {
-  id: number;
-  nickname: string;
-  profileImage: string | null;
-  lastUpdatedAt: string;
-}
+export default function InviteMemberModal({
+  postId,
+  partyId,
+  currentCount,
+  maxCount,
+}: {
+  postId: number;
+  partyId: number;
+  currentCount: number;
+  maxCount: number;
+}) {
+  const router = useRouter();
+  const { isInviteOpen, setInviteOpen, selectedMemberIds } = useInviteStore();
+  const qc = useQueryClient();
 
-const sampleData: SampleDataType[] = [
-  {
-    id: 1,
-    nickname: "닉네임1",
-    profileImage: null,
-    lastUpdatedAt: "2025-03-14T12:28:00.000Z",
-  },
-  {
-    id: 2,
-    nickname: "닉네임2",
-    profileImage: null,
-    lastUpdatedAt: "2025-03-14T12:10:00.000Z",
-  },
-  {
-    id: 3,
-    nickname: "닉네임3",
-    profileImage: null,
-    lastUpdatedAt: "2025-03-14T11:43:00.000Z",
-  },
-  {
-    id: 4,
-    nickname: "닉네임4",
-    profileImage: null,
-    lastUpdatedAt: "2025-12-13T07:03:49.937Z",
-  },
-];
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [postId, "candidates"],
+    queryFn: () => getCandidates(postId),
+  });
 
-export default function InviteMemberModal() {
-  const { isInviteOpen, setInviteOpen } = useInviteStore();
+  const candidates = data?.data ?? [];
+
   return (
     <Dialog.Root open={isInviteOpen} onOpenChange={setInviteOpen}>
       <Dialog.Portal>
@@ -54,14 +46,55 @@ export default function InviteMemberModal() {
             </Dialog.Description>
             <fieldset className="flex flex-col gap-2">
               <legend className="sr-only">초대할 멤버</legend>
-              {sampleData?.map((d) => (
-                <InviteMemberCard key={d.id} data={d} />
-              ))}
+              {candidates.length === 0 ? (
+                <div className="m-auto flex w-full flex-col items-center justify-center gap-7">
+                  <UserX size={120} className="text-bg-tertiary" />
+                  <p className="text-content-secondary text-xl font-bold">
+                    아직 참여를 희망하는 유저가 없습니다
+                  </p>
+                </div>
+              ) : (
+                candidates.map((c, index) => (
+                  <InviteMemberCard key={`${postId}-${index}`} data={c} />
+                ))
+              )}
             </fieldset>
             <div className="mt-[25px] flex justify-end gap-2">
-              <Dialog.Close asChild>
-                <BoxButton text="초대" size="sm" tone="color" />
-              </Dialog.Close>
+              {candidates.length !== 0 && (
+                <BoxButton
+                  text="초대"
+                  size="sm"
+                  tone="color"
+                  onClick={async () => {
+                    if (!selectedMemberIds || selectedMemberIds.length === 0) {
+                      alert("초대할 멤버를 선택해주세요.");
+                      return;
+                    }
+
+                    if (selectedMemberIds.length > maxCount - currentCount) {
+                      alert("초대할 인원이 남은 인원보다 많습니다.");
+                      return;
+                    }
+
+                    await inviteMember({
+                      partyId: partyId,
+                      targetUserIds: selectedMemberIds,
+                    });
+
+                    await qc.invalidateQueries({
+                      queryKey: [postId, "candidates"],
+                    });
+                    await qc.invalidateQueries({
+                      queryKey: [postId, "PartyMembers"],
+                    });
+                    await qc.invalidateQueries({
+                      queryKey: [postId, "party"],
+                    });
+
+                    router.refresh();
+                  }}
+                />
+              )}
               <Dialog.Close asChild>
                 <BoxButton
                   text="닫기"
