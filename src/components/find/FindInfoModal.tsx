@@ -11,7 +11,7 @@ import LoadingBouncy from "../common/loading/LoadingBouncy";
 import FindMemberCard from "./main-card/FindMemberCard";
 import { useMyParties } from "@/hooks/useMyParties";
 import { Unlink } from "lucide-react";
-import { GAME_MODE_META } from "@/types/party";
+import { QUEUE_TYPES_LABEL } from "@/types/party";
 
 export default function FindInfoModal() {
   const { data, isLoading, error, refetch } = useMyParties();
@@ -37,6 +37,8 @@ export default function FindInfoModal() {
   });
 
   const partyMembersData = partyMembersResponse?.data;
+
+  console.log(currentPartyData);
 
   return (
     <FindCardContainer className="flex h-123 w-110 flex-col items-center justify-between p-7.5">
@@ -68,9 +70,7 @@ export default function FindInfoModal() {
                 <span className="font-semibold">{`${partyMembersData?.currentCount}/${partyMembersData?.maxCount}`}</span>
               </div>
               <FindLinkButton
-                gameMode={
-                  GAME_MODE_META[currentPartyData?.gameModeId].label ?? ""
-                }
+                gameMode={QUEUE_TYPES_LABEL[currentPartyData.queueType] ?? ""}
                 postTitle={currentPartyData?.postTitle ?? ""}
               />
             </div>

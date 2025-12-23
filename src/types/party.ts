@@ -1,5 +1,6 @@
 import gameIconLol from "@/assets/images/game-icon-lol.png";
 import gameIconAram from "@/assets/images/game-icon-aram.svg";
+import gameIconArena from "@/assets/images/game-icon-arena.png";
 
 export type PartyStatus = "ACTIVE" | "INACTIVE" | "CLOSED" | string;
 export type PartyRole = "LEADER" | "MEMBER" | string;
@@ -47,25 +48,33 @@ export interface MyPartyListResponse {
 
 export interface MyPartySummary {
   partyId: number;
-  gameModeId: number;
   postId: number;
   postTitle: string;
   gameMode: string;
+  queueType: QueueType;
   status: PartyStatus;
   myRole: PartyRole;
   joinedAt: string;
 }
 
-export const GAME_MODE_IDS = ["1", "2"] as const;
+export const GAME_MODE_IDS = [
+  "SUMMONERS_RIFT",
+  "HOWLING_ABYSS",
+  "ARENA",
+] as const;
 export type GameMode = (typeof GAME_MODE_IDS)[number];
-export const GAME_MODE_META: Record<string, { label: string; icon: any }> = {
-  "1": {
+export const GAME_MODE_META: Record<GameMode, { label: string; icon: any }> = {
+  SUMMONERS_RIFT: {
     label: "소환사의 협곡",
     icon: gameIconLol,
   },
-  "2": {
+  HOWLING_ABYSS: {
     label: "칼바람 나락",
     icon: gameIconAram,
+  },
+  ARENA: {
+    label: "아레나",
+    icon: gameIconArena,
   },
 } as const;
 

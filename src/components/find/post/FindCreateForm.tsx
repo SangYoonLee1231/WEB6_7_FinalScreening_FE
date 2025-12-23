@@ -30,7 +30,7 @@ import { useMenuStore } from "@/stores/menuStore";
 import { Post } from "@/types/post";
 
 type PostCreateForm = {
-  gameModeId: GameMode;
+  gameMode: GameMode;
   queueType: QueueType;
   mic: boolean;
   recruitCount: string;
@@ -59,9 +59,7 @@ export default function FindCreateForm({
     formState: { errors, isSubmitting },
   } = useForm<PostCreateForm>({
     defaultValues: {
-      gameModeId: initialPost
-        ? (String(initialPost?.gameModeId) as GameMode)
-        : "1",
+      gameMode: initialPost ? initialPost?.gameMode : "SUMMONERS_RIFT",
       queueType: initialPost?.queueType ?? "DUO",
       mic: initialPost?.mic ?? false,
       recruitCount: String(initialPost?.recruitCount) ?? "1",
@@ -88,7 +86,7 @@ export default function FindCreateForm({
 
   const onSubmit = async (data: PostCreateForm) => {
     const payload = {
-      gameModeId: Number(data.gameModeId),
+      gameMode: data.gameMode,
       queueType: data.queueType,
       myPosition: data.myPosition,
       lookingPositions: data.lookingPositions,
@@ -96,6 +94,8 @@ export default function FindCreateForm({
       recruitCount: Number(data.recruitCount),
       memo: data.memo,
     };
+
+    console.log(payload);
 
     let res: Response;
 
@@ -182,7 +182,7 @@ export default function FindCreateForm({
         <FormLabelAndContent labelText="게임 모드" labelFor="gameMode">
           <Controller
             control={control}
-            name="gameModeId"
+            name="gameMode"
             rules={{ required: "게임 모드를 선택해주세요." }}
             render={({ field }) => (
               <Dropdown
@@ -208,9 +208,9 @@ export default function FindCreateForm({
               />
             )}
           />
-          {errors.gameModeId && (
+          {errors.gameMode && (
             <AuthErrorMsg
-              message={String(errors.gameModeId.message)}
+              message={String(errors.gameMode.message)}
               className="ml-0 text-xs"
             />
           )}
