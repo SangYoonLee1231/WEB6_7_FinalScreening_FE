@@ -6,8 +6,15 @@ import Dropdown from "../common/Dropdown";
 import FindHistoryCard from "./FindHistoryCard";
 import { useEffect } from "react";
 import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
+import { useMyParties } from "@/hooks/useMyParties";
+import LoadingBouncy from "../common/loading/LoadingBouncy";
+import { MyProfile } from "@/types/profile";
 
-export default function FindHistoryContainer() {
+export default function FindHistoryContainer({
+  loginData,
+}: {
+  loginData: MyProfile;
+}) {
   const { setMenu } = useMenuStore();
   const { setMenu: setProfileMenu } = useMyProfileMenuStore();
 
@@ -15,6 +22,10 @@ export default function FindHistoryContainer() {
     setMenu("profile");
     setProfileMenu("find-history");
   }, []);
+
+  const { data, isLoading, error, refetch } = useMyParties();
+
+  const parties = data?.data.parties ?? [];
 
   return (
     <div>
@@ -47,24 +58,21 @@ export default function FindHistoryContainer() {
           className="min-w-30"
         />
       </div>
-      <div className="flex flex-col gap-2">
-        <FindHistoryCard
-          mode="written"
-          gameName="lol"
-          communityName="커뮤니티닉네임"
-          content="파티 모집글 내용"
-          gameMode="솔로 랭크"
-          createdAt="2025-12-12T00:12:00.000Z"
-        />
-        <FindHistoryCard
-          mode="written"
-          gameName="lol"
-          communityName="커뮤니티닉네임"
-          content="파티 모집글 내용"
-          gameMode="솔로 랭크"
-          createdAt="2025-12-12T00:12:00.000Z"
-        />
-      </div>
+      {isLoading ? (
+        <div className="flex h-full w-full items-center justify-center">
+          <LoadingBouncy />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {parties.map((p, index) => (
+            <FindHistoryCard
+              key={index}
+              PartyData={p}
+              currentUserId={loginData.id}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

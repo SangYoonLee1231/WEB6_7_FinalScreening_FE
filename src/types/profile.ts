@@ -11,4 +11,5 @@ export interface UserProfile {
   nickname: string;
   profile_image: string | null;
   comment: string | null;
+  gameAccountId: number;
 }

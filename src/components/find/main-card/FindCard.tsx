@@ -23,7 +23,7 @@ import FindDetailModal from "./FindDetailModal";
 import { CreateChat } from "@/services/chat.client";
 import { useQuery } from "@tanstack/react-query";
 import { getPartyDetail } from "@/services/party.client";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import { useRouter } from "next/navigation";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
@@ -161,7 +161,7 @@ export default function FindCard({
               isActive={false}
               size="default"
             />
-            <MostChampion data={champions} type="mastery" size="sm" />
+            {/* <MostChampion data={champions} type="mastery" size="sm" /> */}
             {/* <MostChampion data={writer.gameAccount.favoriteChampions} />  */}
           </div>
 

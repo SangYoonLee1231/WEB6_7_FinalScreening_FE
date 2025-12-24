@@ -1,14 +1,8 @@
 "use client";
 
-import emojiGood from "@/assets/images/emoji/emoji_good.png";
-import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
-import emojiBad from "@/assets/images/emoji/emoji_bad.png";
-
 import lolLogo from "@/assets/images/games/lol/lol-logo.png";
 import overwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
 import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
-
-import type { EmojiType as Emotion } from "@/types/emoji";
 import Image, { StaticImageData } from "next/image";
 import { useState } from "react";
 import formatRelativeTime from "@/utils/formatRelativeTime";
@@ -19,15 +13,14 @@ import StateBadge from "../common/StateBadge";
 import Avatar from "../common/Avatar";
 import { BoxButton } from "../common/button/BoxButton";
 import { twMerge } from "tailwind-merge";
+import { MyPartySummary, QUEUE_TYPES_LABEL } from "@/types/party";
+import { PostStatus } from "@/types/post";
+import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
+import { useRouter } from "next/navigation";
+import { useMenuStore } from "@/stores/menuStore";
+import { deletePost } from "@/services/posts.client";
 
-type ReviewMode = "received" | "written";
 type GameName = "lol" | "overwatch" | "valorant";
-
-const EMOJI_MAP: Record<Emotion, StaticImageData> = {
-  good: emojiGood,
-  normal: emojiNormal,
-  bad: emojiBad,
-};
 
 const GAME_LOGO_MAP: Record<GameName, StaticImageData> = {
   lol: lolLogo,
@@ -35,30 +28,44 @@ const GAME_LOGO_MAP: Record<GameName, StaticImageData> = {
   valorant: valorantLogo,
 };
 
-interface FindHistoryCardProps {
-  mode: ReviewMode; // "received" | "written"
-  gameName: GameName;
-  communityName: string;
-  gameMode: string;
-  content: string;
-  createdAt: string; // ISO 날짜 문자열
-}
-
 export default function FindHistoryCard({
-  gameName,
-  communityName,
-  gameMode,
-  content,
-  createdAt,
-}: FindHistoryCardProps) {
+  PartyData,
+  currentUserId,
+}: {
+  PartyData: MyPartySummary;
+  currentUserId: number;
+}) {
+  const router = useRouter();
+
+  const { currentGame } = useMenuStore();
+
   const [isOpen, setIsOpen] = useState(false);
+
+  // 리뷰 기능 구현 후 수정 필요
   let hasReviewed = true;
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
   };
 
-  const gameLogoSrc = GAME_LOGO_MAP[gameName];
+  const { postId, postTitle, queueType, status, myRole, joinedAt } = PartyData;
+
+  const {
+    data: detailParty,
+    isLoading: detailPartyIsLoading,
+    error: detailPartyError,
+    refetch: detailPartyRefetch,
+  } = useGetPartyDetail(postId);
+
+  const gameLogoSrc = GAME_LOGO_MAP["lol"];
+
+  if (detailPartyIsLoading) return null;
+
+  const members =
+    detailParty?.members.sort((a, b) => a.partyMemberId - b.partyMemberId) ??
+    [];
+  const leader = members.filter((m) => m.role === "LEADER")[0];
+
   return (
     <div>
       <HorizontalCardContainer
@@ -74,7 +81,7 @@ export default function FindHistoryCard({
         >
           <Image
             src={gameLogoSrc}
-            alt={`${gameName} logo`}
+            alt={`lol logo`}
             width={40}
             height={40}
             className="h-10 w-10 rounded-md object-cover"
@@ -82,17 +89,29 @@ export default function FindHistoryCard({
 
           {/* 커뮤니티 닉네임 + 내용 */}
           <div className="flex shrink-0 items-center gap-2">
-            <div className="bg-bg-quaternary h-8 w-8 rounded-full" />
-            <span className="text-content-primary">{communityName}</span>
-          </div>
-          <span className="text-accent font-semibold">{gameMode}</span>
-          <IntroduceBubble content={content} size="sm" />
+            {leader.profileImage ? (
+              <Image
+                src={leader.profileImage}
+                alt="leader profile image"
+                width={40}
+                height={40}
+              />
+            ) : (
+              <div className="bg-bg-quaternary h-8 w-8 rounded-full" />
+            )}
 
-          <StateBadge state="RECRUIT" />
+            <span className="text-content-primary">{leader.nickname}</span>
+          </div>
+          <span className="text-accent font-semibold">
+            {QUEUE_TYPES_LABEL[queueType]}
+          </span>
+          <IntroduceBubble content={postTitle} size="sm" />
+
+          <StateBadge state={status as PostStatus} />
 
           {/* 시간 + 화살표 */}
           <div className="text-content-secondary flex items-center gap-1 text-xs">
-            <span>{formatRelativeTime(createdAt)}</span>
+            <span>{formatRelativeTime(joinedAt)}</span>
             <span className="text-base">
               {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </span>
@@ -107,28 +126,68 @@ export default function FindHistoryCard({
             {/* 하단 수정/삭제 영역 (작성한 리뷰 + 펼쳐진 상태에서만) */}
             <div className="space-y-4">
               <p className="text-sm font-bold">함께 플레이 한 유저</p>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Avatar src="" type="profile" size="xs" />
-                  <span>커뮤니티닉네임</span>
-                  <Crown size={18} className="text-accent" />
-                </div>
-                {hasReviewed ? (
-                  <span className="text-accent text-xs">작성 완료</span>
-                ) : (
-                  <BoxButton
-                    text="리뷰 작성"
-                    size="xs"
-                    className="bg-accent text-xs"
-                  />
-                )}
-              </div>
+              {members &&
+                members.map((m, index) => (
+                  <div
+                    key={`member${index}`}
+                    className="flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      {m.profileImage ? (
+                        <Avatar src={m.profileImage} type="profile" size="xs" />
+                      ) : (
+                        <div className="bg-bg-quaternary h-8 w-8 rounded-full"></div>
+                      )}
+
+                      <span>{m.nickname}</span>
+                      {m.role === "LEADER" && (
+                        <Crown size={18} className="text-accent" />
+                      )}
+                    </div>
+                    {currentUserId !== m.userId &&
+                      (hasReviewed ? (
+                        <span className="text-accent text-xs">작성 완료</span>
+                      ) : (
+                        <BoxButton
+                          text="리뷰 작성"
+                          size="xs"
+                          className="bg-accent text-xs"
+                        />
+                      ))}
+                  </div>
+                ))}
             </div>
           </HorizontalCardContainer>
-          <div className="mt-3 flex justify-end gap-2">
-            <BoxButton text="수정" tone="black" size="xs" />
-            <BoxButton text="삭제" tone="negative" size="xs" />
-          </div>
+          {leader.userId === currentUserId && (
+            <div className="mt-3 flex justify-end gap-2">
+              <BoxButton
+                text="수정"
+                tone="black"
+                size="xs"
+                onClick={() => {
+                  if (status === "CLOSED") {
+                    alert("게임을 완료한 모집글은 수정할 수 없습니다.");
+                    return;
+                  }
+
+                  router.push(`/${currentGame}/modify/${postId}`);
+                }}
+              />
+              <BoxButton
+                text="삭제"
+                tone="negative"
+                size="xs"
+                onClick={async () => {
+                  if (status === "CLOSED") {
+                    alert("게임을 완료한 모집글은 삭제할 수 없습니다.");
+                    return;
+                  }
+                  await deletePost(postId);
+                  router.push(`/${currentGame}/find`);
+                }}
+              />
+            </div>
+          )}
         </>
       )}
     </div>

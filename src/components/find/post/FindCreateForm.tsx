@@ -30,7 +30,7 @@ import { useMenuStore } from "@/stores/menuStore";
 import { Post } from "@/types/post";
 
 type PostCreateForm = {
-  gameModeId: GameMode;
+  gameMode: GameMode;
   queueType: QueueType;
   mic: boolean;
   recruitCount: string;
@@ -59,9 +59,7 @@ export default function FindCreateForm({
     formState: { errors, isSubmitting },
   } = useForm<PostCreateForm>({
     defaultValues: {
-      gameModeId: initialPost
-        ? (String(initialPost?.gameModeId) as GameMode)
-        : "1",
+      gameMode: initialPost ? initialPost?.gameMode : "SUMMONERS_RIFT",
       queueType: initialPost?.queueType ?? "DUO",
       mic: initialPost?.mic ?? false,
       recruitCount: String(initialPost?.recruitCount) ?? "1",
@@ -88,7 +86,7 @@ export default function FindCreateForm({
 
   const onSubmit = async (data: PostCreateForm) => {
     const payload = {
-      gameModeId: Number(data.gameModeId),
+      gameMode: data.gameMode,
       queueType: data.queueType,
       myPosition: data.myPosition,
       lookingPositions: data.lookingPositions,
@@ -122,6 +120,15 @@ export default function FindCreateForm({
 
       alert("게시글이 작성되었습니다.");
     } else {
+      if (!initialPost) {
+        alert("수정할 글이 없습니다.");
+        return;
+      }
+
+      if (initialPost.currentParticipants < payload.recruitCount) {
+        alert("현재 참여 인원보다 모집 인원을 적게 설정할 수 없습니다.");
+      }
+
       res = await ClientApi(`/api/v1/posts/${initialPost?.postId}`, {
         method: "PATCH",
         headers: {
@@ -182,7 +189,7 @@ export default function FindCreateForm({
         <FormLabelAndContent labelText="게임 모드" labelFor="gameMode">
           <Controller
             control={control}
-            name="gameModeId"
+            name="gameMode"
             rules={{ required: "게임 모드를 선택해주세요." }}
             render={({ field }) => (
               <Dropdown
@@ -208,9 +215,9 @@ export default function FindCreateForm({
               />
             )}
           />
-          {errors.gameModeId && (
+          {errors.gameMode && (
             <AuthErrorMsg
-              message={String(errors.gameModeId.message)}
+              message={String(errors.gameMode.message)}
               className="ml-0 text-xs"
             />
           )}

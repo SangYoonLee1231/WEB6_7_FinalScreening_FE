@@ -5,7 +5,7 @@ import LinkedGameIdCard from "./LinkedGameIdCard";
 import LinkGameIdBox from "./LinkGameIdBox";
 import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 import { useEffect, useState } from "react";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import LinkGameIdFormModal from "./LinkGameIdFormModal";
 
 export default function LinkedGameIdContainer({

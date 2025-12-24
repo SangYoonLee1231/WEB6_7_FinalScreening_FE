@@ -1,6 +1,6 @@
 import { MyProfile, UserProfile } from "@/types/profile";
 import { ServerApi } from "../lib/serverApi";
-import { GameAccount } from "@/types/user";
+import { GameAccount } from "@/types/game-account";
 import { UserList } from "@/types/userList";
 
 export async function getMyProfile() {
@@ -25,6 +25,14 @@ export async function getGameAccount() {
   if (!res.ok) return null;
 
   return (await res.json()) as GameAccount[];
+}
+
+export async function getOtherGameAccount(gameAccountId: number) {
+  const res = await ServerApi(`/api/game-accounts/${gameAccountId}`);
+
+  if (!res.ok) return null;
+
+  return (await res.json()) as GameAccount;
 }
 
 export async function searchUsers(nickname: string) {

@@ -1,6 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import Avatar from "../common/Avatar";
 import { cva, VariantProps } from "class-variance-authority";
+import { Champion } from "@/types/game-account";
 
 const container = cva("text-content-primary flex flex-col", {
   variants: {
@@ -25,32 +26,25 @@ const title = cva("font-semibold", {
     size: "sm",
   },
 });
-
-type MostChampionType = "recent" | "mastery";
-
 interface MostChampionProps extends VariantProps<typeof container> {
-  data: { id: number; src: string; percent: number }[]; // 데이터 확정되면 변경
-  type: MostChampionType;
+  data: Champion[];
   className?: string;
 }
 
 export default function MostChampion({
   size = "sm",
-  type,
   data,
   className,
 }: MostChampionProps) {
   return (
     <div className={twMerge(container({ size }), className)}>
-      <p className={twMerge(title({ size }), className)}>
-        {type === "recent" ? "최근 선호 챔피언" : "챔피언 숙련도 TOP 3"}
-      </p>
       <div className="flex items-center justify-between">
         {data?.map((champ) => (
           <Avatar
-            key={champ.id}
+            key={champ.championId}
             type="champion"
-            src={champ.src}
+            src={champ.championImageUrl}
+            alt={champ.championName}
             size={size === "sm" ? "sm" : "lg"}
           />
         ))}
