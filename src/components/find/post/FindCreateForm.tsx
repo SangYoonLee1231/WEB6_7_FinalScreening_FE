@@ -95,8 +95,6 @@ export default function FindCreateForm({
       memo: data.memo,
     };
 
-    console.log(payload);
-
     let res: Response;
 
     if (type === "create") {
@@ -122,6 +120,15 @@ export default function FindCreateForm({
 
       alert("게시글이 작성되었습니다.");
     } else {
+      if (!initialPost) {
+        alert("수정할 글이 없습니다.");
+        return;
+      }
+
+      if (initialPost.currentParticipants < payload.recruitCount) {
+        alert("현재 참여 인원보다 모집 인원을 적게 설정할 수 없습니다.");
+      }
+
       res = await ClientApi(`/api/v1/posts/${initialPost?.postId}`, {
         method: "PATCH",
         headers: {
