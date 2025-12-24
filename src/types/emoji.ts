@@ -1,1 +1,1 @@
-export type EmojiType = "good" | "normal" | "bad";
+export type EmojiType = "GOOD" | "NORMAL" | "BAD";

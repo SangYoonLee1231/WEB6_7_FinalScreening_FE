@@ -1,3 +1,5 @@
+import { EmojiType } from "./emoji";
+
 export type ReviewDistribution = {
   userId: number;
   nickname: string;
@@ -12,4 +14,13 @@ export type ReviewDistribution = {
     NORMAL: number;
     BAD: number;
   };
+};
+
+export type Review = {
+  reviewId: number;
+  reviewerId: number;
+  reviewerNickname: string;
+  emoji: EmojiType;
+  content: string;
+  createdAt: string;
 };
