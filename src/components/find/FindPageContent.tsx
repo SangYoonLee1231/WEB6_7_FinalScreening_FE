@@ -25,7 +25,7 @@ export default function FindPageContent({
   loginData,
   gameAccountData,
 }: {
-  postData: Post[];
+  postData: Post[] | null;
   loginData: MyProfile | null;
   gameAccountData: GameAccount[] | null;
 }) {
@@ -143,14 +143,7 @@ export default function FindPageContent({
           />
         </div>
       </div>
-      {postData.length < 1 ? (
-        <div className="m-auto flex w-full flex-col items-center justify-center gap-10.5">
-          <Unlink size={160} className="text-bg-tertiary" />
-          <p className="text-content-secondary text-[32px] font-bold">
-            등록된 모집글이 없습니다
-          </p>
-        </div>
-      ) : (
+      {postData && postData.length > 0 ? (
         <div className="flex flex-wrap justify-between gap-y-7.5 px-7.5">
           {postData.map((post, index) => (
             <FindCard
@@ -160,6 +153,13 @@ export default function FindPageContent({
               currentUserId={loginData?.id ?? null}
             />
           ))}
+        </div>
+      ) : (
+        <div className="m-auto flex w-full flex-col items-center justify-center gap-10.5">
+          <Unlink size={160} className="text-bg-tertiary" />
+          <p className="text-content-secondary text-[32px] font-bold">
+            등록된 모집글이 없습니다
+          </p>
         </div>
       )}
     </div>

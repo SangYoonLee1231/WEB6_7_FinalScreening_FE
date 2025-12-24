@@ -9,7 +9,6 @@ import TierSet from "@/components/profile/TierSet";
 import { isTier, Rank } from "@/types/tier";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import PositionSet from "./PositionSet";
-import MostChampion from "@/components/profile/MostChampion";
 import Champion from "@/assets/images/test_champion_thumb.png";
 import WinRate from "@/components/profile/WinRate";
 import { BoxButton } from "@/components/common/button/BoxButton";
@@ -21,10 +20,9 @@ import SubTitleAndData from "../SubTitleAndData";
 import FindCardMemberDetail from "./FindCardMemberDetail";
 import FindDetailModal from "./FindDetailModal";
 import { CreateChat } from "@/services/chat.client";
-import { useQuery } from "@tanstack/react-query";
-import { getPartyDetail } from "@/services/party.client";
 import { GameAccount } from "@/types/game-account";
 import { useRouter } from "next/navigation";
+import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
   currentUserId: number | null;
@@ -53,10 +51,7 @@ export default function FindCard({
     isLoading: partyDataIsLoading,
     error: partyDataError,
     refetch: partyDataRefetch,
-  } = useQuery({
-    queryKey: [postId, "party"],
-    queryFn: () => getPartyDetail(postId),
-  });
+  } = useGetPartyDetail(postId);
 
   const partyMembers = partyData?.members;
 
