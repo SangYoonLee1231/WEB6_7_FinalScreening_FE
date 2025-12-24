@@ -1,4 +1,4 @@
-import { QueueType } from "./party";
+import { GameMode, QueueType } from "./party";
 import { Position } from "./position";
 
 export type PostStatus = "RECRUIT" | "ACTIVE" | "CLOSED";
@@ -11,8 +11,7 @@ export interface PostListResponse {
 
 export interface Post {
   postId: number;
-  gameModeId: number;
-  gameMode: string;
+  gameMode: GameMode;
   queueType: QueueType;
   myPosition: Position;
   lookingPositions: Position[];

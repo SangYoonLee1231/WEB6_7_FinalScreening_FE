@@ -80,8 +80,8 @@ export default function FindDetailModal({
               <div className="flex gap-7.5">
                 <FormLabelAndContent labelText="게임 모드" labelFor="gameMode">
                   <span className="text-sm font-normal">
-                    {postData?.gameModeId &&
-                      GAME_MODE_META[String(postData?.gameModeId)].label}
+                    {postData?.gameMode &&
+                      GAME_MODE_META[postData?.gameMode].label}
                   </span>
                 </FormLabelAndContent>
                 <FormLabelAndContent labelText="큐 타입" labelFor="queueType">
