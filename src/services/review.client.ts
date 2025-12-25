@@ -1,5 +1,5 @@
 import ClientApi from "@/lib/clientApi";
-import { Review } from "@/types/review";
+import { Review, ReviewDistribution } from "@/types/review";
 
 export async function getUserReviewList(userId: number) {
   const res = await ClientApi(`/api/v1/reviews/users/${userId}`, {
@@ -38,4 +38,17 @@ export async function getRequestReviews() {
   }
 
   return (await res.json()) as Review[];
+}
+
+export async function getReviewDistribution(userId: number) {
+  const res = await ClientApi(`/api/v1/reviews/users/${userId}/distribution`, {
+    method: "GET",
+  });
+
+  if (!res.ok) {
+    alert("리뷰 분포 데이터를 불러올 수 없습니다.");
+    return null;
+  }
+
+  return (await res.json()) as ReviewDistribution;
 }

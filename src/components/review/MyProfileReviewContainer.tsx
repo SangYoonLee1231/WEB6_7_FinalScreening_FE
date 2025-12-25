@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import MyReviewFilterToggle, { MessageDirection } from "./MyReviewFilterToggle";
-import ReviewPercent from "./ReviewPercent";
-import ReviewCard from "./ReviewCard";
 import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 import { useGetUserReviewList } from "@/hooks/reviews/useGetUserReviewList";
 import LoadingBouncy from "../common/loading/LoadingBouncy";
+import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
+import ReviewList from "./ReviewList";
+import useGetMyWrittenReviews from "@/hooks/reviews/useGetMyWrittenReviews";
 
 export default function MyProfileReviewContainer({
   userId,
@@ -20,10 +21,24 @@ export default function MyProfileReviewContainer({
   useEffect(() => {
     setMenu("profile");
     setProfileMenu("reviews");
-  }, []);
+  }, [setMenu, setProfileMenu]);
 
-  const { data: receivedReviewData, isLoading: receivedReviewIsLoading } =
+  const { data: reviewDistributionData, isLoading: distLoading } =
+    useGetReviewDistribution(userId);
+
+  const { data: receivedReviewData, isLoading: receivedLoading } =
     useGetUserReviewList(userId);
+
+  const { data: writtenReviewData, isLoading: writtenLoading } =
+    useGetMyWrittenReviews();
+
+  const isLoading =
+    distLoading || (status === "received" ? receivedLoading : writtenLoading);
+
+  const reviewData =
+    status === "received"
+      ? (receivedReviewData ?? [])
+      : (writtenReviewData ?? []);
 
   return (
     <div>
@@ -32,88 +47,15 @@ export default function MyProfileReviewContainer({
         onChange={setStatus}
         className="mb-7.5"
       />
-      {receivedReviewIsLoading ? (
+
+      {isLoading ? (
         <LoadingBouncy />
-      ) : !receivedReviewData || receivedReviewData.length === 0 ? (
-        <div className="text-content-secondary flex justify-center">
-          리뷰 데이터가 없습니다.
-        </div>
-      ) : status === "received" ? (
-        <>
-          <ReviewPercent
-            type="default"
-            ratios={{ GOOD: 75, NORMAL: 17, BAD: 8 }}
-          />
-          <div className="mt-13.5 flex flex-col items-center justify-center gap-7.5">
-            <span className="text-content-secondary text-base">
-              총 N개의 리뷰
-            </span>
-            <div className="space-y-2">
-              <ReviewCard
-                mode="received"
-                gameName="lol"
-                communityName="커뮤니티닉네임"
-                content="리뷰내용"
-                emotion="GOOD"
-                createdAt="2025-12-12T00:12:00.000Z"
-                profileImageURL=""
-              />
-              <ReviewCard
-                mode="received"
-                gameName="lol"
-                communityName="커뮤니티닉네임"
-                content="리뷰내용"
-                emotion="NORMAL"
-                createdAt="2025-12-12T00:12:00.000Z"
-                profileImageURL=""
-              />
-              <ReviewCard
-                mode="received"
-                gameName="lol"
-                communityName="커뮤니티닉네임"
-                content="리뷰내용"
-                emotion="BAD"
-                createdAt="2025-12-12T00:12:00.000Z"
-                profileImageURL=""
-              />
-            </div>
-          </div>
-        </>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-7.5">
-          <span className="text-content-secondary text-base">
-            총 N개의 리뷰
-          </span>
-          <div className="space-y-2">
-            <ReviewCard
-              mode="written"
-              gameName="lol"
-              communityName="커뮤니티닉네임"
-              content="리뷰내용"
-              emotion="GOOD"
-              createdAt="2025-12-12T00:12:00.000Z"
-              profileImageURL=""
-            />
-            <ReviewCard
-              mode="written"
-              gameName="lol"
-              communityName="커뮤니티닉네임"
-              content="리뷰내용"
-              emotion="NORMAL"
-              createdAt="2025-12-12T00:12:00.000Z"
-              profileImageURL=""
-            />
-            <ReviewCard
-              mode="written"
-              gameName="lol"
-              communityName="커뮤니티닉네임"
-              content="리뷰내용"
-              emotion="BAD"
-              createdAt="2025-12-12T00:12:00.000Z"
-              profileImageURL=""
-            />
-          </div>
-        </div>
+        <ReviewList
+          status={status}
+          review={reviewData}
+          distribution={reviewDistributionData!}
+        />
       )}
     </div>
   );

@@ -2,6 +2,7 @@
 
 import Avatar from "@/components/common/Avatar";
 import { BoxButton } from "@/components/common/button/BoxButton";
+import ClientApi from "@/lib/clientApi";
 import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 import { formatDateToDash } from "@/utils/formatDateToDot";
 import { useEffect, useOptimistic, useState, useTransition } from "react";
@@ -28,9 +29,8 @@ export default function BanPageContent() {
     setMenu("profile");
     setProfileMenu("ban");
     const fetchBanList = async () => {
-      const res = await fetch("http://localhost:8080/api/v1/users/me/blocks", {
+      const res = await ClientApi("/api/v1/users/me/blocks", {
         method: "GET",
-        credentials: "include",
       });
 
       const data: Ban[] = await res.json();
@@ -39,28 +39,24 @@ export default function BanPageContent() {
 
     fetchBanList();
   }, []);
+
   const cancelBan = (targetUserId: number) => {
     if (isPending) return;
     startTransition(async () => {
-
       const next = banList.filter((ban) => ban.userId != targetUserId);
 
       addOptimistic(next);
 
-      const res = await fetch(
-        `http://localhost:8080/api/v1/users/me/blocks/${targetUserId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        },
-      );
+      const res = await ClientApi(`/api/v1/users/me/blocks/${targetUserId}`, {
+        method: "DELETE",
+      });
 
       if (res.ok) {
         setBanList(next);
       }
-
     });
   };
+
   return (
     <div className="flex flex-col">
       <p className="text-content-main text-4xl font-bold">차단 목록</p>

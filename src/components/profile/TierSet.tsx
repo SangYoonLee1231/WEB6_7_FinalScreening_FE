@@ -29,7 +29,7 @@ export default function TierSet({
       <Image src={tierIcons[tier]} alt={`${tier} tier image`} />
       <span className="text-content-secondary">
         {type === "default"
-          ? `${tier} ${tier === "CHALLENGER" || tier === "GRANDMASTER" || tier === "MASTER" ? "" : rank}`
+          ? `${tier} ${tier === "CHALLENGER" || tier === "GRANDMASTER" || tier === "MASTER" || tier === "UNRANKED" ? "" : rank}`
           : `${validRank ? tier[0] : tier}${validRank ? romanToNumber(rank) : ""}`}
       </span>
     </div>

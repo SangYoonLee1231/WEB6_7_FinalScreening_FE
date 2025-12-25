@@ -18,9 +18,9 @@ interface EmojiRadioButtonProps
 }
 
 const EMOJI_SRC_MAP: Record<Expression, string> = {
-  good: emojiGood.src,
-  normal: emojiNormal.src,
-  bad: emojiBad.src,
+  GOOD: emojiGood.src,
+  NORMAL: emojiNormal.src,
+  BAD: emojiBad.src,
 };
 
 interface EmojiRadioGroupProps {
@@ -57,7 +57,7 @@ export function EmojiRadioButton({
   );
 }
 
-const EXPRESSIONS: Expression[] = ["good", "normal", "bad"];
+const EXPRESSIONS: Expression[] = ["GOOD", "NORMAL", "BAD"];
 
 export function EmojiRadioGroup({
   value,
