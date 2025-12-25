@@ -73,8 +73,6 @@ export default function ProfilePageContent({
   const { data: receivedReviewData, isLoading: receivedLoading } =
     useGetUserReviewList(profileData.id);
 
-  console.log(receivedReviewData);
-
   const SoloQueue =
     RankData?.filter((r) => r.queueType === "RANKED_SOLO_5x5")[0] ?? null;
   const FlexQueue =
