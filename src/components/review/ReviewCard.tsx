@@ -18,14 +18,14 @@ import type { EmojiType as Emotion } from "@/types/emoji";
 import IntroduceBubble from "../profile/IntroduceBubble";
 import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
 import Avatar from "../common/Avatar";
+import { MessageDirection } from "./MyReviewFilterToggle";
 
-type ReviewMode = "received" | "written";
 type GameName = "lol" | "overwatch" | "valorant";
 
 const EMOJI_MAP: Record<Emotion, StaticImageData> = {
-  good: emojiGood,
-  normal: emojiNormal,
-  bad: emojiBad,
+  GOOD: emojiGood,
+  NORMAL: emojiNormal,
+  BAD: emojiBad,
 };
 
 const GAME_LOGO_MAP: Record<GameName, StaticImageData> = {
@@ -35,7 +35,7 @@ const GAME_LOGO_MAP: Record<GameName, StaticImageData> = {
 };
 
 interface ReviewCardProps {
-  mode: ReviewMode; // "received" | "written"
+  mode: MessageDirection;
   gameName: GameName;
   communityName: string;
   content: string;
@@ -56,7 +56,7 @@ export default function ReviewCard({
   const [isOpen, setIsOpen] = useState(false);
 
   // 작성한 리뷰만 토글 가능
-  const isToggleable = mode === "written";
+  const isToggleable = mode === "sent";
 
   const handleToggle = () => {
     if (!isToggleable) return; // 받은 리뷰면 클릭 무시
@@ -88,15 +88,15 @@ export default function ReviewCard({
           </div>
 
           {/* 커뮤니티 닉네임 + 내용 */}
-          <div className="flex flex-1 items-center gap-3">
+          <div className="flex flex-1 items-center gap-4">
             <div className="flex shrink-0 items-center gap-2">
-              <Avatar type="profile" src={profileImageURL} />
+              <Avatar type="profile" src={profileImageURL} size="sm" />
               <span className="text-content-primary text-sm">
                 {communityName}
               </span>
             </div>
 
-            <IntroduceBubble content={content} />
+            <IntroduceBubble content={content} className="w-full" />
           </div>
         </div>
 

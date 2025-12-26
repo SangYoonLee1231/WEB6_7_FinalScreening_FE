@@ -18,8 +18,10 @@ import { Unlink } from "lucide-react";
 import { useGetFavoriteChampions } from "@/hooks/useGetFavoriteChampions";
 import { twMerge } from "tailwind-merge";
 import { useGetRanks } from "@/hooks/useGetRanks";
-import { useGetRecentMatch } from "@/hooks/useGetRecentMatch";
-import { QUEUE_NAME, queueId } from "@/types/party";
+import { useGetUserReviewList } from "@/hooks/reviews/useGetUserReviewList";
+import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
+import RecentGameList from "./RecentGameList";
+import ClientApi from "@/lib/clientApi";
 
 type Ban = {
   userId: number;
@@ -36,7 +38,7 @@ export default function ProfilePageContent({
   gameAccountData: GameAccount | null;
 }) {
   const router = useRouter();
-  const rations = { GOOD: 3, NORMAL: 6, BAD: 1 };
+
   const [isUserBlocked, setIsUserBlocked] = useState<boolean>(false);
   const [isBlockedMsg, setIsBlockedMsg] = useState<string>("");
 
@@ -65,9 +67,11 @@ export default function ProfilePageContent({
     gameAccountData?.gameAccountId ?? 0,
   );
 
-  const { data: MatchData, isLoading: MatchDataIsLoading } = useGetRecentMatch({
-    gameAccountId: gameAccountData?.gameAccountId ?? 0,
-  });
+  const { data: reviewDistributionData, isLoading: distLoading } =
+    useGetReviewDistribution(profileData.id);
+
+  const { data: receivedReviewData, isLoading: receivedLoading } =
+    useGetUserReviewList(profileData.id);
 
   const SoloQueue =
     RankData?.filter((r) => r.queueType === "RANKED_SOLO_5x5")[0] ?? null;
@@ -75,14 +79,10 @@ export default function ProfilePageContent({
     RankData?.filter((r) => r.queueType === "RANKED_FLEX_SR")[0] ?? null;
 
   const userBanHandler = async () => {
-    const getBanRes = await fetch(
-      "http://localhost:8080/api/v1/users/me/blocks",
-      {
-        method: "GET",
-        credentials: "include",
-        cache: "no-store",
-      },
-    );
+    const getBanRes = await ClientApi("/api/v1/users/me/blocks", {
+      method: "GET",
+      cache: "no-store",
+    });
     const banListData: Ban[] = await getBanRes.json();
 
     const tempIsUserBlocked = banListData.some(
@@ -94,13 +94,9 @@ export default function ProfilePageContent({
       return;
     }
     setIsBlockedMsg("");
-    const res = await fetch(
-      `http://localhost:8080/api/v1/users/${profileData.id}/blocks`,
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    );
+    const res = await ClientApi(`/api/v1/users/${profileData.id}/blocks`, {
+      method: "POST",
+    });
     if (res.ok) {
       setIsBlockedMsg("차단되었습니다");
       setIsUserBlocked(tempIsUserBlocked);
@@ -245,143 +241,9 @@ export default function ProfilePageContent({
               {/* 최근 게임 내역 */}
               <div className="space-y-4">
                 <p className="text-xl font-semibold">최근 게임 내역</p>
-                {MatchData ? (
-                  <div className="text-content-primary flex flex-col justify-center gap-2 text-base">
-                    {MatchData.map((c) => (
-                      <div
-                        key={c.matchId}
-                        className={twMerge(
-                          "bg-negative/10 border-negative flex w-full justify-between rounded-xl border px-6 py-3",
-                          c.win && "bg-positive/10 border-positive",
-                        )}
-                      >
-                        <div className="flex w-120 justify-between gap-10.5">
-                          {/* 게임 모드, 시간 */}
-                          <div className="flex flex-col items-center justify-center gap-1">
-                            <span
-                              className={twMerge(
-                                "text-negative text-base",
-                                c.win && "text-positive",
-                              )}
-                            >
-                              {QUEUE_NAME[c.queueId as queueId] ?? "알수없음"}
-                            </span>
-                            <span className="text-content-secondary text-sm font-medium">
-                              {c.gameDurationFormatted}
-                            </span>
-                          </div>
-
-                          {/* 챔피언, 룬, 스펠 */}
-                          <div className="flex items-center justify-center gap-1">
-                            <div className="relative inline-flex">
-                              <Avatar
-                                src={c.championImageUrl}
-                                type="champion"
-                                size="lg"
-                              />
-                              <div className="absolute right-0 bottom-0 rounded-full bg-slate-800 p-1">
-                                {c.level}
-                              </div>
-                            </div>
-
-                            <div className="flex gap-1">
-                              <div className="flex flex-col gap-1">
-                                {c.perkImageUrls.map((p, index) => (
-                                  <Image
-                                    key={`perkImage ${index}`}
-                                    src={p}
-                                    alt="perk Image"
-                                    width={30}
-                                    height={30}
-                                  />
-                                ))}
-                              </div>
-
-                              <div className="flex flex-col items-center justify-center gap-1">
-                                {c.spell1ImageUrl ? (
-                                  <Image
-                                    src={c.spell1ImageUrl}
-                                    alt="spell image"
-                                    width={30}
-                                    height={30}
-                                    className="rounded-full"
-                                  />
-                                ) : (
-                                  <div className="bg-bg-secondary h-7.5 w-7.5 rounded-full" />
-                                )}
-                                {c.spell2ImageUrl ? (
-                                  <Image
-                                    src={c.spell2ImageUrl}
-                                    alt="spell image"
-                                    width={30}
-                                    height={30}
-                                    className="rounded-full"
-                                  />
-                                ) : (
-                                  <div className="bg-bg-secondary w-7.5 rounded-full" />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* KDA */}
-                          <div className="flex flex-col items-center justify-center">
-                            <p>
-                              {c.kills} /{" "}
-                              <span className="text-negative">{c.deaths}</span>{" "}
-                              / {c.assists}
-                            </p>
-                            <p className="text-content-secondary text-sm font-medium">
-                              {c.kda.toFixed(2)}
-                            </p>
-                          </div>
-                          <span className="text-content-secondary flex items-center justify-center text-sm font-medium">
-                            CS {c.cs}
-                          </span>
-                        </div>
-
-                        {/* 빌드 */}
-                        <div className="flex items-center gap-1">
-                          {c.itemImageUrls &&
-                            c.itemImageUrls.map((item, index) =>
-                              item ? (
-                                <Image
-                                  key={`item${index}`}
-                                  src={item}
-                                  alt="item image"
-                                  width={40}
-                                  height={40}
-                                />
-                              ) : (
-                                <div key={`item${index}`} />
-                              ),
-                            )}
-                        </div>
-                        <div className="flex items-center justify-center gap-10.5">
-                          {" "}
-                          {/* 시작 시간 */}
-                          <span className="text-content-secondary text-sm">
-                            {c.gameStartTimeFormatted}
-                          </span>
-                          {/* 승리/패배 뱃지 */}
-                          <div
-                            className={twMerge(
-                              "text-negative bg-negative/10 border-negative inline-flex h-8 items-center justify-center rounded-xl border px-4 py-2 text-sm font-medium",
-                              c.win &&
-                                "text-positive border-positive bg-positive/10",
-                            )}
-                          >
-                            <span>{c.win ? "승리" : "패배"}</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-content-secondary">
-                    최근 게임 내역이 없습니다.
-                  </p>
-                )}
+                <RecentGameList
+                  gameAccountId={gameAccountData?.gameAccountId!}
+                />
               </div>
             </div>
           ) : (
@@ -399,24 +261,33 @@ export default function ProfilePageContent({
           <p className="text-content-main text-3xl font-bold">리뷰 내역</p>
           <div className="m-auto flex w-[90%] flex-col gap-12.5">
             {/* 리뷰 분포 */}
-            <ReviewPercent type="default" ratios={rations} />
+            <ReviewPercent
+              type="default"
+              distributionData={reviewDistributionData!}
+            />
             {/* 리뷰 상세 내역 */}
-            <div className="flex flex-col gap-7.5">
-              <p className="text-content-secondary text-center text-base">
-                총 12개의 리뷰
-              </p>
-              <div className="flex flex-col gap-2">
-                <ReviewCard
-                  mode="received"
-                  gameName="lol"
-                  communityName="커뮤니티 닉네임"
-                  content="리뷰내용"
-                  emotion="good"
-                  createdAt="2025-12-12T00:12:00.000Z"
-                  profileImageURL=""
-                />
+            {receivedReviewData && receivedReviewData.length !== 0 ? (
+              <div className="flex flex-col items-center gap-7.5">
+                <p className="text-content-secondary text-center text-base">
+                  총 {receivedReviewData.length}개의 리뷰
+                </p>
+                <div className="flex w-[70%] flex-col gap-2">
+                  <ReviewCard
+                    mode="received"
+                    gameName="lol"
+                    communityName="커뮤니티 닉네임"
+                    content="리뷰내용"
+                    emotion="GOOD"
+                    createdAt="2025-12-12T00:12:00.000Z"
+                    profileImageURL=""
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <p className="text-content-secondary text-center">
+                리뷰 데이터가 없습니다
+              </p>
+            )}
           </div>
         </div>
       </div>

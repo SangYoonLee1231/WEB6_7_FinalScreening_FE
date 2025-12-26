@@ -23,6 +23,8 @@ import { CreateChat } from "@/services/chat.client";
 import { GameAccount } from "@/types/game-account";
 import { useRouter } from "next/navigation";
 import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
+import useGetUserProfile from "@/hooks/useGetUserProfile";
+import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
   currentUserId: number | null;
@@ -55,6 +57,15 @@ export default function FindCard({
 
   const partyMembers = partyData?.members;
 
+  const { data: userData, isLoading: userDataIsLoading } = useGetUserProfile(
+    Number(userId),
+  );
+
+  const { data: reviewDistributionData, isLoading: distLoading } =
+    useGetReviewDistribution(Number(userId));
+
+  const isLoading = userDataIsLoading || distLoading;
+
   /* ------------------ writer 데이터 문제 해결 되기 전까지 임시 데이터 ------------------ */
 
   const gameAccount = {
@@ -84,6 +95,8 @@ export default function FindCard({
 
   const validTier = isTier(tier) ? tier : "UNRANKED";
 
+  if (isLoading) return null;
+
   return (
     <>
       <div
@@ -108,7 +121,11 @@ export default function FindCard({
                   align="center"
                   className="animate-fadeIn pb-3"
                 >
-                  <MiniProfile className="z-10" />
+                  <MiniProfile
+                    className="z-10"
+                    userData={userData!}
+                    reviewDistributionData={reviewDistributionData!}
+                  />
                 </HoverCard.Content>
               </HoverCard.Root>
 

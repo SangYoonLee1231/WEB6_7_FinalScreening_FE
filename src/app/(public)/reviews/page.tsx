@@ -44,28 +44,28 @@ type Review = {
 const reviews: Review[] = [
   {
     id: 1,
-    expression: "good",
+    expression: "GOOD",
     nickname: "커뮤니티닉네임",
     content: "리뷰내용1",
     time: "5분 전",
   },
   {
     id: 2,
-    expression: "normal",
+    expression: "NORMAL",
     nickname: "커뮤니티닉네임",
     content: "리뷰내용2",
     time: "5분 전",
   },
   {
     id: 3,
-    expression: "bad",
+    expression: "BAD",
     nickname: "커뮤니티닉네임",
     content: "리뷰내용3",
     time: "5분 전",
   },
   {
     id: 4,
-    expression: "good",
+    expression: "GOOD",
     nickname: "커뮤니티닉네임",
     content:
       "리뷰내용4 정말로 아주 진짜 엄청나게 긴 문장은 이렇게 줄임표가 생깁니다 정말로 아주 진짜 엄청나게 긴 문장은 이렇게 줄임표가 생깁니다",
@@ -74,9 +74,9 @@ const reviews: Review[] = [
 ];
 
 const EMOJI_SRC_MAP: Record<Expression, string> = {
-  good: emojiGood.src,
-  normal: emojiNormal.src,
-  bad: emojiBad.src,
+  GOOD: emojiGood.src,
+  NORMAL: emojiNormal.src,
+  BAD: emojiBad.src,
 };
 
 export default function ReviewsPage() {

@@ -6,20 +6,55 @@ import normal from "@/assets/images/emoji/emoji_normal.png";
 import bad from "@/assets/images/emoji/emoji_bad.png";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
+import { ReviewDistribution } from "@/types/review";
 
 type ReviewPercentType = "default" | "mini";
 
 interface ReviewPercentProps {
   type: ReviewPercentType;
-  ratios: { GOOD: number; NORMAL: number; BAD: number };
+  distributionData: ReviewDistribution;
 }
+
+type Radius4 = [number, number, number, number];
+
+const R_LEFT: Radius4 = [50, 0, 0, 50];
+const R_RIGHT: Radius4 = [0, 50, 50, 0];
+const R_BOTH: Radius4 = [50, 50, 50, 50];
+const R_NONE: Radius4 = [0, 0, 0, 0];
 
 export default function ReviewPercent({
   type = "default",
-  ratios,
+  distributionData,
 }: ReviewPercentProps) {
+  const ratios = distributionData?.ratios ?? { GOOD: 0, NORMAL: 0, BAD: 0 };
+  const dist = distributionData?.distribution ?? {
+    GOOD: 0,
+    NORMAL: 0,
+    BAD: 0,
+  };
+
   const reviewData = [{ name: "percentBar", ...ratios }];
-  const totalReviewNum = reviewData[0].GOOD + reviewData[0].NORMAL + reviewData[0].BAD;
+
+  const getBarRadius = (key: "GOOD" | "NORMAL" | "BAD"): Radius4 => {
+    const ordered = [
+      { k: "GOOD" as const, v: ratios.GOOD },
+      { k: "NORMAL" as const, v: ratios.NORMAL },
+      { k: "BAD" as const, v: ratios.BAD },
+    ].filter((x) => x.v > 0);
+
+    if (ordered.length === 0) return R_NONE;
+
+    const first = ordered[0].k;
+    const last = ordered[ordered.length - 1].k;
+
+    if (first === last && key === first) return R_BOTH;
+    if (key === first) return R_LEFT;
+    if (key === last) return R_RIGHT;
+    return R_NONE;
+  };
+
+  if (!distributionData) return null;
+
   return (
     <div
       className={twMerge(
@@ -56,16 +91,21 @@ export default function ReviewPercent({
               dataKey="GOOD"
               stackId="a"
               fill="#03AEDD"
-              radius={[50, 0, 0, 50]}
+              radius={getBarRadius("GOOD")}
             ></Bar>
 
-            <Bar dataKey="NORMAL" stackId="a" fill="#FF9D00"></Bar>
+            <Bar
+              dataKey="NORMAL"
+              stackId="a"
+              fill="#FF9D00"
+              radius={getBarRadius("NORMAL")}
+            ></Bar>
 
             <Bar
               dataKey="BAD"
               stackId="a"
               fill="#FA084D"
-              radius={[0, 50, 50, 0]}
+              radius={getBarRadius("BAD")}
             ></Bar>
           </BarChart>
         </ResponsiveContainer>
@@ -79,20 +119,28 @@ export default function ReviewPercent({
         <div className="flex items-center gap-2">
           <Image src={good} alt="good review emoji" />
           <span className="">
-            {reviewData[0].GOOD}개<span className="text-[#10B5DC]">({reviewData[0].GOOD / totalReviewNum * 100}%)</span>
+            {distributionData.distribution.GOOD}개
+            <span className="text-[#10B5DC]">
+              ({distributionData.ratios.GOOD}%)
+            </span>
           </span>
         </div>
         <div className="flex items-center gap-2">
           <Image src={normal} alt="normal review emoji" />
           <span className="">
-            {reviewData[0].NORMAL}개
-            <span className="text-[#FFA106]">({reviewData[0].NORMAL / totalReviewNum * 100}%)</span>
+            {distributionData.distribution.NORMAL}개
+            <span className="text-[#FFA106]">
+              ({distributionData.ratios.NORMAL}%)
+            </span>
           </span>
         </div>
         <div className="flex items-center gap-2">
           <Image src={bad} alt="bad review emoji" />
           <span className="">
-            {reviewData[0].BAD}개<span className="text-[#FC3665]">({reviewData[0].BAD / totalReviewNum * 100}%)</span>
+            {distributionData.distribution.BAD}개
+            <span className="text-[#FC3665]">
+              ({distributionData.ratios.BAD}%)
+            </span>
           </span>
         </div>
       </div>
