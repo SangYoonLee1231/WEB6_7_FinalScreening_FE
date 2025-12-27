@@ -24,6 +24,8 @@ import RecentGameList from "./RecentGameList";
 import ClientApi from "@/lib/clientApi";
 import { useMenuStore } from "@/stores/menuStore";
 import LoadingBouncy from "../common/loading/LoadingBouncy";
+import { gameAccountRefreshAll } from "@/services/game-account/data.client";
+import { RefreshCooldown } from "./RefreshCooldown";
 
 type Ban = {
   userId: number;
@@ -31,6 +33,8 @@ type Ban = {
   profileImage: string;
   blockedAt: string;
 };
+
+const REFRESH_COOLDOWN_MS = 2 * 60 * 1000;
 
 export default function ProfilePageContent({
   profileData,
@@ -45,6 +49,8 @@ export default function ProfilePageContent({
 
   const [isUserBlocked, setIsUserBlocked] = useState<boolean>(false);
   const [isBlockedMsg, setIsBlockedMsg] = useState<string>("");
+
+  const gameAccountId = gameAccountData?.gameAccountId ?? 0;
 
   useEffect(() => {
     setMenu("");
@@ -67,11 +73,10 @@ export default function ProfilePageContent({
       : null;
 
   const { data: ChampionData, isLoading: ChampionDataIsLoading } =
-    useGetFavoriteChampions(gameAccountData?.gameAccountId ?? 0);
+    useGetFavoriteChampions(gameAccountId);
 
-  const { data: RankData, isLoading: RankDataIsLoading } = useGetRanks(
-    gameAccountData?.gameAccountId ?? 0,
-  );
+  const { data: RankData, isLoading: RankDataIsLoading } =
+    useGetRanks(gameAccountId);
 
   const { data: reviewDistributionData, isLoading: distLoading } =
     useGetReviewDistribution(profileData.id);
@@ -114,6 +119,45 @@ export default function ProfilePageContent({
     RankDataIsLoading ||
     distLoading ||
     receivedLoading;
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [cooldownLeftMs, setCooldownLeftMs] = useState(0);
+
+  const cooldownKey = `gameAccountRefreshCooldown:${gameAccountId}`;
+
+  useEffect(() => {
+    if (!gameAccountId) return;
+
+    const tick = () => {
+      const last = Number(localStorage.getItem(cooldownKey) ?? "0");
+      const left = Math.max(0, last + REFRESH_COOLDOWN_MS - Date.now());
+      setCooldownLeftMs(left);
+    };
+
+    tick();
+    const timer = setInterval(tick, 500);
+    return () => clearInterval(timer);
+  }, [gameAccountId]);
+
+  const refreshHandler = async () => {
+    if (!gameAccountId) return;
+    if (isRefreshing || cooldownLeftMs > 0) return;
+
+    try {
+      localStorage.setItem(cooldownKey, String(Date.now()));
+      setIsRefreshing(true);
+
+      await gameAccountRefreshAll({
+        gameAccountId,
+        matchCount: 100,
+      });
+    } catch (e) {
+      localStorage.removeItem(cooldownKey);
+      alert("전적 갱신에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   if (isLoading)
     return (
@@ -169,7 +213,7 @@ export default function ProfilePageContent({
           {lolData ? (
             <div className="flex flex-col justify-center gap-8">
               {/* 게임 프로필 정보 및 전적 갱신 버튼 */}
-              <div className="flex items-center gap-8">
+              <div className="flex flex-col items-center gap-2">
                 <div className="flex items-center gap-3">
                   <Avatar type="profile" src={lolData.profileIconUrl} />
                   <div className="flex items-center gap-2">
@@ -181,112 +225,129 @@ export default function ProfilePageContent({
                     </span>
                   </div>
                 </div>
-                <BoxButton
-                  tone="color"
-                  size="sm"
-                  className="w-20 py-3"
-                  text="전적 갱신"
-                />
+                <div className="flex flex-col items-center gap-2">
+                  <BoxButton
+                    tone={cooldownLeftMs > 0 ? "black" : "color"}
+                    size="sm"
+                    className="w-20 py-3"
+                    text={isRefreshing ? "갱신중" : "전적 갱신"}
+                    disabled={isRefreshing || cooldownLeftMs > 0}
+                    onClick={refreshHandler}
+                  />
+                  {cooldownLeftMs > 0 && (
+                    <RefreshCooldown cooldownLeftMs={cooldownLeftMs} />
+                  )}
+                </div>
               </div>
-              {/* 랭크 및 승률 정보 */}
-              <div className="m-auto grid w-[90%] grid-cols-[1fr_1fr_1fr] gap-5">
-                <HorizontalCardContainer className="flex flex-col items-center justify-center gap-2 border-none px-12 py-6">
-                  <p className="text-semibold text-xl">개인/2인 랭크 게임</p>
-                  <div className="flex flex-col">
-                    {SoloQueue ? (
-                      <TierSet tier={SoloQueue.tier} rank="I" />
-                    ) : (
-                      <TierSet tier="UNRANKED" rank="I" />
-                    )}
-                  </div>
-                </HorizontalCardContainer>
-                <HorizontalCardContainer className="flex flex-col items-center justify-center gap-2 border-none px-12 py-6">
-                  <p className="text-semibold text-xl">자유 랭크 게임</p>
-                  <div className="flex flex-col">
-                    {FlexQueue ? (
-                      <TierSet tier={FlexQueue.tier} rank="I" />
-                    ) : (
-                      <TierSet tier="UNRANKED" rank="I" />
-                    )}
-                  </div>
-                </HorizontalCardContainer>
-                <HorizontalCardContainer className="flex flex-col items-center justify-center gap-3 border-none px-12 py-6">
-                  <p className="text-semibold text-xl">승률</p>
-                  <div className="flex h-full flex-col items-center justify-center">
-                    {RankData ? (
-                      RankData.map((r) => (
-                        <div className="flex flex-col items-center">
+              {isRefreshing ? (
+                <div className="flex w-full items-center justify-center py-16">
+                  <LoadingBouncy />
+                </div>
+              ) : (
+                <>
+                  {/* 랭크 및 승률 정보 */}
+                  <div className="m-auto grid w-[90%] grid-cols-[1fr_1fr_1fr] gap-5">
+                    <HorizontalCardContainer className="flex flex-col items-center justify-center gap-2 border-none px-12 py-6">
+                      <p className="text-semibold text-xl">
+                        개인/2인 랭크 게임
+                      </p>
+                      <div className="flex flex-col">
+                        {SoloQueue ? (
+                          <TierSet tier={SoloQueue.tier} rank="I" />
+                        ) : (
+                          <TierSet tier="UNRANKED" rank="I" />
+                        )}
+                      </div>
+                    </HorizontalCardContainer>
+                    <HorizontalCardContainer className="flex flex-col items-center justify-center gap-2 border-none px-12 py-6">
+                      <p className="text-semibold text-xl">자유 랭크 게임</p>
+                      <div className="flex flex-col">
+                        {FlexQueue ? (
+                          <TierSet tier={FlexQueue.tier} rank="I" />
+                        ) : (
+                          <TierSet tier="UNRANKED" rank="I" />
+                        )}
+                      </div>
+                    </HorizontalCardContainer>
+                    <HorizontalCardContainer className="flex flex-col items-center justify-center gap-3 border-none px-12 py-6">
+                      <p className="text-semibold text-xl">승률</p>
+                      <div className="flex h-full flex-col items-center justify-center">
+                        {RankData && RankData.length !== 0 ? (
+                          RankData.map((r) => (
+                            <div className="flex flex-col items-center">
+                              <p className="text-content-secondary text-sm">
+                                {r.queueType === "RANKED_SOLO_5x5"
+                                  ? "솔로 랭크"
+                                  : "자유 랭크"}
+                              </p>
+                              <WinRate
+                                type="donut"
+                                className="w-25"
+                                winRate={r.winRate}
+                                win={r.wins}
+                                lose={r.losses}
+                              />
+                            </div>
+                          ))
+                        ) : (
                           <p className="text-content-secondary text-sm">
-                            {r.queueType === "RANKED_SOLO_5x5"
-                              ? "솔로 랭크"
-                              : "자유 랭크"}
+                            승률 데이터가 없습니다
                           </p>
-                          <WinRate
-                            type="donut"
-                            className="w-25"
-                            winRate={r.winRate}
-                            win={r.wins}
-                            lose={r.losses}
-                          />
-                        </div>
-                      ))
+                        )}
+                      </div>
+                    </HorizontalCardContainer>
+                  </div>
+                  {/* 최근선호 챔피언 */}
+                  <div className="space-y-4">
+                    <p className="text-xl font-semibold">
+                      최근 선호 챔피언{" "}
+                      <span className="text-content-primary text-lg font-medium">
+                        (최근 20게임)
+                      </span>
+                    </p>
+                    {ChampionData && ChampionData.length !== 0 ? (
+                      <div className="flex gap-2">
+                        {ChampionData.map((c) => (
+                          <div
+                            key={c.championId}
+                            className="flex items-center gap-2"
+                          >
+                            <Image
+                              src={c.championImageUrl}
+                              alt={c.championName}
+                              className="rounded-full"
+                              width={50}
+                              height={50}
+                            />
+                            <p className="text-content-secondary text-sm">
+                              <span
+                                className={twMerge(
+                                  "text-accent",
+                                  c.winRate < 50 && "text-content-primary",
+                                )}
+                              >
+                                {Math.round(c.winRate)}%
+                              </span>{" "}
+                              ({c.wins}승 / {c.losses}패)
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     ) : (
-                      <p className="text-content-secondary text-sm">
-                        승률 데이터가 없습니다
+                      <p className="text-content-secondary">
+                        최근 선호 챔피언 내역이 없습니다
                       </p>
                     )}
                   </div>
-                </HorizontalCardContainer>
-              </div>
-              {/* 최근선호 챔피언 */}
-              <div className="space-y-4">
-                <p className="text-xl font-semibold">
-                  최근 선호 챔피언{" "}
-                  <span className="text-content-primary text-lg font-medium">
-                    (최근 20게임)
-                  </span>
-                </p>
-                {ChampionData ? (
-                  <div className="flex gap-2">
-                    {ChampionData.map((c) => (
-                      <div
-                        key={c.championId}
-                        className="flex items-center gap-2"
-                      >
-                        <Image
-                          src={c.championImageUrl}
-                          alt={c.championName}
-                          className="rounded-full"
-                          width={50}
-                          height={50}
-                        />
-                        <p className="text-content-secondary text-sm">
-                          <span
-                            className={twMerge(
-                              "text-accent",
-                              c.winRate < 50 && "text-content-primary",
-                            )}
-                          >
-                            {Math.round(c.winRate)}%
-                          </span>{" "}
-                          ({c.wins}승 / {c.losses}패)
-                        </p>
-                      </div>
-                    ))}
+                  {/* 최근 게임 내역 */}
+                  <div className="space-y-4">
+                    <p className="text-xl font-semibold">최근 게임 내역</p>
+                    <RecentGameList
+                      gameAccountId={gameAccountData?.gameAccountId!}
+                    />
                   </div>
-                ) : (
-                  <p className="text-content-secondary">
-                    최근 선호 챔피언 내역이 없습니다.
-                  </p>
-                )}
-              </div>
-              {/* 최근 게임 내역 */}
-              <div className="space-y-4">
-                <p className="text-xl font-semibold">최근 게임 내역</p>
-                <RecentGameList
-                  gameAccountId={gameAccountData?.gameAccountId!}
-                />
-              </div>
+                </>
+              )}
             </div>
           ) : (
             <div className="m-auto flex w-full flex-col items-center justify-center gap-6">

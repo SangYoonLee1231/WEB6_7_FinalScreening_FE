@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import {
   Bar,
   BarChart,
@@ -12,14 +14,11 @@ import {
 } from "recharts";
 import { twMerge } from "tailwind-merge";
 
-// 백엔드 data 형식 확인하면 수정하기
-
 const COLORS = ["#51a2ff", "#ff6467"];
 
 type WinRateType = "horizontal" | "donut";
 
-// winRate 나중에 데이터 확정되면 수정하기. 현재 임시 데이터
-export default function WinRate({
+const WinRate = memo(function WinRate({
   type,
   winRate = 50,
   win,
@@ -121,4 +120,6 @@ export default function WinRate({
       </div>
     );
   }
-}
+});
+
+export default WinRate;

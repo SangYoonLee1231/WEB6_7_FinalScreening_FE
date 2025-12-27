@@ -185,7 +185,7 @@ export default function RecentGameList({
           )}
         </div>
       ) : (
-        <p className="text-content-secondary">최근 게임 내역이 없습니다.</p>
+        <p className="text-content-secondary">최근 게임 내역이 없습니다</p>
       )}
     </>
   );
