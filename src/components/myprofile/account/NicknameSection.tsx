@@ -67,7 +67,7 @@ export default function NicknameSection({ initialNickname }: NicknameProps) {
               value={modifyNickname}
               onChange={(e) => setModifyNickname(e.target.value)}
               placeholder={nickname ?? ""}
-              className="h-5 w-42 py-4"
+              className="h-4 w-29 px-[9px] py-3 text-base"
             />
 
             <button

@@ -40,37 +40,35 @@ export default function CommentSection({ initialComment }: CommentProps) {
     <div className="flex flex-col gap-2">
       <h3>소개</h3>
       {isCommentEditing ? (
-        <form
-          className="flex flex-row items-center space-x-4"
-          onSubmit={handleCommentSubmit}
-        >
+        <form className="flex flex-col gap-2" onSubmit={handleCommentSubmit}>
           <TextInput
             value={tempComment}
             onChange={(e) => setTempComment(e.target.value)}
             placeholder={comment}
-            className="h-11 w-90 py-4"
+            className="h-12 py-4 text-base"
           />
-
-          <button
-            type="submit"
-            className="text-accent cursor-pointer hover:underline"
-          >
-            저장
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setIsCommentEditing(false);
-              setTempComment(comment);
-            }}
-            className="text-content-secondary cursor-pointer hover:underline"
-          >
-            취소
-          </button>
+          <div className="flex gap-4 self-end mr-2 mt-[11px]">
+            <button
+              type="submit"
+              className="text-accent cursor-pointer hover:underline"
+            >
+              저장
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsCommentEditing(false);
+                setTempComment(comment);
+              }}
+              className="text-content-secondary cursor-pointer hover:underline"
+            >
+              취소
+            </button>
+          </div>
         </form>
       ) : (
-        <div className="flex flex-row justify-items-center space-x-4">
-          <IntroduceBubble content={comment ?? ""} type="message" />
+        <div className="flex flex-col gap-2">
+          <IntroduceBubble content={comment ?? ""} type="message" className="text-base" />
           <BoxButton
             text="수정"
             tone="color"

@@ -94,12 +94,12 @@ export default function PasswordSection() {
             </button>
           }
         />
-        <span className="ml-2">{passwordError}</span>
+        { passwordError && <span className="ml-2">{passwordError}</span> }
         <BoxButton
           text="수정"
           tone="color"
           size="xs"
-          className="mt-3 flex-nowrap self-end"
+          className="mt-2 flex-nowrap self-end"
           onClick={handlePasswordSubmit}
         />
       </form>
