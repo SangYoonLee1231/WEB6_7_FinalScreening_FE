@@ -17,7 +17,7 @@ export default function CommentSection({ initialComment }: CommentProps) {
 
   useEffect(() => {
     setComment(initialComment);
-  });
+  }, [initialComment]);
 
   useEffect(() => {
     if (isCommentEditing && commentInputRef.current) {
