@@ -16,8 +16,9 @@ import {
   useState,
   useTransition,
 } from "react";
+import ClientApi, { API_BASE } from "@/lib/clientApi";
 
-interface dataProps {
+interface profileDataProps {
   email: string;
   profile_image: string | null;
   nickname: string;
@@ -78,18 +79,19 @@ export default function AccountPageContent() {
     setMenu("profile");
     setProfileMenu("account");
     const fetchMyProfile = async () => {
-      // try-catch로 구현
-      const res = await fetch(`http://localhost:8080/api/v1/users/me`, {
+      const res = await ClientApi(`/api/v1/users/me`, {
         method: "GET",
-        credentials: "include",
       });
 
-      const data: dataProps = await res.json();
-      // console.log("account data", data);
-      setNickname(data.nickname);
-      setProfileImage(data.profile_image);
-      setEmail(data.email);
-      setComment(data.comment ?? "");
+      const profileData: profileDataProps = await res.json();
+
+      if (res.ok) {
+        // console.log("profileData", profileData);
+        setNickname(profileData.nickname);
+        setProfileImage(profileData.profile_image);
+        setEmail(profileData.email);
+        setComment(profileData.comment ?? "");
+      }
     };
 
     fetchMyProfile();
@@ -109,14 +111,12 @@ export default function AccountPageContent() {
       setNicknameError(parsedNickname.error.issues[0]?.message);
       return;
     }
-    
+
     startNicknameTransition(async () => {
       addOptimisticNickname(parsedNickname.data);
       try {
-        const res = await fetch(`http://localhost:8080/api/v1/users/me/nickname`, {
+        const res = await ClientApi("/api/v1/users/me/nickname", {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
           body: JSON.stringify({ nickname: parsedNickname.data }),
         });
 
@@ -139,12 +139,11 @@ export default function AccountPageContent() {
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:8080/api/v1/users/me/comment`, {
+      const res = await ClientApi("/api/v1/users/me/comment", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ comment: tempComment }),
       });
+
       if (res.ok) {
         setComment(tempComment);
         setIsCommentEditing(false);
@@ -170,16 +169,15 @@ export default function AccountPageContent() {
     }
 
     try {
-      const res = await fetch(`http://localhost:8080/api/v1/users/me/password`, {
+      const res = await ClientApi("/api/v1/users/me/password", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
           password: password,
           newPassword: newPassword,
           newPasswordConfirm: newPasswordConfirm,
         }),
       });
+
       if (res.ok) {
         alert("비밀번호 변경 성공!");
       } else {
@@ -212,10 +210,21 @@ export default function AccountPageContent() {
     const formData = new FormData();
     formData.append("profileImage", base64String);
     try {
-      const res = await fetch(`http://localhost:8080/api/v1/users/me/image`, {
+      // const res = await fetch(`${API_BASE}/api/v1/users/me/image`, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "multipart/form-data"
+      //   },
+      //   body: formData,
+      //   credentials: "include",
+      // });
+
+      const res = await ClientApi("/api/v1/users/me/image", {
         method: "PUT",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
         body: formData,
-        credentials: "include",
       });
 
       if (res.ok) {
@@ -348,7 +357,7 @@ export default function AccountPageContent() {
               </button>
             </form>
           ) : (
-            <div className="flex flex-row space-x-4">
+            <div className="flex flex-row justify-items-center space-x-4">
               <IntroduceBubble content={comment ?? ""} type="message" />
               <BoxButton
                 text="수정"
@@ -359,9 +368,7 @@ export default function AccountPageContent() {
                   setTempComment(comment);
                   setIsCommentEditing(true);
                 }}
-              >
-                수정
-              </BoxButton>
+              />
             </div>
           )}
         </div>
@@ -384,7 +391,7 @@ export default function AccountPageContent() {
               placeholder="새 비밀번호 확인"
               onChange={(e) => setNewPasswordConfirm(e.target.value)}
             />
-            <span>{passwordError}</span>
+            <span className="ml-2">{passwordError}</span>
             <BoxButton
               text="수정"
               tone="color"
