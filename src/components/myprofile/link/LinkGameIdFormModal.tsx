@@ -75,6 +75,7 @@ export default function LinkGameIdFormModal({
 
       refreshAllMutation.mutate({
         gameAccountId: linked.gameAccountId,
+        matchCount: 100,
       });
     } else if (initialData) {
       if (initialData.updatedAt) {
@@ -92,6 +93,7 @@ export default function LinkGameIdFormModal({
 
       refreshAllMutation.mutate({
         gameAccountId: initialData.gameAccountId,
+        matchCount: 100,
       });
     } else alert("수정할 계정을 찾을 수 없습니다.");
 

@@ -13,10 +13,6 @@ import {
 import { twMerge } from "tailwind-merge";
 
 // 백엔드 data 형식 확인하면 수정하기
-const data = [
-  { name: "win", value: 70 },
-  { name: "lose", value: 30 },
-];
 
 const COLORS = ["#51a2ff", "#ff6467"];
 
@@ -26,15 +22,29 @@ type WinRateType = "horizontal" | "donut";
 export default function WinRate({
   type,
   winRate = 50,
+  win,
+  lose,
   className,
 }: {
   type: WinRateType;
-  winRate?: number;
+  winRate: number;
+  win: number;
+  lose: number;
   className?: string;
 }) {
+  const data = [
+    { name: "win", value: win },
+    { name: "lose", value: lose },
+  ];
+
   if (type === "donut")
     return (
-      <div className={twMerge("flex flex-col items-center justify-center", className)}>
+      <div
+        className={twMerge(
+          "flex flex-col items-center justify-center",
+          className,
+        )}
+      >
         <ResponsiveContainer
           width="100%"
           aspect={1}
@@ -61,11 +71,7 @@ export default function WinRate({
               dominantBaseline="middle"
               className="fill-content-primary text-xs"
             >
-              {Math.round(
-                // (win / total) * 100
-                (data[0].value / (data[0].value + data[1].value)) * 100,
-              )}
-              %
+              {winRate}%
             </text>
           </PieChart>
         </ResponsiveContainer>

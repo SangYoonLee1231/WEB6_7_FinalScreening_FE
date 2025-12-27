@@ -22,6 +22,8 @@ import { useGetUserReviewList } from "@/hooks/reviews/useGetUserReviewList";
 import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
 import RecentGameList from "./RecentGameList";
 import ClientApi from "@/lib/clientApi";
+import { useMenuStore } from "@/stores/menuStore";
+import LoadingBouncy from "../common/loading/LoadingBouncy";
 
 type Ban = {
   userId: number;
@@ -39,10 +41,14 @@ export default function ProfilePageContent({
 }) {
   const router = useRouter();
 
+  const { setMenu } = useMenuStore();
+
   const [isUserBlocked, setIsUserBlocked] = useState<boolean>(false);
   const [isBlockedMsg, setIsBlockedMsg] = useState<string>("");
 
   useEffect(() => {
+    setMenu("");
+
     if (!profileData) {
       alert("유저 프로필을 불러올 수 없습니다.");
       router.back();
@@ -102,6 +108,19 @@ export default function ProfilePageContent({
       setIsUserBlocked(tempIsUserBlocked);
     }
   };
+
+  const isLoading =
+    ChampionDataIsLoading ||
+    RankDataIsLoading ||
+    distLoading ||
+    receivedLoading;
+
+  if (isLoading)
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <LoadingBouncy />
+      </div>
+    );
 
   return (
     <section className="flex h-full w-full">
@@ -191,9 +210,32 @@ export default function ProfilePageContent({
                     )}
                   </div>
                 </HorizontalCardContainer>
-                <HorizontalCardContainer className="flex flex-col items-center justify-center gap-5.5 border-none px-12 py-6">
+                <HorizontalCardContainer className="flex flex-col items-center justify-center gap-3 border-none px-12 py-6">
                   <p className="text-semibold text-xl">승률</p>
-                  <WinRate type="donut" className="w-25" />
+                  <div className="flex h-full flex-col items-center justify-center">
+                    {RankData ? (
+                      RankData.map((r) => (
+                        <div className="flex flex-col items-center">
+                          <p className="text-content-secondary text-sm">
+                            {r.queueType === "RANKED_SOLO_5x5"
+                              ? "솔로 랭크"
+                              : "자유 랭크"}
+                          </p>
+                          <WinRate
+                            type="donut"
+                            className="w-25"
+                            winRate={r.winRate}
+                            win={r.wins}
+                            lose={r.losses}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-content-secondary text-sm">
+                        승률 데이터가 없습니다
+                      </p>
+                    )}
+                  </div>
                 </HorizontalCardContainer>
               </div>
               {/* 최근선호 챔피언 */}

@@ -4,21 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 
 export function useGetRecentMatch({
   gameAccountId,
-  matchCount,
+  count,
 }: {
   gameAccountId: number;
-  matchCount?: number;
+  count: number;
 }) {
   return useQuery<Match[] | null>({
-    queryKey: [gameAccountId, "recentMatchData"],
-    enabled: !!gameAccountId,
-    queryFn: () =>
-      getRecentMatches({
-        gameAccountId: gameAccountId,
-        ...(matchCount !== undefined && {
-          matchCount,
-        }),
-      }),
-    staleTime: 5 * 60 * 1000,
+    queryKey: [gameAccountId, "recentMatchData", count],
+    enabled: !!gameAccountId && count > 0,
+    queryFn: () => getRecentMatches({ gameAccountId, count }),
+    placeholderData: (prev) => prev,
   });
 }
