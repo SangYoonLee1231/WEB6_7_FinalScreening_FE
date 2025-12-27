@@ -187,9 +187,12 @@ export default function LinkGameIdFormModal({
                   className="h-10 text-sm"
                   {...register("gameTag", {
                     required: "태그를 입력해주세요.",
+                    validate: (value) =>
+                      value.replace(/\s/g, "").length > 0 ||
+                      "공백만 입력할 수는 없습니다.",
                     pattern: {
-                      value: /^[A-Za-z0-9가-힣]+$/,
-                      message: "태그는 공백 없이 문자/숫자만 입력해주세요.",
+                      value: /^[A-Za-z0-9가-힣 ]+$/,
+                      message: "태그는 문자/숫자만 입력할 수 있습니다.",
                     },
                   })}
                 />
