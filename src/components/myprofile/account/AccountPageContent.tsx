@@ -1,10 +1,12 @@
 "use client";
 
-import { z } from "zod";
 import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 import { useEffect, useState } from "react";
 import ClientApi from "@/lib/clientApi";
 import NicknameSection from "./NicknameSection";
+import ProfileImageSection from "./ProfileImageSection";
+import CommentSection from "./CommentSection";
+import PasswordSection from "./PasswordSection";
 
 interface profileDataProps {
   email: string;
@@ -12,23 +14,6 @@ interface profileDataProps {
   nickname: string;
   comment: string | null;
 }
-
-export const nicknameSchema = z
-  .string()
-  .regex(
-    /^[a-zA-Z0-9가-힣]+$/,
-    "공백이나 특수 문자는 사용할 수 없으며 한글, 영어, 숫자만 가능합니다.",
-  )
-  .min(2, "닉네임은 2글자 이상이어야 합니다.")
-  .max(8, "닉네임은 8글자 이하여야 합니다.");
-
-export const passwordSchema = z
-  .string()
-  .regex(
-    /^[a-zA-Z0-9가-힣!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/,
-    "공백 문자는 사용할 수 없으며 한글, 영어, 숫자, 특수문자만 가능합니다.",
-  )
-  .min(8, "비밀번호는 8글자 이상이어야 합니다.");
 
 export default function AccountPageContent() {
   const { setMenu } = useMenuStore();

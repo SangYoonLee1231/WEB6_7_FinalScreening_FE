@@ -1,6 +1,7 @@
 import { BoxButton } from "@/components/common/button/BoxButton";
 import TextInput from "@/components/common/TextInput";
 import ClientApi from "@/lib/clientApi";
+import { passwordSchema } from "@/lib/validation/passwordSchema";
 import { useState } from "react";
 
 export default function PasswordSection() {

@@ -1,5 +1,6 @@
 import TextInput from "@/components/common/TextInput";
 import ClientApi from "@/lib/clientApi";
+import { nicknameSchema } from "@/lib/validation/nicknameSchema";
 import { CircleAlert } from "lucide-react";
 import { useEffect, useOptimistic, useState, useTransition } from "react";
 
