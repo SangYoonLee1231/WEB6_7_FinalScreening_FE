@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import { gameAccountRefreshAll } from "@/services/game-account/data.client";
 import { useMutation } from "@tanstack/react-query";
 
-const items = [{ value: "LEAGUE_OF_LEGEND", label: "리그 오브 레전드" }];
+const items = [{ value: "LEAGUE_OF_LEGENDS", label: "리그 오브 레전드" }];
 
 type FormValues = {
   gameType: string;

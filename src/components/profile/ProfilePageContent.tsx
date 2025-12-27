@@ -55,7 +55,7 @@ export default function ProfilePageContent({
   const { nickname, profile_image, comment } = profileData;
 
   const lolData =
-    gameAccountData?.gameType === "LEAGUE_OF_LEGEND" ||
+    gameAccountData?.gameType === "LEAGUE_OF_LEGENDS" ||
     gameAccountData?.gameType === "리그 오브 레전드"
       ? gameAccountData
       : null;
