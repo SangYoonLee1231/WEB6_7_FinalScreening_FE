@@ -3,11 +3,16 @@ import TextInput from "@/components/common/TextInput";
 import ClientApi from "@/lib/clientApi";
 import { passwordSchema } from "@/lib/validation/passwordSchema";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function PasswordSection() {
   const [password, setPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [newPasswordConfirm, setNewPasswordConfirm] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showNewPasswordConfirm, setShowNewPasswordConfirm] = useState(false);
+
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
@@ -48,16 +53,46 @@ export default function PasswordSection() {
       <h3>비밀번호 변경</h3>
       <form className="flex flex-col gap-2">
         <TextInput
+          type={showPassword ? "text" : "password"}
           placeholder="현재 비밀번호"
           onChange={(e) => setPassword(e.target.value)}
+          rightElement={
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-content-tertiary hover:text-content-secondary"
+            >
+              {showPassword ? <Eye size={24} /> : <EyeOff size={24} />}
+            </button>
+          }
         />
         <TextInput
+          type={showNewPassword ? "text" : "password"}
           placeholder="새 비밀번호"
           onChange={(e) => setNewPassword(e.target.value)}
+          rightElement={
+            <button
+              type="button"
+              onClick={() => setShowNewPassword(!showNewPassword)}
+              className="text-content-tertiary hover:text-content-secondary"
+            >
+              {showNewPassword ? <Eye size={24} /> : <EyeOff size={24} />}
+            </button>
+          }
         />
         <TextInput
+          type={showNewPasswordConfirm ? "text" : "password"}
           placeholder="새 비밀번호 확인"
           onChange={(e) => setNewPasswordConfirm(e.target.value)}
+          rightElement={
+            <button
+              type="button"
+              onClick={() => setShowNewPasswordConfirm(!showNewPasswordConfirm)}
+              className="text-content-tertiary hover:text-content-secondary"
+            >
+              {showNewPasswordConfirm ? <Eye size={24} /> : <EyeOff size={24} />}
+            </button>
+          }
         />
         <span className="ml-2">{passwordError}</span>
         <BoxButton

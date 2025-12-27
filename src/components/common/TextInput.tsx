@@ -3,11 +3,13 @@ import { twMerge } from "tailwind-merge";
 interface TextInputProps extends React.ComponentPropsWithoutRef<"input"> {
   placeholder: string;
   className?: string;
+  rightElement?: React.ReactNode;
 }
 
 export default function TextInput({
   placeholder,
   className,
+  rightElement,
   ...inputProps
 }: TextInputProps) {
   return (
@@ -23,6 +25,11 @@ export default function TextInput({
         {...inputProps}
         className="placeholder:text-content-tertiary w-full py-2 outline-0"
       />
+      {rightElement && (
+        <div className="flex items-center shrink-0">
+          {rightElement}
+        </div>
+      )}
     </div>
   );
 }
