@@ -4,12 +4,14 @@ interface TextInputProps extends React.ComponentPropsWithoutRef<"input"> {
   placeholder: string;
   className?: string;
   rightElement?: React.ReactNode;
+  ref?: React.Ref<HTMLInputElement>; 
 }
 
 export default function TextInput({
   placeholder,
   className,
   rightElement,
+  ref,
   ...inputProps
 }: TextInputProps) {
   return (
@@ -21,6 +23,7 @@ export default function TextInput({
     >
       <input
         type="text"
+        ref={ref}
         placeholder={placeholder}
         {...inputProps}
         className="placeholder:text-content-tertiary w-full py-2 outline-0"

@@ -2,7 +2,7 @@ import TextInput from "@/components/common/TextInput";
 import ClientApi from "@/lib/clientApi";
 import { nicknameSchema } from "@/lib/validation/nicknameSchema";
 import { CircleAlert } from "lucide-react";
-import { useEffect, useOptimistic, useState, useTransition } from "react";
+import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
 
 interface NicknameProps {
   initialNickname: string;
@@ -20,9 +20,17 @@ export default function NicknameSection({ initialNickname }: NicknameProps) {
     string
   >(nickname, (_: string | null, nextValue: string) => nextValue);
 
+  const nicknameInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     setNickname(initialNickname);
   }, [initialNickname]);
+
+  useEffect(() => {
+    if (isNicknameEditing && nicknameInputRef.current) {
+      nicknameInputRef.current.focus();
+    }
+  }, [isNicknameEditing]);
 
   const handleNicknameSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +72,7 @@ export default function NicknameSection({ initialNickname }: NicknameProps) {
             onSubmit={handleNicknameSubmit}
           >
             <TextInput
+              ref={nicknameInputRef}
               value={modifyNickname}
               onChange={(e) => setModifyNickname(e.target.value)}
               placeholder={nickname ?? ""}
@@ -93,7 +102,6 @@ export default function NicknameSection({ initialNickname }: NicknameProps) {
             <button
               className="text-accent cursor-pointer hover:underline"
               onClick={() => {
-                console.log("optimisticNickname", optimisticNickname);
                 setModifyNickname(nickname ?? "");
                 setIsNicknameEditing(true);
               }}

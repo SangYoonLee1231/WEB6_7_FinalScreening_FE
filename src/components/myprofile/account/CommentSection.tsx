@@ -2,7 +2,7 @@ import { BoxButton } from "@/components/common/button/BoxButton";
 import TextInput from "@/components/common/TextInput";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import ClientApi from "@/lib/clientApi";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CommentProps {
   initialComment: string;
@@ -13,9 +13,17 @@ export default function CommentSection({ initialComment }: CommentProps) {
   const [tempComment, setTempComment] = useState<string>("");
   const [isCommentEditing, setIsCommentEditing] = useState<boolean>(false);
 
+  const commentInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     setComment(initialComment);
   });
+
+  useEffect(() => {
+    if (isCommentEditing && commentInputRef.current) {
+      commentInputRef.current.focus();
+    }
+  }, [isCommentEditing]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,12 +50,13 @@ export default function CommentSection({ initialComment }: CommentProps) {
       {isCommentEditing ? (
         <form className="flex flex-col gap-2" onSubmit={handleCommentSubmit}>
           <TextInput
+            ref={commentInputRef}
             value={tempComment}
             onChange={(e) => setTempComment(e.target.value)}
             placeholder={comment}
             className="h-12 py-4 text-base"
           />
-          <div className="flex gap-4 self-end mr-2 mt-[11px]">
+          <div className="mt-[11px] mr-2 flex gap-4 self-end">
             <button
               type="submit"
               className="text-accent cursor-pointer hover:underline"
@@ -68,7 +77,11 @@ export default function CommentSection({ initialComment }: CommentProps) {
         </form>
       ) : (
         <div className="flex flex-col gap-2">
-          <IntroduceBubble content={comment ?? ""} type="message" className="text-base" />
+          <IntroduceBubble
+            content={comment ?? ""}
+            type="message"
+            className="text-base"
+          />
           <BoxButton
             text="수정"
             tone="color"
