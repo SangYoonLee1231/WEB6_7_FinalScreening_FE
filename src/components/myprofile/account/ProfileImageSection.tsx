@@ -1,9 +1,10 @@
 import Avatar from "@/components/common/Avatar";
 import CircleBtn from "@/components/common/button/CircleBtn";
-import ClientApi, { API_BASE } from "@/lib/clientApi";
+import { API_BASE } from "@/lib/clientApi";
 import { Pencil } from "lucide-react";
 import {
   ChangeEvent,
+  useEffect,
   useOptimistic,
   useRef,
   useState,
@@ -11,19 +12,33 @@ import {
 } from "react";
 
 interface ProfileImageProps {
-  initialProfileImage: string;
+  initialProfileImage: string | null;
 }
 
 export default function ProfileImageSection({
   initialProfileImage,
 }: ProfileImageProps) {
-  const [profileImage, setProfileImage] = useState<string>(initialProfileImage);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [optimisticProfileImage, addOptimisticProfileImage] = useOptimistic<
-    string,
+    string | null,
     string
   >(profileImage, (_, nextValue) => nextValue);
   const [isImagePending, startImageTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const isProduction = process.env.NODE_ENV === 'production';
+    let fixedProfileImage;
+    if (isDevelopment) {
+      fixedProfileImage = initialProfileImage?.replace("null", "");
+    } else if (isProduction) {
+      fixedProfileImage = initialProfileImage;
+    }
+    setProfileImage(fixedProfileImage ?? null);
+  }, [initialProfileImage]);
 
   const handleEditClick = () => {
     fileInputRef?.current?.click();
