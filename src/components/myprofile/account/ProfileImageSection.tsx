@@ -1,19 +1,27 @@
 import Avatar from "@/components/common/Avatar";
 import CircleBtn from "@/components/common/button/CircleBtn";
-import ClientApi from "@/lib/clientApi";
+import ClientApi, { API_BASE } from "@/lib/clientApi";
 import { Pencil } from "lucide-react";
-import { ChangeEvent, useOptimistic, useRef, useState, useTransition } from "react";
+import {
+  ChangeEvent,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 
 interface ProfileImageProps {
   initialProfileImage: string;
 }
 
-export default function ProfileImageSection(initialProfileImage: ProfileImageProps) {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+export default function ProfileImageSection({
+  initialProfileImage,
+}: ProfileImageProps) {
+  const [profileImage, setProfileImage] = useState<string>(initialProfileImage);
   const [optimisticProfileImage, addOptimisticProfileImage] = useOptimistic<
-    string | null,
+    string,
     string
-  >(profileImage, (_: string | null, nextValue: string) => nextValue);
+  >(profileImage, (_, nextValue) => nextValue);
   const [isImagePending, startImageTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,51 +33,40 @@ export default function ProfileImageSection(initialProfileImage: ProfileImagePro
     const file = event.target.files?.[0];
     if (!file || isImagePending) return;
 
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const base64String = ev.target?.result as string;
-      // console.log("base64String", base64String);
-      if (!base64String) return;
+    const previewUrl = URL.createObjectURL(file);
 
-      startImageTransition(async () => {
-        addOptimisticProfileImage(base64String);
-        await uploadImageToServer(base64String);
-      });
-    };
-    reader.readAsDataURL(file);
+    startImageTransition(async () => {
+      addOptimisticProfileImage(previewUrl);
+      await uploadImageToServer(file, previewUrl);
+    });
   };
 
-  const uploadImageToServer = async (base64String: string) => {
+  const uploadImageToServer = async (file: File, previewUrl: string) => {
     const formData = new FormData();
-    formData.append("profileImage", base64String);
+    formData.append("file", file);
     try {
-      // const res = await fetch(`${API_BASE}/api/v1/users/me/image`, {
-      //   method: "PUT",
-      //   headers: {
-      //     "Content-Type": "multipart/form-data"
-      //   },
-      //   body: formData,
-      //   credentials: "include",
-      // });
-
-      const res = await ClientApi("/api/v1/users/me/image", {
+      const res = await fetch(`${API_BASE}/api/v1/users/me/image`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
         body: formData,
+        credentials: "include",
       });
 
       if (res.ok) {
-        setProfileImage(base64String);
+        const data = await res.json();
+        console.log("data.profileImage", data.profileImage);
+        setProfileImage(data.profileImage);
         alert("프로필 이미지가 변경되었습니다.");
       } else {
         alert("이미지 업로드에 실패했습니다.");
         throw new Error("업로드 실패");
       }
     } catch (error) {
-      // console.error("업로드 실패:", error);
+      if (error instanceof Error) {
+        console.log("error.message", error.message);
+      }
       alert("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      URL.revokeObjectURL(previewUrl);
     }
   };
 
@@ -88,7 +85,7 @@ export default function ProfileImageSection(initialProfileImage: ProfileImagePro
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
-        accept="image/*"
+        accept="*/*"
         style={{ display: "none" }}
       />
     </div>
