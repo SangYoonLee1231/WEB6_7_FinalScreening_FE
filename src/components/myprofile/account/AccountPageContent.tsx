@@ -10,7 +10,7 @@ import PasswordSection from "./PasswordSection";
 
 interface profileDataProps {
   email: string;
-  profile_image: string | null;
+  profileImage: string | null;
   nickname: string;
   nicknameUpdatedAt: string | null;
   comment: string | null;
@@ -22,7 +22,7 @@ export default function AccountPageContent() {
 
   const [profileData, setProfileData] = useState<profileDataProps>({
     email: "",
-    profile_image: null,
+    profileImage: null,
     nickname: "",
     nicknameUpdatedAt: null,
     comment: "",
@@ -65,7 +65,7 @@ export default function AccountPageContent() {
       <div className="flex flex-col gap-9">
         <div className="flex items-center gap-10">
           <ProfileImageSection
-            initialProfileImage={profileData.profile_image ?? ""}
+            initialProfileImage={profileData.profileImage}
           />
           <NicknameSection initialNickname={profileData.nickname} nicknameUpdatedAt={profileData.nicknameUpdatedAt} />
         </div>
