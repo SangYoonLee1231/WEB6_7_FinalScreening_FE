@@ -59,7 +59,8 @@ export default function NicknameSection({ initialNickname, nicknameUpdatedAt }: 
     e.preventDefault();
     setNicknameError(null);
     if (isNicknamePending) return;
-    const parsedNickname = nicknameSchema.safeParse(modifyNickname);
+    const schema = nicknameSchema(nickname);
+    const parsedNickname = schema.safeParse(modifyNickname);
 
     if (!parsedNickname.success) {
       setNicknameError(parsedNickname.error.issues[0]?.message);
