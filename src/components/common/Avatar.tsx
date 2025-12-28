@@ -42,7 +42,6 @@ export default function Avatar({
   isBanned = false,
   ...props
 }: AvatarProps) {
-  console.log("isBanned", isBanned);
   return (
     <RadixAvatar.Root
       className={twMerge(avatar({ size }), className)}

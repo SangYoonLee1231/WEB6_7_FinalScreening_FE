@@ -12,6 +12,5 @@ export async function getBanUsers() {
   }
 
   const json = (await res.json()) as BanUser[];
-  console.log("json", json);
   return json;
 }
