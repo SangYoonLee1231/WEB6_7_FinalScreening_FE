@@ -12,6 +12,7 @@ interface profileDataProps {
   email: string;
   profile_image: string | null;
   nickname: string;
+  nicknameUpdatedAt: string | null;
   comment: string | null;
 }
 
@@ -23,6 +24,7 @@ export default function AccountPageContent() {
     email: "",
     profile_image: null,
     nickname: "",
+    nicknameUpdatedAt: null,
     comment: "",
   });
 
@@ -65,7 +67,7 @@ export default function AccountPageContent() {
           <ProfileImageSection
             initialProfileImage={profileData.profile_image ?? ""}
           />
-          <NicknameSection initialNickname={profileData.nickname} />
+          <NicknameSection initialNickname={profileData.nickname} nicknameUpdatedAt={profileData.nicknameUpdatedAt} />
         </div>
 
         <div className="flex flex-col gap-2">

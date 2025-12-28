@@ -2,13 +2,21 @@ import TextInput from "@/components/common/TextInput";
 import ClientApi from "@/lib/clientApi";
 import { nicknameSchema } from "@/lib/validation/nicknameSchema";
 import { CircleAlert } from "lucide-react";
-import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
+import {
+  useEffect,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
+import dayjs from 'dayjs';
 
 interface NicknameProps {
   initialNickname: string;
+  nicknameUpdatedAt: string | null;
 }
 
-export default function NicknameSection({ initialNickname }: NicknameProps) {
+export default function NicknameSection({ initialNickname, nicknameUpdatedAt }: NicknameProps) {
   const [nickname, setNickname] = useState<string>("");
   const [modifyNickname, setModifyNickname] = useState<string>("");
   const [isNicknameEditing, setIsNicknameEditing] = useState<boolean>(false);
@@ -31,6 +39,21 @@ export default function NicknameSection({ initialNickname }: NicknameProps) {
       nicknameInputRef.current.focus();
     }
   }, [isNicknameEditing]);
+
+  const handleNicknameModifyButtonClick = () => {
+    setModifyNickname(nickname ?? "");
+    setIsNicknameEditing(true);
+    if (nicknameUpdatedAt) {
+      const lastUpdate = dayjs(nicknameUpdatedAt);
+      const now = dayjs();
+      const availableAt = lastUpdate.add(7, 'day');
+      const formattedAvailableAt = dayjs(availableAt).format('YYYY년 M월 D일 H시 m분');
+      if (now.isBefore(availableAt)) {
+        alert(`닉네임 변경은 ${formattedAvailableAt}부터 가능합니다.`);
+        return;
+      }
+    }
+  };
 
   const handleNicknameSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,10 +124,7 @@ export default function NicknameSection({ initialNickname }: NicknameProps) {
             <span>{optimisticNickname}</span>
             <button
               className="text-accent cursor-pointer hover:underline"
-              onClick={() => {
-                setModifyNickname(nickname ?? "");
-                setIsNicknameEditing(true);
-              }}
+              onClick={handleNicknameModifyButtonClick}
             >
               수정
             </button>
