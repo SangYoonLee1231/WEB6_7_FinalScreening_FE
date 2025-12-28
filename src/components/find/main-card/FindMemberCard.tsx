@@ -8,7 +8,10 @@ import { useInviteStore } from "@/stores/inviteStore";
 import { PostPartyMemberDetail } from "@/types/party";
 import { kickOutMember } from "@/services/party.client";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getBanUsers } from "@/services/ban.client";
+import { BanUser } from "@/types/userList";
+import { useEffect, useState } from "react";
 
 type FindMemberCardType = "default" | "modal";
 interface FindMemberCardProps {
@@ -33,17 +36,39 @@ export default function FindMemberCard({
   const { openInviteForm } = useInviteStore();
   const router = useRouter();
   const qc = useQueryClient();
+  const [isPartyMemberBanned, setIsPartyMemberBanned] =
+    useState<boolean>(false);
+
+  const {
+    data: banUsersList,
+    isLoading: banUsersListIsLoading,
+    error: banUsersListError,
+  } = useQuery({
+    queryKey: ["BanUsers"],
+    queryFn: () => getBanUsers(),
+  });
+
+  useEffect(() => {
+    const isUserBanned =
+      banUsersList?.some(
+        (banUser: BanUser) => banUser.userId === PartyMemberData?.userId,
+      ) ?? false;
+
+    setIsPartyMemberBanned(isUserBanned);
+  }, [banUsersList, PartyMemberData?.userId]);
 
   if (PartyMemberData)
     return (
       <div className="bg-accent/10 border-accent/50 flex items-center justify-between rounded-xl border px-4 py-2">
         <div className="flex items-center gap-2">
-          <Avatar type="profile" src={PartyMemberData.profileImage} size="sm" />
-          <div className="flex items-center">
-            <h4 className="flex items-center gap-1 font-bold">
-              {PartyMemberData.nickname}
-            </h4>
-          </div>
+          <Avatar
+            type="profile"
+            src={PartyMemberData.profileImage}
+            size="sm"
+            isBanned={isPartyMemberBanned}
+          />
+          <h4 className="font-bold">{PartyMemberData.nickname}</h4>
+          {banUsersListIsLoading && <h4 className="">(차단 상태를 불러오는 중)</h4>}
         </div>
         {PartyMemberData.role === "LEADER" ? (
           <Crown size={18} strokeWidth={3} className="text-accent" />

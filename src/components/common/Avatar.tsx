@@ -3,9 +3,10 @@ import Image from "next/image";
 import profile from "../../assets/images/profile_default.jpg";
 import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
+import { Ban } from "lucide-react";
 
 const avatar = cva(
-  "overflow-hidden rounded-full align-middle select-none inline-flex",
+  "overflow-hidden rounded-full align-middle select-none inline-flex relative",
   {
     variants: {
       size: {
@@ -30,6 +31,7 @@ interface AvatarProps
   src: string;
   type: AvatarType;
   className?: string;
+  isBanned?: boolean;
 }
 
 export default function Avatar({
@@ -37,8 +39,10 @@ export default function Avatar({
   src,
   type,
   className,
+  isBanned = false,
   ...props
 }: AvatarProps) {
+  console.log("isBanned", isBanned);
   return (
     <RadixAvatar.Root
       className={twMerge(avatar({ size }), className)}
@@ -61,6 +65,11 @@ export default function Avatar({
           }
         />
       </RadixAvatar.Fallback>
+      {isBanned && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+          <Ban className="w-full h-full text-red-500 opacity-50" strokeWidth={4} />
+        </div>
+      )}
     </RadixAvatar.Root>
   );
 }
