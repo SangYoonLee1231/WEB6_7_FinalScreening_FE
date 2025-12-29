@@ -9,7 +9,7 @@ export default function ProfilePopover({
   profileImage,
 }: {
   currentMenu: string;
-  profileImage: string;
+  profileImage: string | undefined;
 }) {
   return (
     <Popover.Root>

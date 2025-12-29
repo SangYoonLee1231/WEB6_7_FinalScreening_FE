@@ -86,7 +86,7 @@ export default function Header({ type, userData }: HeaderProps) {
           {userData ? (
             <ProfilePopover
               currentMenu={currentMenu}
-              profileImage={userData.profile_image ?? ""}
+              profileImage={userData.profileImage ?? undefined}
             />
           ) : (
             <Link href="/login">
