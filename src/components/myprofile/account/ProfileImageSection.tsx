@@ -11,7 +11,7 @@ import { Pencil } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 interface ProfileImageProps {
-  initialProfileImage: string | null;
+  initialProfileImage: string | undefined;
   refetch: (
     options?: RefetchOptions,
   ) => Promise<QueryObserverResult<MyProfile | null, Error>>;
