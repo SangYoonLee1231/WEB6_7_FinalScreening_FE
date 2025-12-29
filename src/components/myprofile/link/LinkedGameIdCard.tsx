@@ -19,10 +19,10 @@ interface GameIdItemProps {
   className?: string;
 }
 
-type gameType = "LEAGUE_OF_LEGEND" | "OVERWATCH" | "VALORANT";
+type gameType = "LEAGUE_OF_LEGENDS" | "OVERWATCH" | "VALORANT";
 
 const gameIcons: Record<gameType, string> = {
-  LEAGUE_OF_LEGEND: LolLogo.src,
+  LEAGUE_OF_LEGENDS: LolLogo.src,
   OVERWATCH: OverwatchLogo.src,
   VALORANT: ValorantLogo.src,
 };
@@ -57,7 +57,7 @@ export default function LinkedGameIdCard({
 
         <div className="flex flex-col">
           <span className="text-xl font-semibold">
-            {gameType === "LEAGUE_OF_LEGEND"
+            {gameType === "LEAGUE_OF_LEGENDS"
               ? "리그 오브 레전드"
               : gameType === "VALORANT"
                 ? "발로란트"
