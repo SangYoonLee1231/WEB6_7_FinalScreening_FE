@@ -28,7 +28,7 @@ type AvatarType = "profile" | "champion";
 
 interface AvatarProps
   extends React.ComponentPropsWithoutRef<"img">, VariantProps<typeof avatar> {
-  src: string;
+  src: string | undefined;
   type: AvatarType;
   className?: string;
   isBanned?: boolean;
