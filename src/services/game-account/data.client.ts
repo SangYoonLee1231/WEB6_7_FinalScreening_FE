@@ -72,6 +72,42 @@ export async function RanksRefresh(gameAccountId: number) {
   return (await res.json()) as Ranks[];
 }
 
+export async function MatchesRefresh({
+  gameAccountId,
+  count,
+}: {
+  gameAccountId: number;
+  count: number;
+}) {
+  const qs = count != null ? `?count=${count}` : "";
+  const res = await ClientApi(
+    `/api/game-accounts/${gameAccountId}/matches/refresh${qs}`,
+    { method: "POST" },
+  );
+
+  if (!res.ok) {
+    if (res.status === 400) {
+      alert("게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.");
+      return null;
+    }
+
+    if (res.status === 404) {
+      alert("게임 계정을 찾을 수 없습니다.");
+      return null;
+    }
+
+    if (res.status === 500) {
+      alert("랭크 정보를 가져오는데 실패했습니다.");
+      return null;
+    }
+
+    alert("랭크 정보를 가져오는데 실패했습니다.");
+    return null;
+  }
+
+  return (await res.json()) as Ranks[];
+}
+
 /* db로부터 불러옴 */
 export async function getRecentMatches({
   gameAccountId,

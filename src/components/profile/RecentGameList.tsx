@@ -1,20 +1,48 @@
+"use client";
+
 import { useGetRecentMatch } from "@/hooks/useGetRecentMatch";
 import { QUEUE_NAME, queueId } from "@/types/party";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 import Avatar from "../common/Avatar";
+import { useEffect, useState } from "react";
+import { BoxButton } from "../common/button/BoxButton";
+
+const VIEW_STEP = 5;
 
 export default function RecentGameList({
   gameAccountId,
 }: {
   gameAccountId: number;
 }) {
-  const { data: MatchData, isLoading: MatchDataIsLoading } = useGetRecentMatch({
+  const [count, setCount] = useState(VIEW_STEP);
+
+  useEffect(() => {
+    setCount(VIEW_STEP);
+  }, [gameAccountId]);
+
+  const {
+    data: MatchData,
+    isLoading,
+    isFetching,
+  } = useGetRecentMatch({
     gameAccountId: gameAccountId ?? 0,
+    count,
   });
+
+  if (isLoading && !MatchData) {
+    return <p className="text-content-secondary">불러오는 중...</p>;
+  }
+
+  const hasMore = !!MatchData && MatchData.length === count;
+
+  const onClickMore = () => {
+    setCount((c) => c + VIEW_STEP);
+  };
+
   return (
     <>
-      {MatchData ? (
+      {MatchData && MatchData.length > 0 ? (
         <div className="text-content-primary flex flex-col justify-center gap-2 text-base">
           {MatchData.map((c) => (
             <div
@@ -104,6 +132,7 @@ export default function RecentGameList({
                     {c.kda.toFixed(2)}
                   </p>
                 </div>
+
                 <span className="text-content-secondary flex items-center justify-center text-sm font-medium">
                   CS {c.cs}
                 </span>
@@ -126,12 +155,13 @@ export default function RecentGameList({
                     ),
                   )}
               </div>
+
               <div className="flex items-center justify-center gap-10.5">
-                {" "}
                 {/* 시작 시간 */}
                 <span className="text-content-secondary text-sm">
                   {c.gameStartTimeFormatted}
                 </span>
+
                 {/* 승리/패배 뱃지 */}
                 <div
                   className={twMerge(
@@ -144,9 +174,18 @@ export default function RecentGameList({
               </div>
             </div>
           ))}
+
+          {hasMore && (
+            <BoxButton
+              type="button"
+              onClick={onClickMore}
+              disabled={isFetching}
+              text={isFetching ? "불러오는 중..." : "더보기"}
+            />
+          )}
         </div>
       ) : (
-        <p className="text-content-secondary">최근 게임 내역이 없습니다.</p>
+        <p className="text-content-secondary">최근 게임 내역이 없습니다</p>
       )}
     </>
   );

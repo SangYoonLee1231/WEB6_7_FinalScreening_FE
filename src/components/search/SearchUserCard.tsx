@@ -33,7 +33,7 @@ export default function SearchUserCard({ userData }: { userData: SearchUser }) {
               {userData.gameAccount.gameName}
             </span>
             <span className="text-content-secondary text-xs">
-              {userData.gameAccount.tagLine}
+              #{userData.gameAccount.tagLine}
             </span>
           </div>
         ) : (

@@ -180,7 +180,7 @@ export default function FindCard({
           <div className="flex justify-between gap-10">
             <div className="flex flex-col gap-1">
               <SubTitleAndData title="승률" data={`${winRate}%`} />
-              <WinRate type="horizontal" winRate={winRate} />
+              <WinRate type="horizontal" winRate={winRate} win={0} lose={0} />
             </div>
             <SubTitleAndData title="KDA" data={kda.toString()} />
           </div>
