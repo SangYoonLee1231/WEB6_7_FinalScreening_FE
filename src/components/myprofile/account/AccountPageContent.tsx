@@ -33,7 +33,7 @@ export default function AccountPageContent() {
       <div className="flex flex-col gap-9">
         <div className="flex items-center gap-10">
           <ProfileImageSection
-            initialProfileImage={profileData?.profileImage ?? undefined} refetch={refetch}
+            profileImage={profileData?.profileImage ?? undefined} refetch={refetch}
           />
           <NicknameSection initialNickname={profileData?.nickname ?? ""} nicknameUpdatedAt={profileData?.nicknameUpdatedAt ?? null} />
         </div>

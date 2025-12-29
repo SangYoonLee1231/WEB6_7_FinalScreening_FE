@@ -11,17 +11,16 @@ import { Pencil } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 interface ProfileImageProps {
-  initialProfileImage: string | undefined;
+  profileImage: string | undefined;
   refetch: (
     options?: RefetchOptions,
   ) => Promise<QueryObserverResult<MyProfile | null, Error>>;
 }
 
 export default function ProfileImageSection({
-  initialProfileImage,
+  profileImage,
   refetch,
 }: ProfileImageProps) {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadMutation = useMutation({
@@ -43,20 +42,6 @@ export default function ProfileImageSection({
       if (fileInputRef.current) fileInputRef.current.value = "";
     },
   });
-
-  useEffect(() => {
-    // console.log("process.env.NODE_ENV", process.env.NODE_ENV);
-
-    const isDevelopment = process.env.NODE_ENV === "development";
-    const isProduction = process.env.NODE_ENV === "production";
-    let fixedProfileImage;
-    if (isDevelopment) {
-      fixedProfileImage = initialProfileImage?.replace("null", "");
-    } else if (isProduction) {
-      fixedProfileImage = initialProfileImage;
-    }
-    setProfileImage(fixedProfileImage ?? null);
-  }, [initialProfileImage]);
 
   const handleEditClick = () => {
     fileInputRef?.current?.click();
