@@ -3,10 +3,7 @@ import { z } from "zod";
 
 const EmailIdSchema = z
   .string()
-  .regex(
-    /^[a-zA-Z0-9._-]{2,8}$/,
-    "아이디는 2글자 이상, 8글자 이하여야 합니다.",
-  );
+  .regex(/^[a-zA-Z0-9._-]{2,32}$/, "아이디는 2글자 이상이어야 합니다.");
 
 export const sendCodeSchema = z.object({
   email: z
@@ -18,7 +15,7 @@ export const sendCodeSchema = z.object({
         const [id] = email.split("@");
         return EmailIdSchema.safeParse(id).success;
       },
-      { message: "이메일 아이디는 2글자 이상, 8글자 이하여야 합니다." },
+      { message: "이메일 아이디는 2글자 이상이어야 합니다." },
     ),
 });
 
@@ -36,7 +33,7 @@ export const verifyCodeSchema = z.object({
         const [id] = email.split("@");
         return EmailIdSchema.safeParse(id).success;
       },
-      { message: "이메일 아이디는 2글자 이상, 8글자 이하여야 합니다." },
+      { message: "이메일 아이디는 2글자 이상이어야 합니다." },
     ),
 });
 
@@ -50,7 +47,7 @@ export const signUpSchema = z
           const [id] = email.split("@");
           return EmailIdSchema.safeParse(id).success;
         },
-        { message: "이메일 아이디는 2글자 이상, 8글자 이하여야 합니다." },
+        { message: "이메일 아이디는 2글자 이상이어야 합니다." },
       ),
 
     code: z

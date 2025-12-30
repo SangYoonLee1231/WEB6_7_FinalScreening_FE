@@ -9,7 +9,6 @@ import TierSet from "@/components/profile/TierSet";
 import { isTier, Rank } from "@/types/tier";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import PositionSet from "./PositionSet";
-import MostChampion from "@/components/profile/MostChampion";
 import Champion from "@/assets/images/test_champion_thumb.png";
 import WinRate from "@/components/profile/WinRate";
 import { BoxButton } from "@/components/common/button/BoxButton";
@@ -25,6 +24,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getPartyDetail } from "@/services/party.client";
 import { GameAccount } from "@/types/game-account";
 import { useRouter } from "next/navigation";
+import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
+import useGetUserProfile from "@/hooks/useGetUserProfile";
+import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
   currentUserId: number | null;
@@ -53,12 +55,18 @@ export default function FindCard({
     isLoading: partyDataIsLoading,
     error: partyDataError,
     refetch: partyDataRefetch,
-  } = useQuery({
-    queryKey: [postId, "party"],
-    queryFn: () => getPartyDetail(postId),
-  });
+  } = useGetPartyDetail(postId);
 
   const partyMembers = partyData?.members;
+
+  const { data: userData, isLoading: userDataIsLoading } = useGetUserProfile(
+    Number(userId),
+  );
+
+  const { data: reviewDistributionData, isLoading: distLoading } =
+    useGetReviewDistribution(Number(userId));
+
+  const isLoading = userDataIsLoading || distLoading;
 
   /* ------------------ writer 데이터 문제 해결 되기 전까지 임시 데이터 ------------------ */
 
@@ -89,6 +97,8 @@ export default function FindCard({
 
   const validTier = isTier(tier) ? tier : "UNRANKED";
 
+  if (isLoading) return null;
+
   return (
     <>
       <div
@@ -113,7 +123,11 @@ export default function FindCard({
                   align="center"
                   className="animate-fadeIn pb-3"
                 >
-                  <MiniProfile className="z-10" />
+                  <MiniProfile
+                    className="z-10"
+                    userData={userData!}
+                    reviewDistributionData={reviewDistributionData!}
+                  />
                 </HoverCard.Content>
               </HoverCard.Root>
 
@@ -168,7 +182,7 @@ export default function FindCard({
           <div className="flex justify-between gap-10">
             <div className="flex flex-col gap-1">
               <SubTitleAndData title="승률" data={`${winRate}%`} />
-              <WinRate type="horizontal" winRate={winRate} />
+              <WinRate type="horizontal" winRate={winRate} win={0} lose={0} />
             </div>
             <SubTitleAndData title="KDA" data={kda.toString()} />
           </div>

@@ -1,64 +1,64 @@
+"use client";
+
 import Avatar from "../common/Avatar";
 import { BoxButton } from "../common/button/BoxButton";
 import FindCardContainer from "../common/container/FindCardContainer";
-import ReviewPercent from "../review/ReviewPercent";
-import { ReviewDistributionMock } from "@/mocks/review.mock";
 import IntroduceBubble from "./IntroduceBubble";
 import { twMerge } from "tailwind-merge";
-import { useState } from "react";
-
-// 샘플 데이터
-// userId 받을 수 있도록 api 수정될 경우 대체 예정
-const userData = {
-  userId: 2,
-  nickname: "탑신병자",
-  profileImageUrl: "",
-  // 프로필에서 사용자가 업로드한 이미지
-  // 업로드 안 했으면 null
-
-  comment: "롤만 하는 개발자입니다.",
-
-  gameAccount: {
-    summonerName: "게임닉네임",
-    tag: "#KR1",
-    tier: "EMERALD IV",
-    winRate: 52.3, // 시즌 전체 승률(%)
-    kda: 3.21, // 계산된 KDA
-
-    favoriteChampions: ["다리우스", "가렌", "야스오"],
-    // Riot API 기반 '최근 선호 챔피언 Top3'
-    // 대부분 유저는 값이 있음,
-    // 데이터가 없는 신규 계정일 때만 null 가능
-
-    mainPosition: "JUNGLE", // TOP/JUNGLE/MID/ADC/SUPPORT
-  },
-};
+import ClientApi from "@/lib/clientApi";
+import { UserProfile } from "@/types/profile";
+import { ReviewDistribution } from "@/types/review";
+import ReviewPercent from "../review/ReviewPercent";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getBanUsersList } from "@/services/ban.client";
 
 interface MiniProfileProps extends React.ComponentPropsWithoutRef<"div"> {
+  userData: UserProfile;
+  reviewDistributionData: ReviewDistribution;
   className?: string;
 }
 
-export default function MiniProfile({ className }: MiniProfileProps) {
-  const [isUserBlocked, setIsUserBlocked] = useState<boolean>(false);
+export default function MiniProfile({
+  userData,
+  reviewDistributionData,
+  className,
+}: MiniProfileProps) {
+  const queryClient = useQueryClient();
+
+  const { data: banList, isLoading: isBanListLoading } = useQuery({
+    queryKey: ["ban"],
+    queryFn: getBanUsersList,
+  });
+  const banListData = banList ?? [];
+  const isUserBlocked = banListData.some((ban) => ban.userId === userData.id);
+
+  const banMutation = useMutation({
+    mutationFn: async (targetUserId: number) => {
+      const res = await ClientApi(`/api/v1/users/${targetUserId}/blocks`, {
+        method: "POST",
+      });
+
+      if (!res.ok) throw new Error("차단 실패");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ban"] });
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
 
   const userBanHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    
-    const res = await fetch(
-      `http://localhost:8080/api/v1/users/${userData.userId}/blocks`,
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    );
-    if (res.ok) {
-      setIsUserBlocked(true);
-    }
+    await banMutation.mutateAsync(userData.id);
   };
+
+  if (!userData) return null;
+
   return (
     <FindCardContainer className={twMerge("flex flex-col gap-2", className)}>
       <div className="flex gap-2">
-        <Avatar type="profile" src={userData.profileImageUrl} size="sm" />
+        <Avatar type="profile" src={userData.profile_image ?? ""} size="sm" />
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold">{userData.nickname}</h3>
@@ -67,6 +67,8 @@ export default function MiniProfile({ className }: MiniProfileProps) {
               tone="negative"
               text={isUserBlocked ? "차단됨" : "차단하기"}
               onClick={userBanHandler}
+              className={isUserBlocked ? "pointer-events-none" : ""}
+              disabled={isBanListLoading || banMutation.isPending}
             />
           </div>
           <IntroduceBubble
@@ -77,7 +79,7 @@ export default function MiniProfile({ className }: MiniProfileProps) {
           />
         </div>
       </div>
-      <ReviewPercent type="mini" ratios={ReviewDistributionMock.ratios} />
+      <ReviewPercent type="mini" distributionData={reviewDistributionData} />
     </FindCardContainer>
   );
 }

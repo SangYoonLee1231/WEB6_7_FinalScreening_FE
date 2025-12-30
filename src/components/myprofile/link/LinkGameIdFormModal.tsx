@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import { gameAccountRefreshAll } from "@/services/game-account/data.client";
 import { useMutation } from "@tanstack/react-query";
 
-const items = [{ value: "LEAGUE_OF_LEGEND", label: "리그 오브 레전드" }];
+const items = [{ value: "LEAGUE_OF_LEGENDS", label: "리그 오브 레전드" }];
 
 type FormValues = {
   gameType: string;
@@ -75,6 +75,7 @@ export default function LinkGameIdFormModal({
 
       refreshAllMutation.mutate({
         gameAccountId: linked.gameAccountId,
+        matchCount: 100,
       });
     } else if (initialData) {
       if (initialData.updatedAt) {
@@ -92,6 +93,7 @@ export default function LinkGameIdFormModal({
 
       refreshAllMutation.mutate({
         gameAccountId: initialData.gameAccountId,
+        matchCount: 100,
       });
     } else alert("수정할 계정을 찾을 수 없습니다.");
 
@@ -187,9 +189,12 @@ export default function LinkGameIdFormModal({
                   className="h-10 text-sm"
                   {...register("gameTag", {
                     required: "태그를 입력해주세요.",
+                    validate: (value) =>
+                      value.replace(/\s/g, "").length > 0 ||
+                      "공백만 입력할 수는 없습니다.",
                     pattern: {
-                      value: /^[A-Za-z0-9가-힣]+$/,
-                      message: "태그는 공백 없이 문자/숫자만 입력해주세요.",
+                      value: /^[A-Za-z0-9가-힣 ]+$/,
+                      message: "태그는 문자/숫자만 입력할 수 있습니다.",
                     },
                   })}
                 />

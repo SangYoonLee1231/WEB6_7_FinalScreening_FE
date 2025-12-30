@@ -145,6 +145,7 @@ export default function FindHistoryCard({
                       )}
                     </div>
                     {currentUserId !== m.userId &&
+                      status === "CLOSED" &&
                       (hasReviewed ? (
                         <span className="text-accent text-xs">작성 완료</span>
                       ) : (

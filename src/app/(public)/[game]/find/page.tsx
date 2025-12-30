@@ -9,7 +9,7 @@ export default async function page() {
 
   return (
     <FindPageContent
-      postData={postData}
+      postData={postData ?? null}
       loginData={loginData ?? null}
       gameAccountData={gameAccountData ?? null}
     />
