@@ -9,9 +9,8 @@ import { PostPartyMemberDetail } from "@/types/party";
 import { kickOutMember } from "@/services/party.client";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getBanUsers } from "@/services/ban.client";
+import { getBanUsersList } from "@/services/ban.client";
 import { BanUser } from "@/types/userList";
-import { useEffect, useState } from "react";
 
 type FindMemberCardType = "default" | "modal";
 interface FindMemberCardProps {
@@ -36,8 +35,6 @@ export default function FindMemberCard({
   const { openInviteForm } = useInviteStore();
   const router = useRouter();
   const qc = useQueryClient();
-  const [isPartyMemberBanned, setIsPartyMemberBanned] =
-    useState<boolean>(false);
 
   const {
     data: banUsersList,
@@ -45,17 +42,13 @@ export default function FindMemberCard({
     error: banUsersListError,
   } = useQuery({
     queryKey: ["BanUsers"],
-    queryFn: () => getBanUsers(),
+    queryFn: () => getBanUsersList(),
   });
 
-  useEffect(() => {
-    const isUserBanned =
-      banUsersList?.some(
-        (banUser: BanUser) => banUser.userId === PartyMemberData?.userId,
-      ) ?? false;
-
-    setIsPartyMemberBanned(isUserBanned);
-  }, [banUsersList, PartyMemberData?.userId]);
+  const isPartyMemberBanned =
+    banUsersList?.some(
+      (banUser: BanUser) => banUser.userId === PartyMemberData?.userId,
+    ) ?? false;
 
   if (PartyMemberData)
     return (
@@ -68,7 +61,9 @@ export default function FindMemberCard({
             isBanned={isPartyMemberBanned}
           />
           <h4 className="font-bold">{PartyMemberData.nickname}</h4>
-          {banUsersListIsLoading && <h4 className="">(차단 상태를 불러오는 중)</h4>}
+          {banUsersListIsLoading && (
+            <h4 className="">(차단 상태를 불러오는 중)</h4>
+          )}
         </div>
         {PartyMemberData.role === "LEADER" ? (
           <Crown size={18} strokeWidth={3} className="text-accent" />
