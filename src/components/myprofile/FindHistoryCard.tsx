@@ -19,6 +19,7 @@ import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
 import { useRouter } from "next/navigation";
 import { useMenuStore } from "@/stores/menuStore";
 import { deletePost } from "@/services/posts.client";
+import { useGetRequestReviews } from "@/hooks/reviews/useGetRequestReviews";
 
 type GameName = "lol" | "overwatch" | "valorant";
 
@@ -41,30 +42,30 @@ export default function FindHistoryCard({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  // 리뷰 기능 구현 후 수정 필요
-  let hasReviewed = true;
-
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
   };
 
   const { postId, postTitle, queueType, status, myRole, joinedAt } = PartyData;
 
-  const {
-    data: detailParty,
-    isLoading: detailPartyIsLoading,
-    error: detailPartyError,
-    refetch: detailPartyRefetch,
-  } = useGetPartyDetail(postId);
+  const { data: detailParty, isLoading: detailPartyIsLoading } =
+    useGetPartyDetail(postId);
 
   const gameLogoSrc = GAME_LOGO_MAP["lol"];
-
-  if (detailPartyIsLoading) return null;
 
   const members =
     detailParty?.members.sort((a, b) => a.partyMemberId - b.partyMemberId) ??
     [];
   const leader = members.filter((m) => m.role === "LEADER")[0];
+
+  const { data: RequestReviewsData, isLoading: RequestReviewsIsLoading } =
+    useGetRequestReviews();
+
+  const currentRequestReview = RequestReviewsData
+    ? RequestReviewsData?.filter((r) => r.partyId === detailParty?.partyId)
+    : null;
+
+  if (detailPartyIsLoading || RequestReviewsIsLoading) return null;
 
   return (
     <div>
@@ -90,7 +91,8 @@ export default function FindHistoryCard({
           {/* 커뮤니티 닉네임 + 내용 */}
           <div className="flex shrink-0 items-center gap-2">
             {leader.profileImage ? (
-              <Image
+              <Avatar
+                type="profile"
                 src={leader.profileImage}
                 alt="leader profile image"
                 width={40}
@@ -146,13 +148,19 @@ export default function FindHistoryCard({
                     </div>
                     {currentUserId !== m.userId &&
                       status === "CLOSED" &&
-                      (hasReviewed ? (
+                      (!currentRequestReview ||
+                      currentRequestReview.length === 0 ? (
                         <span className="text-accent text-xs">작성 완료</span>
                       ) : (
                         <BoxButton
                           text="리뷰 작성"
                           size="xs"
                           className="bg-accent text-xs"
+                          onClick={() => {
+                            router.push(
+                              `/myprofile/reviews/post/${PartyData.partyId}?revieweeId=${m.userId}`,
+                            );
+                          }}
                         />
                       ))}
                   </div>

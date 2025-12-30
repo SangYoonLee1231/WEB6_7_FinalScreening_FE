@@ -38,7 +38,7 @@ export default function ReviewList({
                 content={r.content}
                 emotion={r.emoji}
                 createdAt={r.createdAt}
-                profileImageURL=""
+                profileImageURL={r.revieweeProfileImage ?? ""}
               />
             ))}
           </div>

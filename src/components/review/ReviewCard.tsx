@@ -96,7 +96,7 @@ export default function ReviewCard({
               </span>
             </div>
 
-            <IntroduceBubble content={content} className="w-full" />
+            <IntroduceBubble content={content} className="w-91" />
           </div>
         </div>
 
@@ -113,7 +113,7 @@ export default function ReviewCard({
           </div>
 
           {/* 시간 + 화살표 */}
-          <div className="text-content-secondary flex items-center gap-1 text-xs">
+          <div className="text-content-secondary flex w-15 items-center justify-end gap-1 text-xs">
             <span>{formatRelativeTime(createdAt)}</span>
             {isToggleable && (
               <span className="text-base">
