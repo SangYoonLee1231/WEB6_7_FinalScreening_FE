@@ -1,5 +1,9 @@
 import ClientApi from "@/lib/clientApi";
-import { Review, ReviewDistribution } from "@/types/review";
+import {
+  RequestReviewsResponse,
+  Review,
+  ReviewDistribution,
+} from "@/types/review";
 
 export async function getUserReviewList(userId: number) {
   const res = await ClientApi(`/api/v1/reviews/users/${userId}`, {
@@ -37,7 +41,7 @@ export async function getRequestReviews() {
     return null;
   }
 
-  return (await res.json()) as Review[];
+  return (await res.json()) as RequestReviewsResponse[];
 }
 
 export async function getReviewDistribution(userId: number) {

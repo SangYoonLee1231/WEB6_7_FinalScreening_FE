@@ -47,14 +47,29 @@ export default function Avatar({
       className={twMerge(avatar({ size }), className)}
       {...props}
     >
-      <RadixAvatar.Image
-        className="size-full rounded-[inherit] object-cover"
-        src={src}
-        alt={
-          type === "profile" ? "user profile image" : "champion thumbnail image"
-        }
-      />
-      <RadixAvatar.Fallback delayMs={600}>
+      {src === "" ? (
+        <Image
+          className="size-full rounded-[inherit] object-cover"
+          src={profile}
+          alt={
+            type === "profile"
+              ? "user profile default image"
+              : "champion thumbnail default image"
+          }
+        />
+      ) : (
+        <RadixAvatar.Image
+          className="size-full rounded-[inherit] object-cover"
+          src={src}
+          alt={
+            type === "profile"
+              ? "user profile image"
+              : "champion thumbnail image"
+          }
+        />
+      )}
+
+      <RadixAvatar.Fallback delayMs={300}>
         <Image
           src={profile}
           alt={
