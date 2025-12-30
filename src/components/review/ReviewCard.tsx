@@ -45,7 +45,7 @@ interface ReviewCardProps {
   emotion: Emotion; // 밖에서는 이 값만 넘기면 됨
   createdAt: string; // ISO 날짜 문자열
   profileImageURL: string;
-  reviewId: number;
+  reviewId?: number;
 }
 
 export default function ReviewCard({
