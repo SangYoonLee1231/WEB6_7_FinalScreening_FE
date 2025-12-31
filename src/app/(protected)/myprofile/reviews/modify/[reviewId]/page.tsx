@@ -1,15 +1,9 @@
-import FindCreateFormContainer from "@/components/find/post/FindCreateFormContainer";
+import ReviewCreateFormContainer from "@/components/review/ReviewCreateFormContainer";
 
-export default async function ModifyPostpage({
-  params,
-}: {
-  params: { reviewId: string };
-}) {
-  const { reviewId } = await params;
-  //   const initialPost = await GetDetailPost(postId);
+export default async function ModifyPostpage() {
   return (
     <div className="mx-auto max-w-4xl p-6">
-      <FindCreateFormContainer type="modify" />
+      <ReviewCreateFormContainer type="modify" />
     </div>
   );
 }
