@@ -36,7 +36,6 @@ export async function LinkGameAccount({
     return { ok: res.ok, data: null };
   }
 
-  alert("게임 아이디를 연동했습니다.");
   return { ok: res.ok, data: (await res.json()) as GameAccount };
 }
 

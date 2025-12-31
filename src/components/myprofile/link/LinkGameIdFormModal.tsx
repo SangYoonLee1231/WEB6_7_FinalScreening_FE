@@ -71,12 +71,16 @@ export default function LinkGameIdFormModal({
     if (mode === "link") {
       const { ok, data: linked } = await LinkGameAccount(payload);
 
-      if (!ok) return;
+      if (!ok || !linked) return;
 
-      refreshAllMutation.mutate({
+      const refreshed = await gameAccountRefreshAll({
         gameAccountId: linked.gameAccountId,
         matchCount: 100,
       });
+
+      if (!refreshed) return;
+
+      alert("게임 아이디 연동 및 데이터 갱신이 완료되었습니다.");
     } else if (initialData) {
       if (initialData.updatedAt) {
         const updatedAt = new Date(initialData.updatedAt);
@@ -224,6 +228,7 @@ export default function LinkGameIdFormModal({
                     size="sm"
                     tone="black"
                     aria-label="Close"
+                    disabled={isSubmitting}
                   />
                 </Dialog.Close>
               </div>
