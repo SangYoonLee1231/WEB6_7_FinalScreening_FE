@@ -23,4 +23,13 @@ export type Review = {
   emoji: EmojiType;
   content: string;
   createdAt: string;
+  revieweeProfileImage?: string | null;
+};
+
+export type RequestReviewsResponse = {
+  reviewRequestId: number;
+  partyId: number;
+  status: string;
+  createdAt: string;
+  expiresAt: string;
 };

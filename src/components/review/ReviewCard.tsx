@@ -19,6 +19,9 @@ import IntroduceBubble from "../profile/IntroduceBubble";
 import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
 import Avatar from "../common/Avatar";
 import { MessageDirection } from "./MyReviewFilterToggle";
+import ClientApi from "@/lib/clientApi";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 type GameName = "lol" | "overwatch" | "valorant";
 
@@ -42,6 +45,7 @@ interface ReviewCardProps {
   emotion: Emotion; // 밖에서는 이 값만 넘기면 됨
   createdAt: string; // ISO 날짜 문자열
   profileImageURL: string;
+  reviewId?: number;
 }
 
 export default function ReviewCard({
@@ -52,7 +56,10 @@ export default function ReviewCard({
   emotion,
   createdAt,
   profileImageURL,
+  reviewId,
 }: ReviewCardProps) {
+  const router = useRouter();
+  const qc = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
   // 작성한 리뷰만 토글 가능
@@ -65,6 +72,23 @@ export default function ReviewCard({
 
   const emotionSrc = EMOJI_MAP[emotion];
   const gameLogoSrc = GAME_LOGO_MAP[gameName];
+
+  const handleDelete = async () => {
+    const res = await ClientApi(`/api/v1/reviews/${reviewId}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      alert("리뷰 삭제에 실패했습니다.");
+      return;
+    }
+
+    alert("리뷰를 삭제했습니다.");
+
+    qc.invalidateQueries({
+      queryKey: ["MyWrittenReviews"],
+    });
+  };
 
   return (
     <HorizontalCardContainer>
@@ -96,7 +120,7 @@ export default function ReviewCard({
               </span>
             </div>
 
-            <IntroduceBubble content={content} className="w-full" />
+            <IntroduceBubble content={content} className="w-91" />
           </div>
         </div>
 
@@ -113,7 +137,7 @@ export default function ReviewCard({
           </div>
 
           {/* 시간 + 화살표 */}
-          <div className="text-content-secondary flex items-center gap-1 text-xs">
+          <div className="text-content-secondary flex w-15 items-center justify-end gap-1 text-xs">
             <span>{formatRelativeTime(createdAt)}</span>
             {isToggleable && (
               <span className="text-base">
@@ -127,10 +151,13 @@ export default function ReviewCard({
       {/* 하단 수정/삭제 영역 (작성한 리뷰 + 펼쳐진 상태에서만) */}
       {isToggleable && isOpen && (
         <div className="mt-3 flex justify-end gap-2">
-          <button className="rounded-full bg-slate-500 px-4 py-1 text-sm text-white">
+          <button className="cursor-pointer rounded-xl bg-slate-500 px-4 py-1 text-sm text-white transition-all duration-150 hover:bg-slate-500/50">
             수정
           </button>
-          <button className="bg-negative rounded-full px-4 py-1 text-sm text-white">
+          <button
+            className="bg-negative hover:bg-negative/50 cursor-pointer rounded-xl px-4 py-1 text-sm text-white transition-all duration-150"
+            onClick={handleDelete}
+          >
             삭제
           </button>
         </div>

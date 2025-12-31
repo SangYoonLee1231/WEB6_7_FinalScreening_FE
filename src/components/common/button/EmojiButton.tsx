@@ -86,7 +86,7 @@ export function EmojiRadioGroup({
 const emojiButtonVariants = cva(
   [
     "relative inline-flex items-center justify-center rounded-full transition-transform overflow-hidden grayscale opacity-40",
-    "hover:grayscale-0 hover:opacity-60",
+    "hover:grayscale-0 hover:opacity-60 cursor-pointer",
   ].join(" "),
   {
     variants: {
