@@ -9,7 +9,6 @@ import TierSet from "@/components/profile/TierSet";
 import { isTier, Rank, Tier } from "@/types/tier";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import PositionSet from "./PositionSet";
-import Champion from "@/assets/images/test_champion_thumb.png";
 import WinRate from "@/components/profile/WinRate";
 import { BoxButton } from "@/components/common/button/BoxButton";
 import formatRelativeTime from "@/utils/formatRelativeTime";
@@ -28,10 +27,7 @@ import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
 import MostChampion from "@/components/profile/MostChampion";
-import { FormLabelAndContent } from "@/components/common/FormLabelAndContent";
-import Image from "next/image";
 import { useGetFavoriteChampions } from "@/hooks/useGetFavoriteChampions";
-import { useGetRanks } from "@/hooks/useGetRanks";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
   currentUserId: number | null;
@@ -67,14 +63,14 @@ export default function FindCard({
   const { data: reviewDistributionData, isLoading: distLoading } =
     useGetReviewDistribution(Number(userId));
 
-  const { data: ChampionData, isLoading: ChampionDataIsLoading } =
+  const { data: championData, isLoading: championDataIsLoading } =
     useGetFavoriteChampions(userData?.gameAccountId ?? 0);
 
   const isLoading =
     partyDataIsLoading ||
     userDataIsLoading ||
     distLoading ||
-    ChampionDataIsLoading;
+    championDataIsLoading;
 
   if (isLoading) return null;
 
@@ -84,7 +80,9 @@ export default function FindCard({
     <>
       <div
         className="flex min-w-110 cursor-pointer flex-col"
-        onClick={() => setIsOpenFindDetailModal(true)}
+        onClick={(e) => {
+          setIsOpenFindDetailModal(true);
+        }}
         {...props}
       >
         <FindCardContainer className="flex flex-col gap-3">
@@ -113,8 +111,16 @@ export default function FindCard({
               </HoverCard.Root>
 
               <div>
-                <div className="flex items-center gap-1">
-                  <h3 className="text-lg">{gameNickname}</h3>
+                <div
+                  className="group flex items-center gap-1"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/profile/${userId}`);
+                  }}
+                >
+                  <h3 className="group-hover:text-accent text-lg transition-all duration-150">
+                    {gameNickname}
+                  </h3>
                   <h3 className="text-content-secondary text-sm">#{gameTag}</h3>
                   <Headset
                     size={18}
@@ -159,7 +165,13 @@ export default function FindCard({
 
             <div className="flex flex-col items-center justify-center gap-2 font-semibold">
               <p className="text-sm">선호 챔피언</p>
-              <MostChampion data={ChampionData!} />
+              {championData && championData.length > 0 ? (
+                <MostChampion data={championData!} />
+              ) : (
+                <span className="text-content-secondary text-sm">
+                  선호 챔피언 데이터가 없습니다
+                </span>
+              )}
             </div>
           </div>
 

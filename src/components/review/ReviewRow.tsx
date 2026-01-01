@@ -4,9 +4,11 @@ import Image from "next/image";
 import IntroduceBubble from "../profile/IntroduceBubble";
 import formatRelativeTime from "@/utils/formatRelativeTime";
 import Avatar from "../common/Avatar";
+import { useRouter } from "next/navigation";
 
 export default function ReviewRow({ review }: { review: Review }) {
-  const { reviewerNickname, emoji, content, createdAt, revieweeProfileImage } =
+  const router = useRouter();
+  const { revieweeNickname, emoji, content, createdAt, revieweeProfileImage } =
     review;
   return (
     <div className="border-border-primary grid h-19 grid-cols-[120px_200px_1fr_120px] items-center border-t px-5">
@@ -16,10 +18,10 @@ export default function ReviewRow({ review }: { review: Review }) {
       </div>
 
       {/* 유저 닉네임 */}
-      <div className="flex items-center gap-2">
+      <div className="group flex items-center gap-2 hover:cursor-pointer">
         <Avatar src={revieweeProfileImage ?? ""} size="xs" type="profile" />
-        <span className="text-content-primary hover:text-accent text-sm hover:cursor-pointer">
-          {reviewerNickname}
+        <span className="text-content-primary group-hover:text-accent text-sm">
+          {revieweeNickname}
         </span>
       </div>
 
