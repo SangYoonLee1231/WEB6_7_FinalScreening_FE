@@ -103,7 +103,12 @@ export default function ReviewPercent({
             />
           </BarChart>
         ) : (
-          <ResponsiveContainer width="100%" height="100%" minHeight={30}>
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            minHeight={30}
+            initialDimension={{ width: 810, height: 30 }}
+          >
             <BarChart
               data={reviewData}
               layout="vertical"
