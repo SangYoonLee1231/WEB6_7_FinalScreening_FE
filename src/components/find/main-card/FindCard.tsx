@@ -65,14 +65,14 @@ export default function FindCard({
   const { data: reviewDistributionData, isLoading: distLoading } =
     useGetReviewDistribution(Number(userId));
 
-  const { data: ChampionData, isLoading: ChampionDataIsLoading } =
+  const { data: championData, isLoading: championDataIsLoading } =
     useGetFavoriteChampions(userData?.gameAccountId ?? 0);
 
   const isLoading =
     partyDataIsLoading ||
     userDataIsLoading ||
     distLoading ||
-    ChampionDataIsLoading;
+    championDataIsLoading;
 
   if (isLoading) return null;
 
@@ -157,7 +157,13 @@ export default function FindCard({
 
             <div className="flex flex-col items-center justify-center gap-2 font-semibold">
               <p className="text-sm">선호 챔피언</p>
-              <MostChampion data={ChampionData!} />
+              {championData && championData.length > 0 ? (
+                <MostChampion data={championData!} />
+              ) : (
+                <span className="text-content-secondary text-sm">
+                  선호 챔피언 데이터가 없습니다
+                </span>
+              )}
             </div>
           </div>
 
