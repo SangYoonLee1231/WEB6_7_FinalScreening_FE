@@ -17,12 +17,14 @@ interface MiniProfileProps extends React.ComponentPropsWithoutRef<"div"> {
   userData: UserProfile;
   reviewDistributionData: ReviewDistribution;
   className?: string;
+  currentUserId: number | null;
 }
 
 export default function MiniProfile({
   userData,
   reviewDistributionData,
   className,
+  currentUserId,
 }: MiniProfileProps) {
   const router = useRouter();
 
@@ -31,6 +33,7 @@ export default function MiniProfile({
   const { data: banList, isLoading: isBanListLoading } = useQuery({
     queryKey: ["ban"],
     queryFn: getBanUsersList,
+    enabled: !!currentUserId,
   });
   const banListData = banList ?? [];
   const isUserBlocked = banListData.some((ban) => ban.userId === userData.id);
@@ -80,14 +83,16 @@ export default function MiniProfile({
               {userData.nickname}
             </h3>
           </div>
-          <BoxButton
-            size="xs"
-            tone="negative"
-            text={isUserBlocked ? "차단됨" : "차단하기"}
-            onClick={userBanHandler}
-            className={isUserBlocked ? "pointer-events-none" : ""}
-            disabled={isBanListLoading || banMutation.isPending}
-          />
+          {currentUserId && (
+            <BoxButton
+              size="xs"
+              tone="negative"
+              text={isUserBlocked ? "차단됨" : "차단하기"}
+              onClick={userBanHandler}
+              className={isUserBlocked ? "pointer-events-none" : ""}
+              disabled={isBanListLoading || banMutation.isPending}
+            />
+          )}
         </div>
         <IntroduceBubble
           type="message"

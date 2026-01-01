@@ -7,7 +7,6 @@ export async function getBanUsersList() {
   });
 
   if (!res.ok) {
-    alert("차단 정보를 불러올 수 없습니다.");
     return null;
   }
 
