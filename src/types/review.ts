@@ -20,6 +20,7 @@ export type Review = {
   reviewId: number;
   reviewerId: number;
   reviewerNickname: string;
+  revieweeNickname: string;
   emoji: EmojiType;
   content: string;
   createdAt: string;

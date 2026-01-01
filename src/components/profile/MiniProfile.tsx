@@ -11,6 +11,7 @@ import { ReviewDistribution } from "@/types/review";
 import ReviewPercent from "../review/ReviewPercent";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getBanUsersList } from "@/services/ban.client";
+import { useRouter } from "next/navigation";
 
 interface MiniProfileProps extends React.ComponentPropsWithoutRef<"div"> {
   userData: UserProfile;
@@ -23,6 +24,8 @@ export default function MiniProfile({
   reviewDistributionData,
   className,
 }: MiniProfileProps) {
+  const router = useRouter();
+
   const queryClient = useQueryClient();
 
   const { data: banList, isLoading: isBanListLoading } = useQuery({
@@ -56,30 +59,50 @@ export default function MiniProfile({
   if (!userData) return null;
 
   return (
-    <FindCardContainer className={twMerge("flex flex-col gap-2", className)}>
-      <div className="flex gap-2">
-        <Avatar type="profile" src={userData.profile_image ?? ""} size="sm" />
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold">{userData.nickname}</h3>
-            <BoxButton
-              size="xs"
-              tone="negative"
-              text={isUserBlocked ? "차단됨" : "차단하기"}
-              onClick={userBanHandler}
-              className={isUserBlocked ? "pointer-events-none" : ""}
-              disabled={isBanListLoading || banMutation.isPending}
+    <FindCardContainer
+      className={twMerge("z-99 flex flex-col gap-2", className)}
+    >
+      <div className="flex flex-col gap-2">
+        <div className="flex w-full items-center justify-between">
+          <div
+            className="group flex items-center justify-center gap-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/profile/${userData.id}`);
+            }}
+          >
+            <Avatar
+              type="profile"
+              src={userData.profile_image ?? ""}
+              size="sm"
             />
+            <h3 className="group-hover:text-accent text-sm font-bold transition-all duration-150">
+              {userData.nickname}
+            </h3>
           </div>
-          <IntroduceBubble
-            type="message"
-            size="sm"
-            content={userData.comment}
-            className="w-full"
+          <BoxButton
+            size="xs"
+            tone="negative"
+            text={isUserBlocked ? "차단됨" : "차단하기"}
+            onClick={userBanHandler}
+            className={isUserBlocked ? "pointer-events-none" : ""}
+            disabled={isBanListLoading || banMutation.isPending}
           />
         </div>
+        <IntroduceBubble
+          type="message"
+          size="sm"
+          content={userData.comment}
+          className="w-full"
+        />
       </div>
-      <ReviewPercent type="mini" distributionData={reviewDistributionData} />
+      {reviewDistributionData.totalReviews > 0 ? (
+        <ReviewPercent type="mini" distributionData={reviewDistributionData} />
+      ) : (
+        <p className="text-content-secondary pt-2 text-center text-xs">
+          리뷰 데이터가 없습니다
+        </p>
+      )}
     </FindCardContainer>
   );
 }
