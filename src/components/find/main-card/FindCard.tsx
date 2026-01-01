@@ -19,8 +19,6 @@ import SubTitleAndData from "../SubTitleAndData";
 import FindCardMemberDetail from "./FindCardMemberDetail";
 import FindDetailModal from "./FindDetailModal";
 import { createChatRoom } from "@/services/chats.client";
-import { useQuery } from "@tanstack/react-query";
-import { getPartyDetail } from "@/services/party.client";
 import { GameAccount } from "@/types/game-account";
 import { useRouter } from "next/navigation";
 import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
@@ -79,13 +77,13 @@ export default function FindCard({
   return (
     <>
       <div
-        className="flex min-w-110 cursor-pointer flex-col"
+        className="flex min-h-110 min-w-110 cursor-pointer flex-col"
         onClick={(e) => {
           setIsOpenFindDetailModal(true);
         }}
         {...props}
       >
-        <FindCardContainer className="flex flex-col gap-3">
+        <FindCardContainer className="flex h-full flex-col gap-3">
           <div className="flex items-center justify-between">
             <div className="relative flex items-center gap-3">
               <HoverCard.Root openDelay={0} closeDelay={150}>
@@ -176,8 +174,8 @@ export default function FindCard({
             </div>
           </div>
 
-          <div className="flex justify-between gap-10">
-            <div className="flex w-full flex-col gap-1">
+          <div className="flex h-16.5 justify-between gap-10">
+            <div className="flex w-full flex-col gap-2">
               <SubTitleAndData title="승률" data={`${winRate ?? 0}%`} />
               {winRate ? (
                 <WinRate type="horizontal" winRate={winRate} win={0} lose={0} />

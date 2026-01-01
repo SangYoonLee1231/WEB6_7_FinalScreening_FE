@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import ClientApi from "@/lib/clientApi";
 import { useMenuStore } from "@/stores/menuStore";
 import { Post } from "@/types/post";
+import { GameAccount } from "@/types/game-account";
 
 type PostCreateForm = {
   gameMode: GameMode;
@@ -42,9 +43,11 @@ type PostCreateForm = {
 export default function FindCreateForm({
   initialPost,
   type,
+  gameAccountData,
 }: {
   initialPost?: Post;
   type: "create" | "modify";
+  gameAccountData?: GameAccount[];
 }) {
   const router = useRouter();
   const { currentGame } = useMenuStore();
@@ -81,6 +84,12 @@ export default function FindCreateForm({
         shouldValidate: true,
         shouldDirty: true,
       });
+    }
+
+    if (!gameAccountData || !gameAccountData.length) {
+      alert("게임 계정 연동이 필요한 기능입니다.");
+      router.back();
+      return;
     }
   }, [queueType, setValue]);
 
@@ -160,10 +169,19 @@ export default function FindCreateForm({
       <div className="flex items-center gap-7.5">
         <FormLabelAndContent labelText="연동된 게임 아이디">
           <HorizontalCardContainer className="flex items-center gap-3 px-4 py-2">
-            <Avatar src="" type="profile" size="sm" />
+            <Avatar
+              src={gameAccountData![0].profileIconUrl}
+              type="profile"
+              size="sm"
+            />
             <div className="flex items-center gap-1">
-              <span className="text-lg font-bold">게임닉네임</span>
-              <span className="text-content-secondary text-sm">#1234</span>
+              <span className="text-lg font-bold">
+                {gameAccountData![0].gameNickname}
+              </span>
+              <span className="text-content-secondary text-sm">
+                {" "}
+                {gameAccountData![0].gameTag}
+              </span>
             </div>
           </HorizontalCardContainer>
         </FormLabelAndContent>

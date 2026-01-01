@@ -48,8 +48,13 @@ const WinRate = memo(function WinRate({
           width="100%"
           aspect={1}
           className="stroke-0 outline-0"
+          initialDimension={{ width: 100, height: 100 }}
         >
-          <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+          <PieChart
+            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+            width={282}
+            height={20}
+          >
             <Pie
               data={data}
               cx="50%"
@@ -90,7 +95,11 @@ const WinRate = memo(function WinRate({
     ];
     return (
       <div className={twMerge("mb-3.5 flex h-7 min-w-62.5", className)}>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          initialDimension={{ width: 282, height: 20 }}
+        >
           <BarChart
             data={horizontalData}
             layout="vertical"

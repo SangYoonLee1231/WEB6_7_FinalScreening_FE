@@ -1,39 +1,48 @@
 "use client";
 
-import { activePositionIcons, POSITION, positionIcons } from "@/types/position";
+import {
+  activePositionIcons,
+  Position,
+  POSITION,
+  positionIcons,
+} from "@/types/position";
 import { Asterisk } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-export default function PositionFilterBtns() {
-  const [selected, setSelected] = useState<string[]>([]);
+export default function PositionFilterBtns({
+  value,
+  onChange,
+}: {
+  value: Position[];
+  onChange: (next: Position[]) => void;
+}) {
+  const selected = value;
 
-  const isChecked = (value: string) => selected.includes(value);
+  const isChecked = (pos: string) => {
+    if (pos === "ANY") return selected.length === 0;
+    return selected.includes(pos as Position);
+  };
 
-  const toggleItem = (value: string) => {
-    setSelected((prev) => {
-      const hasANY = prev.includes("ANY");
+  const toggleItem = (raw: string) => {
+    const pos = raw as Position | "ANY";
 
-      // 5개 포지션 선택한 경우 ANY로 변경
-      if (value !== "ANY" && !hasANY && selected.length === 4) {
-        return ["ANY"];
-      }
+    if (pos === "ANY") {
+      onChange([]);
+      return;
+    }
 
-      // ANY 선택했었다가 다른 포지션 선택할 경우 (ANY 해제)
-      if (hasANY && value !== "ANY") {
-        return [value];
-      }
+    const next = selected.includes(pos)
+      ? selected.filter((p) => p !== pos)
+      : [...selected, pos];
 
-      // 다른 포지션 선택했다가 ANY 선택할 경우
-      if (!hasANY && value === "ANY") {
-        return ["ANY"];
-      }
+    if (next.length >= 5) {
+      onChange([]);
+      return;
+    }
 
-      return prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value];
-    });
+    onChange(next);
   };
 
   return (

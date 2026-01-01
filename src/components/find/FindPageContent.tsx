@@ -5,19 +5,22 @@ import ToggleBtn from "@/components/common/button/ToggleBtn";
 import Dropdown from "@/components/common/Dropdown";
 import FindCard from "@/components/find/main-card/FindCard";
 import PositionFilterBtns from "@/components/find/PositionFilterBtns";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMenuStore } from "@/stores/menuStore";
-import { Post } from "@/types/post";
+import { Post, PostListResponse, PostStatus } from "@/types/post";
 import { Unlink } from "lucide-react";
 import gameIconLol from "@/assets/images/game-icon-lol.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { QUEUE_TYPES, QUEUE_TYPES_LABEL } from "@/types/party";
-import { TIERS, TIERS_LABEL } from "@/types/tier";
+import { QUEUE_TYPES, QUEUE_TYPES_LABEL, QueueType } from "@/types/party";
+import { Tier, TIERS, TIERS_LABEL } from "@/types/tier";
 import { MyProfile } from "@/types/profile";
 import { GameAccount } from "@/types/game-account";
 import { useMyParties } from "@/hooks/useMyParties";
 import LoadingBouncy from "../common/loading/LoadingBouncy";
+import { useQuery } from "@tanstack/react-query";
+import { GetPosts } from "@/services/posts.client";
+import { Position } from "@/types/position";
 
 export default function FindPageContent({
   postData,
@@ -30,17 +33,56 @@ export default function FindPageContent({
 }) {
   const router = useRouter();
 
-  const { data, isLoading } = useMyParties();
+  const { data: myPartiesData, isLoading: myPratiesDataIsLoading } =
+    useMyParties();
   const { currentGame, setMenu } = useMenuStore();
 
+  const [status, setStatus] = useState<PostStatus>("RECRUIT");
+  const [queueType, setQueueType] = useState<QueueType | "ALL">("ALL");
+  const [tier, setTier] = useState<Tier | "ALL">("ALL");
+  const [myPositions, setMyPositions] = useState<Position[]>([]);
+
+  const filters = { status, queueType, tier, myPositions };
+  const apiParams = {
+    status,
+    queueType: queueType === "ALL" ? null : queueType,
+    tier: tier === "ALL" ? null : tier,
+    myPositions: myPositions ?? null,
+  };
+
+  const initial: PostListResponse = {
+    posts: postData ?? [],
+    nextCursor: null,
+    hasNext: false,
+  };
+
+  const isDefaultFilter =
+    status === "RECRUIT" &&
+    queueType === "ALL" &&
+    tier === "ALL" &&
+    myPositions.length === 0;
+
+  const { data, isLoading, isPending } = useQuery({
+    queryKey: ["posts", filters],
+    queryFn: () => GetPosts(apiParams),
+    initialData: isDefaultFilter ? initial : undefined,
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
+    staleTime: 5000,
+  });
+
+  const posts = data?.posts ?? [];
+
   const currentParty =
-    data?.data.parties.filter((party) => party.status === "RECRUIT")[0] ?? null;
+    myPartiesData?.data.parties.filter(
+      (party) => party.status === "RECRUIT",
+    )[0] ?? null;
 
   useEffect(() => {
     setMenu("find");
   }, []);
 
-  if (isLoading) {
+  if (myPratiesDataIsLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <LoadingBouncy />
@@ -50,10 +92,17 @@ export default function FindPageContent({
 
   return (
     <div className="flex h-full flex-col gap-7.5">
-      <ToggleBtn value="recruiting" onChange={() => {}} className="mt-17.5" />
+      <ToggleBtn
+        value={status}
+        onChange={(next) => setStatus(next)}
+        className="mt-17.5"
+      />
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <PositionFilterBtns />
+          <PositionFilterBtns
+            value={myPositions}
+            onChange={(next) => setMyPositions(next)}
+          />
           <Dropdown
             name="gameMode"
             placeholder="게임 모드를 선택해주세요"
@@ -80,19 +129,22 @@ export default function FindPageContent({
           <Dropdown
             name="queueType"
             placeholder="큐 타입을 선택해주세요"
-            value={QUEUE_TYPES[0]}
-            onValueChange={() => {}}
-            items={QUEUE_TYPES.map((t) => ({
-              value: t,
-              label: QUEUE_TYPES_LABEL[t],
-            }))}
+            value={queueType}
+            onValueChange={(v) => setQueueType(v as QueueType | "ALL")}
+            items={[
+              { value: "ALL", label: "전체 큐" },
+              ...QUEUE_TYPES.map((t) => ({
+                value: t,
+                label: QUEUE_TYPES_LABEL[t],
+              })),
+            ]}
             className="min-w-50"
           />
           <Dropdown
             name="tiers"
             placeholder="티어를 선택해주세요"
-            value="ALL"
-            onValueChange={() => {}}
+            value={tier}
+            onValueChange={(v) => setTier(v as Tier)}
             items={[
               { value: "ALL", label: "전체 티어" },
               ...TIERS.map((t) => ({ value: t, label: TIERS_LABEL[t] })),
@@ -101,7 +153,7 @@ export default function FindPageContent({
           />
         </div>
         <div className="text-content-secondary flex items-center gap-4">
-          <span>나만의 듀오를 찾고 싶다면</span>
+          <span className="text-sm">나만의 듀오를 찾고 싶다면</span>
           <span className="font-light">―</span>
           <BoxButton
             text="모집글 작성"
@@ -127,9 +179,13 @@ export default function FindPageContent({
           />
         </div>
       </div>
-      {postData && postData.length > 0 ? (
+      {isLoading || isPending ? (
+        <div className="flex h-full w-full items-center justify-center">
+          <LoadingBouncy />
+        </div>
+      ) : posts && posts.length > 0 ? (
         <div className="flex flex-wrap justify-between gap-y-7.5 px-7.5">
-          {postData.map((post, index) => (
+          {posts.map((post, index) => (
             <FindCard
               key={index}
               data={post}

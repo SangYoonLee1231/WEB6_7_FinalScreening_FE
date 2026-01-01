@@ -280,8 +280,11 @@ export default function ProfilePageContent({
                       <p className="text-semibold text-xl">승률</p>
                       <div className="flex h-full flex-col items-center justify-center">
                         {RankData && RankData.length !== 0 ? (
-                          RankData.map((r) => (
-                            <div className="flex flex-col items-center">
+                          RankData.map((r, index) => (
+                            <div
+                              key={`RankData${index}`}
+                              className="flex flex-col items-center"
+                            >
                               <p className="text-content-secondary text-sm">
                                 {r.queueType === "RANKED_SOLO_5x5"
                                   ? "솔로 랭크"
