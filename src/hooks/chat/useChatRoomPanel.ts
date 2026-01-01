@@ -6,30 +6,20 @@ import type {
   ChatHeaderUser,
   ChatMessage,
 } from "@/components/common/chat/ChatFrame";
-import { getChatMessages, getChatRoomDetail } from "@/services/chats.client";
+import {
+  getChatMessages,
+  getChatRoomDetail,
+  markMessagesAsRead,
+} from "@/services/chats.client";
 import type { ChatRoom } from "@/hooks/chat/useChatRooms";
-
-function mergeMessages(
-  prev: ChatMessage[],
-  next: ChatMessage[],
-): ChatMessage[] {
-  const map = new Map<string, ChatMessage>();
-
-  // prev 먼저 넣고 next로 덮어쓰기(동일 id면 최신 값 반영)
-  prev.forEach((m) => map.set(m.id, m));
-  next.forEach((m) => map.set(m.id, m));
-
-  // 시간순 정렬
-  return Array.from(map.values()).sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-  );
-}
+import { wsService, type ChatWebSocketMessage } from "../../services/websocket";
 
 export function useChatRoomPanel(
   selectedRoomId: string,
   setRooms: React.Dispatch<React.SetStateAction<ChatRoom[]>>,
 ) {
   const [isLoadingRight, setIsLoadingRight] = React.useState<boolean>(false);
+  const [isSending, setIsSending] = React.useState<boolean>(false);
 
   const [rightHeaderUser, setRightHeaderUser] =
     React.useState<ChatHeaderUser | null>(null);
@@ -37,13 +27,14 @@ export function useChatRoomPanel(
   const [rightState, setRightState] = React.useState<PostStatus | null>(null);
   const [rightMessages, setRightMessages] = React.useState<ChatMessage[]>([]);
 
-  // polling 시에도 other/me 판별 및 표시를 하려면 detail 정보가 필요해서 ref로 보관
-  const otherUserIdRef = React.useRef<number | null>(null);
-  const otherNicknameRef = React.useRef<string | null>(null);
-  const otherAvatarRef = React.useRef<string | null>(null);
+  // 상대방 정보를 저장 (WebSocket 메시지 수신 시 사용)
+  const otherUserRef = React.useRef<{
+    userId: number;
+    nickname: string;
+    profileImage: string | null;
+  } | null>(null);
 
-  const pollTimerRef = React.useRef<number | null>(null);
-
+  // 채팅방 데이터 로드
   React.useEffect(() => {
     let cancelled = false;
 
@@ -53,16 +44,18 @@ export function useChatRoomPanel(
         setRightMessages([]);
 
         const [detail, messageRes] = await Promise.all([
-          getChatRoomDetail(chatId), // GET /api/v1/chats/{chatId}
-          getChatMessages(chatId, { size: 30 }), // GET /api/v1/chats/{chatId}/messages
+          getChatRoomDetail(chatId),
+          getChatMessages(chatId, { size: 30 }),
         ]);
 
         if (cancelled) return;
 
-        // polling용 ref 업데이트
-        otherUserIdRef.current = detail.otherUser.userId;
-        otherNicknameRef.current = detail.otherUser.nickname;
-        otherAvatarRef.current = detail.otherUser.profileImage;
+        // 상대방 정보 저장
+        otherUserRef.current = {
+          userId: detail.otherUser.userId,
+          nickname: detail.otherUser.nickname,
+          profileImage: detail.otherUser.profileImage,
+        };
 
         setRightHeaderUser({
           profileImageUrl: detail.otherUser.profileImage,
@@ -88,7 +81,32 @@ export function useChatRoomPanel(
           };
         });
 
-        setRightMessages(mapped);
+        // 생성일 기준 오름차순 정렬
+        const sorted = [...mapped].sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        );
+
+        setRightMessages(sorted);
+
+        // 읽음 처리: 마지막 메시지 ID로 읽음 표시
+        if (messageRes.messages.length > 0) {
+          const lastMessageId = Math.max(
+            ...messageRes.messages.map((m) => m.chatMessageId),
+          );
+          markMessagesAsRead(chatId, lastMessageId)
+            .then(() => {
+              // 좌측 목록에서 unreadCount 초기화
+              setRooms((prev) =>
+                prev.map((r) =>
+                  r.id === chatId ? { ...r, unreadCount: 0 } : r,
+                ),
+              );
+            })
+            .catch(() => {
+              // 읽음 처리 실패 시 무시
+            });
+        }
       } catch (e) {
         console.warn(e);
         if (!cancelled) {
@@ -96,94 +114,117 @@ export function useChatRoomPanel(
           setRightTitle(null);
           setRightState(null);
           setRightMessages([]);
+          otherUserRef.current = null;
         }
       } finally {
         if (!cancelled) setIsLoadingRight(false);
       }
     }
 
-    async function pollMessages(chatId: string) {
-      const otherUserId = otherUserIdRef.current;
-      if (!otherUserId) return; // detail 아직 안 들어왔으면 스킵
-
-      try {
-        const messageRes = await getChatMessages(chatId, { size: 30 });
-
-        const otherNickname = otherNicknameRef.current ?? undefined;
-        const otherAvatar = otherAvatarRef.current ?? "/default-avatar.png";
-
-        const mapped: ChatMessage[] = messageRes.messages.map((m) => {
-          const isOther = m.senderId === otherUserId;
-          return {
-            id: String(m.chatMessageId),
-            side: isOther ? "other" : "me",
-            message: m.content,
-            createdAt: m.createdAt,
-            nickname: isOther ? otherNickname : undefined,
-            avatarSrc: isOther ? otherAvatar : undefined,
-          };
-        });
-
-        setRightMessages((prev) => mergeMessages(prev, mapped));
-      } catch (e) {
-        // 폴링 실패는 화면 초기화하지 않고 로그만
-        console.warn("pollMessages failed", e);
-      }
-    }
-
-    // 선택된 방이 없으면 우측 초기화 + 폴링 정리
     if (!selectedRoomId) {
       setRightHeaderUser(null);
       setRightTitle(null);
       setRightState(null);
       setRightMessages([]);
-
-      otherUserIdRef.current = null;
-      otherNicknameRef.current = null;
-      otherAvatarRef.current = null;
-
-      if (pollTimerRef.current) {
-        window.clearInterval(pollTimerRef.current);
-        pollTimerRef.current = null;
-      }
+      otherUserRef.current = null;
       return;
     }
 
-    // 방이 바뀔 때 이전 폴링 제거
-    if (pollTimerRef.current) {
-      window.clearInterval(pollTimerRef.current);
-      pollTimerRef.current = null;
-    }
-
-    // 1) 최초 로딩
     fetchRightPanel(selectedRoomId);
-
-    // 2) 주기적 갱신(폴링)
-    pollTimerRef.current = window.setInterval(() => {
-      pollMessages(selectedRoomId);
-    }, 5000); // 5초 (원하면 2000~5000 사이로 조정)
 
     return () => {
       cancelled = true;
-      if (pollTimerRef.current) {
-        window.clearInterval(pollTimerRef.current);
-        pollTimerRef.current = null;
-      }
     };
   }, [selectedRoomId]);
 
-  const handleSend = async (message: string) => {
+  // WebSocket 구독
+  React.useEffect(() => {
     if (!selectedRoomId) return;
 
+    const handleMessage = (wsMessage: ChatWebSocketMessage) => {
+      const otherUser = otherUserRef.current;
+
+      // WS에서 senderId/chatMessageId가 string으로 올 수 있어, 숫자로 정규화
+      const senderId = Number(wsMessage.senderId);
+      const chatMessageId = Number(wsMessage.chatMessageId);
+
+      const isOther =
+        otherUser != null &&
+        Number.isFinite(senderId) &&
+        senderId === otherUser.userId;
+
+      const newMessage: ChatMessage = {
+        id: String(chatMessageId),
+        side: isOther ? "other" : "me",
+        message: wsMessage.content,
+        createdAt: wsMessage.createdAt,
+        nickname: isOther ? otherUser.nickname : undefined,
+        avatarSrc: isOther
+          ? (otherUser.profileImage ?? "/default-avatar.png")
+          : undefined,
+      };
+
+      // 중복 메시지 방지 (optimistic update와 겹칠 수 있음)
+      setRightMessages((prev) => {
+        // 이미 같은 ID의 메시지가 있으면 무시
+        if (prev.some((m) => m.id === newMessage.id)) {
+          return prev;
+        }
+        // optimistic 메시지 교체 (임시 ID로 추가된 내 메시지)
+        if (!isOther) {
+          const optimisticIndex = prev.findIndex(
+            (m) => m.id.startsWith("temp-") && m.message === newMessage.message,
+          );
+          if (optimisticIndex !== -1) {
+            const updated = [...prev];
+            updated[optimisticIndex] = newMessage;
+            return updated;
+          }
+        }
+        return [...prev, newMessage];
+      });
+
+      // 좌측 목록 프리뷰 갱신
+      setRooms((prev) =>
+        prev.map((r) =>
+          r.id === selectedRoomId
+            ? {
+                ...r,
+                lastMessage: wsMessage.content,
+                createdAt: wsMessage.createdAt,
+              }
+            : r,
+        ),
+      );
+
+      // 상대방 메시지 수신 시 읽음 처리
+      if (isOther) {
+        markMessagesAsRead(selectedRoomId, chatMessageId).catch(() => {});
+      }
+    };
+
+    wsService.subscribe(selectedRoomId, handleMessage).catch((err) => {
+      console.error("[WebSocket] Subscribe failed:", err);
+    });
+
+    return () => {
+      wsService.unsubscribe(selectedRoomId);
+    };
+  }, [selectedRoomId, setRooms]);
+
+  const handleSend = async (message: string) => {
+    if (!selectedRoomId || isSending) return;
+
     const createdAt = new Date().toISOString();
+    const tempId = `temp-${Math.random().toString(16).slice(2)}`;
     const optimistic: ChatMessage = {
-      id: `m-${Math.random().toString(16).slice(2)}`,
+      id: tempId,
       side: "me",
       message,
       createdAt,
     };
 
-    // 우측 채팅창 즉시 반영
+    // Optimistic UI 업데이트
     setRightMessages((prev) => [...prev, optimistic]);
 
     // 좌측 목록 프리뷰 갱신
@@ -199,12 +240,21 @@ export function useChatRoomPanel(
       ),
     );
 
-    // TODO: 실제 전송 API 붙이면 여기서 호출
-    // 실패 시 optimistic 롤백/토스트 처리 권장
+    try {
+      setIsSending(true);
+      await wsService.sendMessage(selectedRoomId, message);
+    } catch (err) {
+      console.error("[WebSocket] Send failed:", err);
+      // 실패 시 optimistic 메시지 제거
+      setRightMessages((prev) => prev.filter((m) => m.id !== tempId));
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return {
     isLoadingRight,
+    isSending,
     rightHeaderUser,
     rightTitle,
     rightState,
