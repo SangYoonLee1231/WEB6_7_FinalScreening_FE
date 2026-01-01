@@ -34,7 +34,7 @@ export default function FindPageContent({
   const router = useRouter();
 
   const { data: myPartiesData, isLoading: myPratiesDataIsLoading } =
-    useMyParties();
+    useMyParties(loginData?.id);
   const { currentGame, setMenu } = useMenuStore();
 
   const [status, setStatus] = useState<PostStatus>("RECRUIT");

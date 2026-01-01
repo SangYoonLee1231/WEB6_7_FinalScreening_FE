@@ -23,7 +23,7 @@ export default function FindHistoryContainer({
     setProfileMenu("find-history");
   }, []);
 
-  const { data, isLoading, error, refetch } = useMyParties();
+  const { data, isLoading, error, refetch } = useMyParties(loginData.id);
 
   const parties = data?.data.parties ?? [];
 
