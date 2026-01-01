@@ -9,6 +9,22 @@ import type {
 import { getChatMessages, getChatRoomDetail } from "@/services/chats.client";
 import type { ChatRoom } from "@/hooks/chat/useChatRooms";
 
+function mergeMessages(
+  prev: ChatMessage[],
+  next: ChatMessage[],
+): ChatMessage[] {
+  const map = new Map<string, ChatMessage>();
+
+  // prev 먼저 넣고 next로 덮어쓰기(동일 id면 최신 값 반영)
+  prev.forEach((m) => map.set(m.id, m));
+  next.forEach((m) => map.set(m.id, m));
+
+  // 시간순 정렬
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  );
+}
+
 export function useChatRoomPanel(
   selectedRoomId: string,
   setRooms: React.Dispatch<React.SetStateAction<ChatRoom[]>>,
@@ -20,6 +36,13 @@ export function useChatRoomPanel(
   const [rightTitle, setRightTitle] = React.useState<React.ReactNode>(null);
   const [rightState, setRightState] = React.useState<PostStatus | null>(null);
   const [rightMessages, setRightMessages] = React.useState<ChatMessage[]>([]);
+
+  // polling 시에도 other/me 판별 및 표시를 하려면 detail 정보가 필요해서 ref로 보관
+  const otherUserIdRef = React.useRef<number | null>(null);
+  const otherNicknameRef = React.useRef<string | null>(null);
+  const otherAvatarRef = React.useRef<string | null>(null);
+
+  const pollTimerRef = React.useRef<number | null>(null);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -36,6 +59,11 @@ export function useChatRoomPanel(
 
         if (cancelled) return;
 
+        // polling용 ref 업데이트
+        otherUserIdRef.current = detail.otherUser.userId;
+        otherNicknameRef.current = detail.otherUser.nickname;
+        otherAvatarRef.current = detail.otherUser.profileImage;
+
         setRightHeaderUser({
           profileImageUrl: detail.otherUser.profileImage,
           gameNickname: detail.otherUser.gameNickname,
@@ -44,7 +72,6 @@ export function useChatRoomPanel(
         });
 
         setRightTitle(`${detail.queueType} ${detail.memo}`);
-
         setRightState(detail.postStatus as PostStatus);
 
         const mapped: ChatMessage[] = messageRes.messages.map((m) => {
@@ -75,18 +102,73 @@ export function useChatRoomPanel(
       }
     }
 
+    async function pollMessages(chatId: string) {
+      const otherUserId = otherUserIdRef.current;
+      if (!otherUserId) return; // detail 아직 안 들어왔으면 스킵
+
+      try {
+        const messageRes = await getChatMessages(chatId, { size: 30 });
+
+        const otherNickname = otherNicknameRef.current ?? undefined;
+        const otherAvatar = otherAvatarRef.current ?? "/default-avatar.png";
+
+        const mapped: ChatMessage[] = messageRes.messages.map((m) => {
+          const isOther = m.senderId === otherUserId;
+          return {
+            id: String(m.chatMessageId),
+            side: isOther ? "other" : "me",
+            message: m.content,
+            createdAt: m.createdAt,
+            nickname: isOther ? otherNickname : undefined,
+            avatarSrc: isOther ? otherAvatar : undefined,
+          };
+        });
+
+        setRightMessages((prev) => mergeMessages(prev, mapped));
+      } catch (e) {
+        // 폴링 실패는 화면 초기화하지 않고 로그만
+        console.warn("pollMessages failed", e);
+      }
+    }
+
+    // 선택된 방이 없으면 우측 초기화 + 폴링 정리
     if (!selectedRoomId) {
       setRightHeaderUser(null);
       setRightTitle(null);
       setRightState(null);
       setRightMessages([]);
+
+      otherUserIdRef.current = null;
+      otherNicknameRef.current = null;
+      otherAvatarRef.current = null;
+
+      if (pollTimerRef.current) {
+        window.clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
       return;
     }
 
+    // 방이 바뀔 때 이전 폴링 제거
+    if (pollTimerRef.current) {
+      window.clearInterval(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+
+    // 1) 최초 로딩
     fetchRightPanel(selectedRoomId);
+
+    // 2) 주기적 갱신(폴링)
+    pollTimerRef.current = window.setInterval(() => {
+      pollMessages(selectedRoomId);
+    }, 5000); // 5초 (원하면 2000~5000 사이로 조정)
 
     return () => {
       cancelled = true;
+      if (pollTimerRef.current) {
+        window.clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
     };
   }, [selectedRoomId]);
 
@@ -117,7 +199,8 @@ export function useChatRoomPanel(
       ),
     );
 
-    // TODO: 전송 API 생기면 여기서 호출
+    // TODO: 실제 전송 API 붙이면 여기서 호출
+    // 실패 시 optimistic 롤백/토스트 처리 권장
   };
 
   return {

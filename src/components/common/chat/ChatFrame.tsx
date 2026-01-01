@@ -69,11 +69,28 @@ export default function ChatFrame({
 }: ChatFrameProps) {
   const viewportRef = React.useRef<HTMLDivElement | null>(null);
 
-  // 메시지 목록이 바뀌면 하단으로 스크롤(초기/새메시지 기본 UX)
+  // 사용자가 하단 근처를 보고 있을 때만 자동 스크롤하기 위한 플래그
+  const isNearBottomRef = React.useRef(true);
+
+  const handleViewportScroll = React.useCallback(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+
+    const threshold = 120; // px (하단에서 이 정도 이내면 "하단 근처"로 간주)
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+
+    isNearBottomRef.current = distanceFromBottom <= threshold;
+  }, []);
+
+  // 메시지 목록이 바뀌면 하단으로 스크롤
+  // 메시지 목록이 바뀌어도, 사용자가 이미 하단 근처를 보고 있을 때만 자동 스크롤
   React.useEffect(() => {
     const el = viewportRef.current;
     if (!el) return;
-    el.scrollTop = el.scrollHeight;
+
+    if (isNearBottomRef.current) {
+      el.scrollTop = el.scrollHeight;
+    }
   }, [messages.length]);
 
   return (
@@ -133,6 +150,7 @@ export default function ChatFrame({
         <ScrollArea.Root className="h-full w-full">
           <ScrollArea.Viewport
             ref={viewportRef}
+            onScroll={handleViewportScroll}
             className="h-full w-full px-6 py-6"
           >
             <div className="flex flex-col gap-8">
@@ -176,58 +194,3 @@ export default function ChatFrame({
     </section>
   );
 }
-/* 사용법 예시 (꼭 필요해서 올립니다)   
-
-
-"use client";
-
-import ChatFrame, { ChatMessage } from "@/components/common/chat/ChatFrame";
-
-export default function ChatPage() {
-  const headerUser = {
-    profileImageUrl: "https://example.com/profile.png",
-    gameNickname: "게임닉네임",
-    gameTag: "#1234",
-    communityNickname: "커뮤니티닉네임",
-  };
-
-  const messages: ChatMessage[] = [
-    {
-      id: "m1",
-      side: "other",
-      message: "칼바람저요저요저요...",
-      createdAt: new Date().toISOString(),
-      nickname: "커뮤니티닉네임",
-      avatarSrc: "https://example.com/profile.png",
-    },
-    {
-      id: "m2",
-      side: "me",
-      message: "진정하시고 닉네임좀",
-      createdAt: new Date().toISOString(),
-    },
-  ];
-
-  return (
-    <ChatFrame
-      headerUser={headerUser}
-      title={
-        <>
-          <span className="text-accent">칼바람나라락</span>
-          <span className="text-content-secondary">
-            {" "}
-            같이 하실 분 매너유저만
-          </span>
-        </>
-      }
-      state="RECRUITING"
-      messages={messages}
-      onSend={(text) => {
-        console.log("send:", text);
-        // 여기서 서버로 보내고, 성공하면 messages에 append하는 구조로 확장
-      }}
-    />
-  );
-}
-
-*/
