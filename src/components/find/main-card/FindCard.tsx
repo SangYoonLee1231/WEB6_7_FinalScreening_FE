@@ -6,7 +6,7 @@ import FindCardContainer from "@/components/common/container/FindCardContainer";
 import { Post } from "@/types/post";
 import { twMerge } from "tailwind-merge";
 import TierSet from "@/components/profile/TierSet";
-import { isTier, Rank } from "@/types/tier";
+import { isTier, Rank, Tier } from "@/types/tier";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import PositionSet from "./PositionSet";
 import Champion from "@/assets/images/test_champion_thumb.png";
@@ -27,6 +27,11 @@ import { useRouter } from "next/navigation";
 import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
+import MostChampion from "@/components/profile/MostChampion";
+import { FormLabelAndContent } from "@/components/common/FormLabelAndContent";
+import Image from "next/image";
+import { useGetFavoriteChampions } from "@/hooks/useGetFavoriteChampions";
+import { useGetRanks } from "@/hooks/useGetRanks";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
   currentUserId: number | null;
@@ -46,16 +51,12 @@ export default function FindCard({
   const [isOpenFindDetailModal, setIsOpenFindDetailModal] = useState(false);
   const { createdAt, lookingPositions, memo, mic, myPosition, postId, writer } =
     data;
-  const { userId, communityNickname } = writer;
-  // const { gameNickname, gameTag, profileIconUrl } = gameAccount;
-  // const { division, favoriteChampions, kda, tier, winRate } = gameSummary;
+  const { userId, communityNickname, gameAccount, gameSummary } = writer;
+  const { gameNickname, gameTag, profileIconUrl } = gameAccount;
+  const { division, kda, tier, winRate } = gameSummary;
 
-  const {
-    data: partyData,
-    isLoading: partyDataIsLoading,
-    error: partyDataError,
-    refetch: partyDataRefetch,
-  } = useGetPartyDetail(postId);
+  const { data: partyData, isLoading: partyDataIsLoading } =
+    useGetPartyDetail(postId);
 
   const partyMembers = partyData?.members;
 
@@ -66,38 +67,18 @@ export default function FindCard({
   const { data: reviewDistributionData, isLoading: distLoading } =
     useGetReviewDistribution(Number(userId));
 
-  const isLoading = userDataIsLoading || distLoading;
+  const { data: ChampionData, isLoading: ChampionDataIsLoading } =
+    useGetFavoriteChampions(userData?.gameAccountId ?? 0);
 
-  /* ------------------ writer 데이터 문제 해결 되기 전까지 임시 데이터 ------------------ */
-
-  const gameAccount = {
-    gameNickname: "Hide on bush",
-    gameTag: "KR1",
-    profileIconUrl:
-      "https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/6.png",
-  };
-
-  const gameSummary = {
-    division: "" as Rank,
-    kda: 9.9,
-    tier: "CHALLENGER",
-    winRate: 80,
-  };
-
-  const { gameNickname, gameTag, profileIconUrl } = gameAccount;
-  const { division, kda, tier, winRate } = gameSummary;
-
-  const champions = [
-    { id: 0, src: Champion.src, percent: 50 },
-    { id: 1, src: Champion.src, percent: 50 },
-    { id: 2, src: Champion.src, percent: 50 },
-  ];
-
-  /* ---------------------------------------------------------------------------------- */
-
-  const validTier = isTier(tier) ? tier : "UNRANKED";
+  const isLoading =
+    partyDataIsLoading ||
+    userDataIsLoading ||
+    distLoading ||
+    ChampionDataIsLoading;
 
   if (isLoading) return null;
+
+  const validTier = isTier(tier) ? tier : "UNRANKED";
 
   return (
     <>
@@ -148,8 +129,8 @@ export default function FindCard({
               </div>
             </div>
             <TierSet
-              tier={validTier}
-              rank={division}
+              tier={validTier as Tier}
+              rank={division as Rank}
               type="mini"
               className="inline-flex w-fit text-xs [&>img]:w-12.5"
             />
@@ -175,16 +156,29 @@ export default function FindCard({
               isActive={false}
               size="default"
             />
-            {/* <MostChampion data={champions} type="mastery" size="sm" /> */}
-            {/* <MostChampion data={writer.gameAccount.favoriteChampions} />  */}
+
+            <div className="flex flex-col items-center justify-center gap-2 font-semibold">
+              <p className="text-sm">선호 챔피언</p>
+              <MostChampion data={ChampionData!} />
+            </div>
           </div>
 
           <div className="flex justify-between gap-10">
-            <div className="flex flex-col gap-1">
-              <SubTitleAndData title="승률" data={`${winRate}%`} />
-              <WinRate type="horizontal" winRate={winRate} win={0} lose={0} />
+            <div className="flex w-full flex-col gap-1">
+              <SubTitleAndData title="승률" data={`${winRate ?? 0}%`} />
+              {winRate ? (
+                <WinRate type="horizontal" winRate={winRate} win={0} lose={0} />
+              ) : (
+                <p className="text-content-secondary text-center text-sm">
+                  승률 데이터가 없습니다
+                </p>
+              )}
             </div>
-            <SubTitleAndData title="KDA" data={kda.toString()} />
+            <SubTitleAndData
+              title="KDA"
+              data={kda ? kda.toString() : "0"}
+              className="w-27.5"
+            />
           </div>
 
           <div
