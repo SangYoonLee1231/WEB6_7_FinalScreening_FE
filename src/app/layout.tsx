@@ -27,7 +27,9 @@ export default function RootLayout({
       className={`${pretendard.variable}`}
       suppressHydrationWarning
     >
-      <body className={`${pretendard.className} bg-bg-secondary font-medium`}>
+      <body
+        className={`${pretendard.className} bg-bg-secondary scrollbar-hide font-medium`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
