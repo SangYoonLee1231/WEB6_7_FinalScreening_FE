@@ -1,6 +1,6 @@
 import { Review, ReviewDistribution } from "@/types/review";
 import ReviewCard from "./ReviewCard";
-import ReviewPercent from "./ReviewPercent";
+import ReviewPercent from "../ReviewPercent";
 import { MessageDirection } from "./MyReviewFilterToggle";
 import { twMerge } from "tailwind-merge";
 

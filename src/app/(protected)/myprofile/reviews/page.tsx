@@ -1,4 +1,4 @@
-import MyProfileReviewContainer from "@/components/review/MyProfileReviewContainer";
+import MyProfileReviewContainer from "@/components/review/myprofile/MyProfileReviewContainer";
 import { getMyProfile } from "@/services/users";
 
 export default async function ReviewsPage() {

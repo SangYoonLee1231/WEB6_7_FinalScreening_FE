@@ -1,118 +1,71 @@
 "use client";
 
-import Avatar from "@/components/common/Avatar";
 import { BoxButton } from "@/components/common/button/BoxButton";
 import Dropdown from "@/components/common/Dropdown";
-import SearchInput from "@/components/common/SearchInput";
-import emojiGood from "@/assets/images/emoji/emoji_good.png";
-import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
-import emojiBad from "@/assets/images/emoji/emoji_bad.png";
-import Image from "next/image";
-import { EmojiType as Expression } from "@/types/emoji";
-import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import { useEffect } from "react";
 import { useMenuStore } from "@/stores/menuStore";
+import useGetAllReviews from "@/hooks/reviews/useGetAllReviews";
+import LoadingBouncy from "@/components/common/loading/LoadingBouncy";
+import ReviewRow from "@/components/review/ReviewRow";
+import Link from "next/link";
 
 const items = [
   {
-    value: "good",
+    value: "ALL",
+    label: "리뷰 전체",
+  },
+  {
+    value: "GOOD",
     label: "좋아요",
   },
   {
-    value: "normal",
+    value: "NORMAL",
     label: "보통",
   },
   {
-    value: "bad",
+    value: "BAD",
     label: "싫어요",
   },
-  {
-    value: "all",
-    label: "리뷰 전체",
-  },
 ];
-
-type Review = {
-  id: number;
-  expression: Expression;
-  nickname: string;
-  content: string;
-  time: string;
-  highlight?: boolean;
-};
-
-const reviews: Review[] = [
-  {
-    id: 1,
-    expression: "GOOD",
-    nickname: "커뮤니티닉네임",
-    content: "리뷰내용1",
-    time: "5분 전",
-  },
-  {
-    id: 2,
-    expression: "NORMAL",
-    nickname: "커뮤니티닉네임",
-    content: "리뷰내용2",
-    time: "5분 전",
-  },
-  {
-    id: 3,
-    expression: "BAD",
-    nickname: "커뮤니티닉네임",
-    content: "리뷰내용3",
-    time: "5분 전",
-  },
-  {
-    id: 4,
-    expression: "GOOD",
-    nickname: "커뮤니티닉네임",
-    content:
-      "리뷰내용4 정말로 아주 진짜 엄청나게 긴 문장은 이렇게 줄임표가 생깁니다 정말로 아주 진짜 엄청나게 긴 문장은 이렇게 줄임표가 생깁니다",
-    time: "5분 전",
-  },
-];
-
-const EMOJI_SRC_MAP: Record<Expression, string> = {
-  GOOD: emojiGood.src,
-  NORMAL: emojiNormal.src,
-  BAD: emojiBad.src,
-};
 
 export default function ReviewsPage() {
   const { setMenu } = useMenuStore();
+
+  const { data: reviewData, isLoading } = useGetAllReviews();
 
   useEffect(() => {
     setMenu("reviews");
   }, []);
 
-  return (
-    <section className="flex h-full w-full flex-col items-center">
-      <div>
-        <SearchInput
-          inputSize="md"
-          placeholder="유저 닉네임으로 검색"
-          className="border-border-primary mt-20 border"
-        />
+  if (!reviewData || isLoading)
+    return (
+      <div className="flex h-full items-center justify-center">
+        <LoadingBouncy />
       </div>
-      <div className="mt-4 flex w-full flex-row items-center justify-between">
+    );
+
+  return (
+    <section className="mt-17.5 flex h-full w-full flex-col items-center">
+      <div className="mt-4 flex w-full items-center justify-between">
         <Dropdown
           placeholder="리뷰 전체"
           items={items}
           onValueChange={() => {}}
           name="reviewType"
-          className="w-75 rounded-md"
+          className="w-75 rounded-xl"
         />
-        <div className="flex w-[390px] flex-row items-center gap-4">
-          <p className="text-sm text-slate-500">
+        <div className="flex w-[390px] items-center gap-4">
+          <p className="text-content-secondary text-sm">
             최근 함께한 유저에게 리뷰를 남기려면
           </p>
           <div className="h-px flex-1 bg-slate-500" />
-          <BoxButton
-            tone="gradient_positive"
-            text="리뷰 작성하러 가기"
-            className="h-10 w-34 text-sm font-semibold"
-          />
+          <Link href="/myprofile/find-history">
+            <BoxButton
+              tone="gradient_positive"
+              text="리뷰 작성하러 가기"
+              className="h-10 w-34 text-sm font-semibold"
+            />
+          </Link>
         </div>
       </div>
       {/* 리뷰 카드 */}
@@ -127,37 +80,8 @@ export default function ReviewsPage() {
 
         {/* Body */}
         <div>
-          {reviews.map((review) => (
-            <div
-              key={review.id}
-              className="border-border-primary grid h-19 grid-cols-[120px_200px_1fr_120px] items-center border-t px-5"
-            >
-              {/* 평가 (Emoji) */}
-              <div>
-                <Image
-                  src={EMOJI_SRC_MAP[review.expression]}
-                  alt={review.expression}
-                  width={40}
-                  height={40}
-                />
-              </div>
-
-              {/* 유저 닉네임 */}
-              <div className="flex items-center gap-2">
-                <Avatar src="" size="xs" type="profile" />
-                <span className="text-content-primary hover:text-accent text-sm hover:cursor-pointer">
-                  {review.nickname}
-                </span>
-              </div>
-
-              {/* 리뷰 내용 */}
-              <IntroduceBubble content={review.content} className="truncate" />
-
-              {/* Time */}
-              <span className="text-content-secondary text-right">
-                {review.time}
-              </span>
-            </div>
+          {reviewData.map((review, index) => (
+            <ReviewRow key={index} review={review} />
           ))}
         </div>
       </div>

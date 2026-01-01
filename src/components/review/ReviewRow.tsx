@@ -1,0 +1,35 @@
+import { EMOJI_SRC_MAP } from "@/types/emoji";
+import { Review } from "@/types/review";
+import Image from "next/image";
+import IntroduceBubble from "../profile/IntroduceBubble";
+import formatRelativeTime from "@/utils/formatRelativeTime";
+import Avatar from "../common/Avatar";
+
+export default function ReviewRow({ review }: { review: Review }) {
+  const { reviewerNickname, emoji, content, createdAt, revieweeProfileImage } =
+    review;
+  return (
+    <div className="border-border-primary grid h-19 grid-cols-[120px_200px_1fr_120px] items-center border-t px-5">
+      {/* 평가 (Emoji) */}
+      <div>
+        <Image src={EMOJI_SRC_MAP[emoji]} alt={emoji} width={40} height={40} />
+      </div>
+
+      {/* 유저 닉네임 */}
+      <div className="flex items-center gap-2">
+        <Avatar src={revieweeProfileImage ?? ""} size="xs" type="profile" />
+        <span className="text-content-primary hover:text-accent text-sm hover:cursor-pointer">
+          {reviewerNickname}
+        </span>
+      </div>
+
+      {/* 리뷰 내용 */}
+      <IntroduceBubble content={content} className="truncate" />
+
+      {/* Time */}
+      <span className="text-content-secondary text-right text-sm">
+        {formatRelativeTime(createdAt)}
+      </span>
+    </div>
+  );
+}

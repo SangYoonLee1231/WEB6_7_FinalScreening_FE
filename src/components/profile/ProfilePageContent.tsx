@@ -6,7 +6,7 @@ import HorizontalCardContainer from "@/components/common/container/HorizontalCar
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import TierSet from "@/components/profile/TierSet";
 import WinRate from "@/components/profile/WinRate";
-import ReviewCard from "@/components/review/ReviewCard";
+import ReviewCard from "@/components/review/myprofile/ReviewCard";
 import ReviewPercent from "@/components/review/ReviewPercent";
 import Image from "next/image";
 import LolLogo from "@/assets/images/games/lol/lol-logo.png";
@@ -65,7 +65,9 @@ export default function ProfilePageContent({
     queryFn: getBanUsersList,
   });
   const banListData = banList ?? [];
-  const isUserBlocked = banListData.some((ban) => ban.userId === profileData.id);
+  const isUserBlocked = banListData.some(
+    (ban) => ban.userId === profileData.id,
+  );
 
   const lolData =
     gameAccountData?.gameType === "LEAGUE_OF_LEGENDS" ||
@@ -183,10 +185,15 @@ export default function ProfilePageContent({
                 <BoxButton
                   size="sm"
                   tone="negative"
-                  className={twMerge("w-12 py-3", isUserBlocked ? "pointer-events-none" : "")}
+                  className={twMerge(
+                    "w-12 py-3",
+                    isUserBlocked ? "pointer-events-none" : "",
+                  )}
                   text={isUserBlocked ? "차단됨" : "차단"}
                   onClick={userBanHandler}
-                  disabled={isBanListLoading || isUserBlocked || banMutation.isPending}
+                  disabled={
+                    isBanListLoading || isUserBlocked || banMutation.isPending
+                  }
                 />
               </div>
               <IntroduceBubble size="lg" content={comment} />

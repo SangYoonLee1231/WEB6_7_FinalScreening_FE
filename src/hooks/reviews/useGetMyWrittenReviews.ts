@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function useGetMyWrittenReviews() {
   return useQuery<Review[] | null>({
-    queryKey: ["MyWrittenReviews"],
+    queryKey: ["writtenReviews"],
     queryFn: () => getMyWrittenReviews(),
     staleTime: 30 * 60 * 1000,
   });

@@ -56,3 +56,16 @@ export async function getReviewDistribution(userId: number) {
 
   return (await res.json()) as ReviewDistribution;
 }
+
+export async function getAllReviews() {
+  const res = await ClientApi(`/api/v1/reviews`, {
+    method: "GET",
+  });
+
+  if (!res.ok) {
+    alert("모든 리뷰 데이터를 불러올 수 없습니다.");
+    return null;
+  }
+
+  return (await res.json()) as Review[];
+}

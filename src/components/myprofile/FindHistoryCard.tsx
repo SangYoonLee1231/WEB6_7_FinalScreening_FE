@@ -90,17 +90,14 @@ export default function FindHistoryCard({
 
           {/* 커뮤니티 닉네임 + 내용 */}
           <div className="flex shrink-0 items-center gap-2">
-            {leader.profileImage ? (
-              <Avatar
-                type="profile"
-                src={leader.profileImage}
-                alt="leader profile image"
-                width={40}
-                height={40}
-              />
-            ) : (
-              <div className="bg-bg-quaternary h-8 w-8 rounded-full" />
-            )}
+            <Avatar
+              type="profile"
+              src={leader.profileImage}
+              alt="leader profile image"
+              width={32}
+              height={32}
+              className="h-8 w-8"
+            />
 
             <span className="text-content-primary">{leader.nickname}</span>
           </div>
@@ -109,7 +106,7 @@ export default function FindHistoryCard({
           </span>
           <IntroduceBubble content={postTitle} size="sm" />
 
-          <StateBadge state={status as PostStatus} />
+          <StateBadge state={status as PostStatus} className="w-21" />
 
           {/* 시간 + 화살표 */}
           <div className="text-content-secondary flex items-center gap-1 text-xs">
