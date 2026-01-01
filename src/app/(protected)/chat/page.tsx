@@ -60,16 +60,16 @@ function EmptyChatPanel() {
   );
 }
 
-export default function ChatPage({ params }: { params: { game: string } }) {
+export default function ChatPage() {
   const { setMenu } = useMenuStore();
 
   React.useEffect(() => {
     setMenu("chat");
   }, [setMenu]);
 
-  const game = params.game;
+  // 폴더 구조가 /chat 이면 params가 없으니, 우선 임시로 고정
+  const game = "lol"; // 실제 프로젝트의 game 결정 로직으로 교체해야함
 
-  // 채팅방 목록 상태
   const {
     rooms,
     setRooms,
@@ -93,7 +93,6 @@ export default function ChatPage({ params }: { params: { game: string } }) {
   return (
     <main className="w-full px-6 py-8">
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:justify-center">
-        {/* Left: Chat room list */}
         <section className="w-full lg:w-100">
           <Tabs.Root
             value={tab}
@@ -165,7 +164,6 @@ export default function ChatPage({ params }: { params: { game: string } }) {
           </Tabs.Root>
         </section>
 
-        {/* Right: Chat panel */}
         <section className="w-full lg:w-225">
           {selectedRoomId ? (
             isLoadingRight || !rightHeaderUser || !rightState ? (

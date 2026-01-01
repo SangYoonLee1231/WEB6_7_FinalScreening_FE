@@ -19,7 +19,9 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import SubTitleAndData from "../SubTitleAndData";
 import FindCardMemberDetail from "./FindCardMemberDetail";
 import FindDetailModal from "./FindDetailModal";
-import { CreateChat } from "@/services/chat.client";
+import { createChatRoom } from "@/services/chats.client";
+import { useQuery } from "@tanstack/react-query";
+import { getPartyDetail } from "@/services/party.client";
 import { GameAccount } from "@/types/game-account";
 import { useRouter } from "next/navigation";
 import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";
@@ -244,14 +246,30 @@ export default function FindCard({
                 onClick={async (e) => {
                   e.stopPropagation();
 
-                  if (gameAccountData?.length === 0) {
+                  // 로그인 필요 (작성자/참여자 모두 인증 사용자)
+                  if (!currentUserId) {
+                    alert("로그인이 필요한 기능입니다.");
+                    return;
+                  }
+
+                  // 게임 아이디 연동 필요
+                  if (!gameAccountData || gameAccountData.length === 0) {
                     alert("게임 아이디 연동 후 이용할 수 있는 기능입니다.");
                     router.push(`/myprofile/link`);
                     return;
                   }
 
-                  // 채팅방 구현 후 수정 필요
-                  const res = await CreateChat(postId);
+                  try {
+                    // Swagger: POST /api/v1/chats  body: { postId }
+                    // 이미 존재하면 기존 채팅방 반환(멱등)
+                    const res = await createChatRoom({ postId });
+
+                    // 채팅 페이지로 이동하면서 방을 바로 열 수 있도록 roomId 전달
+                    router.push(`/chat?roomId=${res.chatRoomId}`);
+                  } catch (err) {
+                    console.error(err);
+                    alert("채팅방 생성에 실패했습니다. 다시 시도해주세요.");
+                  }
                 }}
               />
             </div>
