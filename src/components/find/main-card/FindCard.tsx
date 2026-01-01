@@ -19,8 +19,6 @@ import SubTitleAndData from "../SubTitleAndData";
 import FindCardMemberDetail from "./FindCardMemberDetail";
 import FindDetailModal from "./FindDetailModal";
 import { createChatRoom } from "@/services/chats.client";
-import { useQuery } from "@tanstack/react-query";
-import { getPartyDetail } from "@/services/party.client";
 import { GameAccount } from "@/types/game-account";
 import { useRouter } from "next/navigation";
 import { useGetPartyDetail } from "@/hooks/useGetPartyDetail";

@@ -129,7 +129,6 @@ export default function ReviewCard({
             <Image
               src={emotionSrc}
               alt={`${emotion} emoji`}
-              fill
               className="object-contain"
             />
           </div>

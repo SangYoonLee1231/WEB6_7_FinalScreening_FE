@@ -27,11 +27,6 @@ export default function ReviewPercent({
   distributionData,
 }: ReviewPercentProps) {
   const ratios = distributionData?.ratios ?? { GOOD: 0, NORMAL: 0, BAD: 0 };
-  const dist = distributionData?.distribution ?? {
-    GOOD: 0,
-    NORMAL: 0,
-    BAD: 0,
-  };
 
   const reviewData = [{ name: "percentBar", ...ratios }];
 
@@ -58,14 +53,14 @@ export default function ReviewPercent({
   return (
     <div
       className={twMerge(
-        "text-content-primary flex flex-col",
-        type === "mini" && "min-w-77.5",
+        "text-content-primary flex min-h-5 min-w-0 flex-col",
+        type === "mini" && "min-w-[310px]",
       )}
     >
       <p
         className={twMerge(
           "mb-5 text-center text-xl font-semibold",
-          type === "mini" && "mb-2 w-77.5 text-start text-sm",
+          type === "mini" && "mb-2 w-[310px] text-start text-sm",
         )}
       >
         리뷰 분포
@@ -73,12 +68,14 @@ export default function ReviewPercent({
 
       <div
         className={twMerge(
-          "mb-3.5 h-7.5 w-full",
+          "mb-3.5 h-[30px] min-h-5 w-full",
           type === "mini" && "mb-2 h-5",
         )}
       >
-        <ResponsiveContainer width="100%" height="100%">
+        {type === "mini" ? (
           <BarChart
+            width={310}
+            height={20}
             data={reviewData}
             layout="vertical"
             margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
@@ -86,33 +83,60 @@ export default function ReviewPercent({
           >
             <XAxis type="number" hide domain={[0, 1]} />
             <YAxis type="category" dataKey="name" hide />
-
             <Bar
               dataKey="GOOD"
               stackId="a"
               fill="#03AEDD"
               radius={getBarRadius("GOOD")}
-            ></Bar>
-
+            />
             <Bar
               dataKey="NORMAL"
               stackId="a"
               fill="#FF9D00"
               radius={getBarRadius("NORMAL")}
-            ></Bar>
-
+            />
             <Bar
               dataKey="BAD"
               stackId="a"
               fill="#FA084D"
               radius={getBarRadius("BAD")}
-            ></Bar>
+            />
           </BarChart>
-        </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%" minHeight={30}>
+            <BarChart
+              data={reviewData}
+              layout="vertical"
+              margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+              stackOffset="expand"
+            >
+              <XAxis type="number" hide domain={[0, 1]} />
+              <YAxis type="category" dataKey="name" hide />
+              <Bar
+                dataKey="GOOD"
+                stackId="a"
+                fill="#03AEDD"
+                radius={getBarRadius("GOOD")}
+              />
+              <Bar
+                dataKey="NORMAL"
+                stackId="a"
+                fill="#FF9D00"
+                radius={getBarRadius("NORMAL")}
+              />
+              <Bar
+                dataKey="BAD"
+                stackId="a"
+                fill="#FA084D"
+                radius={getBarRadius("BAD")}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
       <div
         className={twMerge(
-          "flex items-center justify-between text-base [&>div>img]:w-7.5",
+          "flex items-center justify-between text-base [&>div>img]:w-[30px]",
           type === "mini" && "text-xs [&>div>img]:w-5",
         )}
       >
