@@ -31,6 +31,7 @@ export async function GetPosts(params: {
 }) {
   const sp = new URLSearchParams();
 
+  if (params.status) sp.set("status", params.status);
   if (params.queueType) sp.set("queueType", params.queueType);
   if (params.tier) sp.set("tier", params.tier);
 

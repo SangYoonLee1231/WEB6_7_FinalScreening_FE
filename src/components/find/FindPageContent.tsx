@@ -7,7 +7,7 @@ import FindCard from "@/components/find/main-card/FindCard";
 import PositionFilterBtns from "@/components/find/PositionFilterBtns";
 import { useEffect, useMemo, useState } from "react";
 import { useMenuStore } from "@/stores/menuStore";
-import { Post, PostListResponse } from "@/types/post";
+import { Post, PostListResponse, PostStatus } from "@/types/post";
 import { Unlink } from "lucide-react";
 import gameIconLol from "@/assets/images/game-icon-lol.png";
 import Image from "next/image";
@@ -37,12 +37,14 @@ export default function FindPageContent({
     useMyParties();
   const { currentGame, setMenu } = useMenuStore();
 
+  const [status, setStatus] = useState<PostStatus>("RECRUIT");
   const [queueType, setQueueType] = useState<QueueType | "ALL">("ALL");
   const [tier, setTier] = useState<Tier | "ALL">("ALL");
   const [myPositions, setMyPositions] = useState<Position[]>([]);
 
-  const filters = { queueType, tier, myPositions };
+  const filters = { status, queueType, tier, myPositions };
   const apiParams = {
+    status,
     queueType: queueType === "ALL" ? null : queueType,
     tier: tier === "ALL" ? null : tier,
     myPositions: myPositions ?? null,
@@ -55,7 +57,10 @@ export default function FindPageContent({
   };
 
   const isDefaultFilter =
-    queueType === "ALL" && tier === "ALL" && myPositions.length === 0;
+    status === "RECRUIT" &&
+    queueType === "ALL" &&
+    tier === "ALL" &&
+    myPositions.length === 0;
 
   const { data, isLoading, isPending } = useQuery({
     queryKey: ["posts", filters],
@@ -87,7 +92,11 @@ export default function FindPageContent({
 
   return (
     <div className="flex h-full flex-col gap-7.5">
-      <ToggleBtn value="recruiting" onChange={() => {}} className="mt-17.5" />
+      <ToggleBtn
+        value={status}
+        onChange={(next) => setStatus(next)}
+        className="mt-17.5"
+      />
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <PositionFilterBtns
