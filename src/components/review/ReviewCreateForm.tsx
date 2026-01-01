@@ -111,7 +111,7 @@ export default function ReviewCreateForm({
       router.refresh();
 
       await qc.invalidateQueries({
-        queryKey: ["MyWrittenReviews"],
+        queryKey: ["writtenReviews"],
       });
 
       router.push(`/myprofile/reviews`);

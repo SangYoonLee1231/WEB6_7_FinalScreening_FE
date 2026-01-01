@@ -11,9 +11,9 @@ import overwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
 import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
 import formatRelativeTime from "@/utils/formatRelativeTime";
 import type { EmojiType as Emotion } from "@/types/emoji";
-import IntroduceBubble from "../profile/IntroduceBubble";
-import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
-import Avatar from "../common/Avatar";
+import IntroduceBubble from "../../profile/IntroduceBubble";
+import HorizontalCardContainer from "../../common/container/HorizontalCardContainer";
+import Avatar from "../../common/Avatar";
 import { MessageDirection } from "./MyReviewFilterToggle";
 import ClientApi from "@/lib/clientApi";
 import { useRouter } from "next/navigation";
@@ -84,7 +84,7 @@ export default function ReviewCard({
     alert("리뷰를 삭제했습니다.");
 
     qc.invalidateQueries({
-      queryKey: ["MyWrittenReviews"],
+      queryKey: ["writtenReviews"],
     });
   };
 
