@@ -10,7 +10,6 @@ import { useMenuStore } from "@/stores/menuStore";
 import { Post } from "@/types/post";
 import { Unlink } from "lucide-react";
 import gameIconLol from "@/assets/images/game-icon-lol.png";
-import gameIconAram from "@/assets/images/game-icon-aram.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { QUEUE_TYPES, QUEUE_TYPES_LABEL } from "@/types/party";
@@ -59,13 +58,12 @@ export default function FindPageContent({
             name="gameMode"
             placeholder="게임 모드를 선택해주세요"
             onValueChange={() => {}}
-            value="1"
+            value="SUMMONERS_RIFT"
             items={[
               {
-                value: "1",
+                value: "SUMMONERS_RIFT",
                 label: (
                   <div className="flex items-center gap-2.5">
-                    {" "}
                     <Image
                       src={gameIconLol}
                       alt={`lol icon`}
@@ -73,20 +71,6 @@ export default function FindPageContent({
                       className="object-cover"
                     />
                     <span>소환사의 협곡</span>
-                  </div>
-                ),
-              },
-              {
-                value: "2",
-                label: (
-                  <div className="flex items-center gap-2.5">
-                    <Image
-                      src={gameIconAram}
-                      alt={`aram icon`}
-                      width={20}
-                      className="object-cover"
-                    />
-                    <span>칼바람 나락</span>
                   </div>
                 ),
               },
