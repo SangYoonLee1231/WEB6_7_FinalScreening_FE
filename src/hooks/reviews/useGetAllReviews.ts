@@ -6,6 +6,8 @@ export default function useGetAllReviews() {
   return useQuery<Review[] | null>({
     queryKey: ["all", "reviews"],
     queryFn: () => getAllReviews(),
-    staleTime: 10 * 60 * 1000,
+    refetchInterval: 15000,
+    refetchOnWindowFocus: true,
+    staleTime: 10000,
   });
 }
