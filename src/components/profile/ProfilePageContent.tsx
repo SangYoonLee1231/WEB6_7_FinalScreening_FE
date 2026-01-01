@@ -10,7 +10,7 @@ import ReviewCard from "@/components/review/myprofile/ReviewCard";
 import ReviewPercent from "@/components/review/ReviewPercent";
 import Image from "next/image";
 import LolLogo from "@/assets/images/games/lol/lol-logo.png";
-import { UserProfile } from "@/types/profile";
+import { MyProfile, UserProfile } from "@/types/profile";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GameAccount } from "@/types/game-account";
@@ -34,9 +34,11 @@ const REFRESH_COOLDOWN_MS = 2 * 60 * 1000;
 export default function ProfilePageContent({
   profileData,
   gameAccountData,
+  currentUserData,
 }: {
   profileData: UserProfile | null;
   gameAccountData: GameAccount | null;
+  currentUserData: MyProfile | null;
 }) {
   const router = useRouter();
 
@@ -63,6 +65,7 @@ export default function ProfilePageContent({
   const { data: banList, isLoading: isBanListLoading } = useQuery({
     queryKey: ["ban"],
     queryFn: getBanUsersList,
+    enabled: !!currentUserData,
   });
   const banListData = banList ?? [];
   const isUserBlocked = banListData.some(
@@ -182,19 +185,21 @@ export default function ProfilePageContent({
                 <span className="text-content-primary text-2xl font-semibold">
                   {nickname}
                 </span>
-                <BoxButton
-                  size="sm"
-                  tone="negative"
-                  className={twMerge(
-                    "w-12 py-3",
-                    isUserBlocked ? "pointer-events-none" : "",
-                  )}
-                  text={isUserBlocked ? "차단됨" : "차단"}
-                  onClick={userBanHandler}
-                  disabled={
-                    isBanListLoading || isUserBlocked || banMutation.isPending
-                  }
-                />
+                {currentUserData && (
+                  <BoxButton
+                    size="sm"
+                    tone="negative"
+                    className={twMerge(
+                      "w-12 py-3",
+                      isUserBlocked ? "pointer-events-none" : "",
+                    )}
+                    text={isUserBlocked ? "차단됨" : "차단"}
+                    onClick={userBanHandler}
+                    disabled={
+                      isBanListLoading || isUserBlocked || banMutation.isPending
+                    }
+                  />
+                )}
               </div>
               <IntroduceBubble size="lg" content={comment} />
             </div>

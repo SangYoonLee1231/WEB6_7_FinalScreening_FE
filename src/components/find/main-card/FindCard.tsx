@@ -106,6 +106,7 @@ export default function FindCard({
                     className="z-10"
                     userData={userData!}
                     reviewDistributionData={reviewDistributionData!}
+                    currentUserId={currentUserId}
                   />
                 </HoverCard.Content>
               </HoverCard.Root>

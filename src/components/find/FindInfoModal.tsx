@@ -12,9 +12,14 @@ import FindMemberCard from "./main-card/FindMemberCard";
 import { useMyParties } from "@/hooks/useMyParties";
 import { Unlink } from "lucide-react";
 import { QUEUE_TYPES_LABEL } from "@/types/party";
+import { MyProfile } from "@/types/profile";
 
-export default function FindInfoModal() {
-  const { data, isLoading, error, refetch } = useMyParties();
+export default function FindInfoModal({
+  currentUserData,
+}: {
+  currentUserData: MyProfile | null;
+}) {
+  const { data, isLoading, error, refetch } = useMyParties(currentUserData?.id);
 
   const currentPartyData =
     data?.data.parties.filter(

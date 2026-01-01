@@ -15,7 +15,7 @@ export default async function Layout({
       <div className="m-auto w-(--content-area) max-w-full flex-1">
         <main className="h-full w-full">{children}</main>
       </div>
-      <Fab />
+      <Fab currentUserData={userData} />
     </div>
   );
 }

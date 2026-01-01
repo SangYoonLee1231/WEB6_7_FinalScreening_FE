@@ -25,7 +25,6 @@ export default function MostChampion({
   data,
   className,
 }: MostChampionProps) {
-  console.log(data);
   return (
     <div className={twMerge(container({ size }), className)}>
       <div className="flex items-center justify-between">
