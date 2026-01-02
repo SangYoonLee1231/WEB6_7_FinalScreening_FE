@@ -94,27 +94,33 @@ export default function FindHistoryCard({
           />
 
           {/* 커뮤니티 닉네임 + 내용 */}
-          <div className="flex shrink-0 items-center gap-2">
-            <Avatar
-              type="profile"
-              src={leader.profileImage}
-              alt="leader profile image"
-              width={32}
-              height={32}
-              className="h-8 w-8"
-            />
+          <div className="flex w-50 items-center justify-between">
+            {" "}
+            <div className="flex shrink-0 items-center gap-2">
+              <Avatar
+                type="profile"
+                src={leader.profileImage}
+                alt="leader profile image"
+                width={32}
+                height={32}
+                className="h-8 w-8"
+              />
 
-            <span className="text-content-primary">{leader.nickname}</span>
+              <span className="text-content-primary max-w-25 overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+                {leader.nickname}
+              </span>
+            </div>
+            <span className="text-accent text-sm font-semibold">
+              {QUEUE_TYPES_LABEL[queueType]}
+            </span>
           </div>
-          <span className="text-accent font-semibold">
-            {QUEUE_TYPES_LABEL[queueType]}
-          </span>
+
           <IntroduceBubble content={postTitle} size="sm" />
 
-          <StateBadge state={status as PostStatus} className="w-21" />
+          <StateBadge state={status as PostStatus} className="w-20 text-xs" />
 
           {/* 시간 + 화살표 */}
-          <div className="text-content-secondary flex w-15.5 items-center justify-end gap-1 text-xs">
+          <div className="text-content-secondary flex w-17 items-center justify-end gap-1 text-xs">
             <span>{formatRelativeTime(joinedAt)}</span>
             <span className="text-base">
               {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}

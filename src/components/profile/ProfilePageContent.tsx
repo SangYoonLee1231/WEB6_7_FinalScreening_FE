@@ -389,20 +389,23 @@ export default function ProfilePageContent({
             />
             {/* 리뷰 상세 내역 */}
             {receivedReviewData && receivedReviewData.length !== 0 ? (
-              <div className="flex flex-col items-center gap-7.5">
+              <div className="mb-10 flex flex-col items-center gap-7.5">
                 <p className="text-content-secondary text-center text-base">
                   총 {receivedReviewData.length}개의 리뷰
                 </p>
                 <div className="flex w-[70%] flex-col gap-2">
-                  <ReviewCard
-                    mode="received"
-                    gameName="lol"
-                    communityName="커뮤니티 닉네임"
-                    content="리뷰내용"
-                    emotion="GOOD"
-                    createdAt="2025-12-12T00:12:00.000Z"
-                    profileImageURL=""
-                  />
+                  {receivedReviewData.map((r, index) => (
+                    <ReviewCard
+                      key={`review${index}`}
+                      mode="received"
+                      gameName="lol"
+                      communityName={r.revieweeNickname}
+                      content={r.content}
+                      emotion={r.emoji}
+                      createdAt={r.createdAt}
+                      profileImageURL={r.revieweeProfileImage ?? ""}
+                    />
+                  ))}
                 </div>
               </div>
             ) : (
