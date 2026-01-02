@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 const ACCESS_TOKEN_SECRET =
   "local-dev-secret-key-which-is-very-long-and-secure";
@@ -103,16 +104,19 @@ function redirectToLogin(request: NextRequest) {
 }
 
 function clearAuthCookies(res: NextResponse) {
-  res.cookies.set("access_token", "", { maxAge: 0, path: "/" });
-  res.cookies.set("refresh_token", "", { maxAge: 0, path: "/" });
+  res.cookies.set("accessToken", "", { maxAge: 0, path: "/" });
+  res.cookies.set("refreshToken", "", { maxAge: 0, path: "/" });
 }
 
 function setAccessCookie(res: NextResponse, token: string) {
-  res.cookies.set("access_token", token, {
+  console.log(token);
+  res.cookies.set("accessToken", token, {
     httpOnly: true,
-    sameSite: "none",
+    sameSite: "lax",
     path: "/",
-    secure: true, // HTTPS면 켜기
+    secure: process.env.NODE_ENV === "production",
+    domain:
+      process.env.NODE_ENV === "production" ? ".matchmyduo.shop" : undefined,
   });
 }
 
@@ -145,10 +149,16 @@ async function requestNewAccessToken(
 ): Promise<string | null> {
   if (!API_URL) return null;
 
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
+
   try {
     const res = await fetch(`${API_URL}/api/v1/auth/refresh`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Cookie: cookieHeader },
       body: JSON.stringify({ refreshToken }),
     });
 
@@ -158,6 +168,7 @@ async function requestNewAccessToken(
       accessToken?: string;
       access_token?: string;
     };
+
     return data.accessToken ?? data.access_token ?? null;
   } catch {
     return null;

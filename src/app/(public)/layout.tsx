@@ -13,9 +13,11 @@ export default async function Layout({
     <div className="flex h-dvh flex-col">
       <Header type="full" userData={userData} />
       <div className="m-auto w-(--content-area) max-w-full flex-1">
-        <main className="h-full w-full">{children}</main>
+        <main className="scrollbar-hide h-full w-full overflow-y-auto">
+          {children}
+        </main>
       </div>
-      <Fab />
+      <Fab currentUserData={userData} />
     </div>
   );
 }

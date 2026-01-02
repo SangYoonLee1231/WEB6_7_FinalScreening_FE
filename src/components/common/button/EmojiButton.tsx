@@ -2,12 +2,7 @@ import Image from "next/image";
 import { cva, VariantProps } from "class-variance-authority";
 import { ButtonHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
-
-import emojiGood from "@/assets/images/emoji/emoji_good.png";
-import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
-import emojiBad from "@/assets/images/emoji/emoji_bad.png";
-
-import { EmojiType as Expression } from "@/types/emoji";
+import { EMOJI_SRC_MAP, EmojiType as Expression } from "@/types/emoji";
 
 interface EmojiRadioButtonProps
   extends
@@ -16,12 +11,6 @@ interface EmojiRadioButtonProps
   expression: Expression;
   selected: boolean;
 }
-
-const EMOJI_SRC_MAP: Record<Expression, string> = {
-  GOOD: emojiGood.src,
-  NORMAL: emojiNormal.src,
-  BAD: emojiBad.src,
-};
 
 interface EmojiRadioGroupProps {
   value: Expression;

@@ -2,18 +2,14 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRouter } from "next/navigation";
-import { Post } from "@/types/post";
 import FormModalContainer from "../common/container/FormModalContainer";
 import ReviewCreateForm from "./ReviewCreateForm";
-import { PostPartyDetail } from "@/types/party";
 
 export default function ReviewCreateFormContainer({
   type,
-  initialPost,
   currentUserId,
 }: {
   type: "create" | "modify";
-  initialPost?: PostPartyDetail;
   currentUserId?: number;
 }) {
   const router = useRouter();

@@ -2,12 +2,10 @@
 
 "use client";
 
+import { PostStatus } from "@/types/post";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
-
-// 모집 상태 타입
-export type RecruitStatus = "recruiting" | "completed";
 
 // 공통 버튼 스타일 (크기만 variant로 제어)
 const segmentBtn = cva(
@@ -29,8 +27,8 @@ const segmentBtn = cva(
 type SegmentBtnVariants = VariantProps<typeof segmentBtn>;
 
 interface ToggleBtnProps extends SegmentBtnVariants {
-  value: RecruitStatus; // 현재 선택된 상태
-  onChange: (next: RecruitStatus) => void; // 상태 변경 콜백
+  value: PostStatus; // 현재 선택된 상태
+  onChange: (next: PostStatus) => void; // 상태 변경 콜백
   className?: string; // 래퍼 div에 줄 className (선택)
 }
 
@@ -40,8 +38,8 @@ export default function ToggleBtn({
   size = "sm",
   className,
 }: ToggleBtnProps) {
-  const isRecruiting = value === "recruiting";
-  const isCompleted = value === "completed";
+  const isRecruiting = value === "RECRUIT";
+  const isCompleted = value === "ACTIVE";
 
   return (
     <div className={twMerge("inline-flex gap-3", className)}>
@@ -49,7 +47,7 @@ export default function ToggleBtn({
       <TogglePrimitive.Root
         // pressed는 현재 value 기준으로만 제어 (Radix 내부 상태에 의존 X)
         pressed={isRecruiting}
-        onPressedChange={() => onChange("recruiting")}
+        onPressedChange={() => onChange("RECRUIT")}
         className={twMerge(
           segmentBtn({ size }),
           isRecruiting
@@ -65,7 +63,7 @@ export default function ToggleBtn({
       {/* 모집완료 버튼 */}
       <TogglePrimitive.Root
         pressed={isCompleted}
-        onPressedChange={() => onChange("completed")}
+        onPressedChange={() => onChange("ACTIVE")}
         className={twMerge(
           segmentBtn({ size }),
           isCompleted
@@ -80,50 +78,3 @@ export default function ToggleBtn({
     </div>
   );
 }
-
-/* 사용법 예시 1
-
-import { useState } from "react";
-import ToggleBtn, { RecruitStatus } from "@/components/button/ToggleBtn";
-
-export default function PostListPage() {
-  const [status, setStatus] = useState<RecruitStatus>("recruiting");
-
-  // status 값에 따라 게시글 필터링
-  const filteredPosts = allPosts.filter((post) =>
-    status === "recruiting" ? post.isOpen : !post.isOpen,
-  );
-
-  return (
-    <div>
-      <ToggleBtn value={status} onChange={setStatus} size="md" />
-
-      <ul className="mt-6 space-y-3">
-        {filteredPosts.map((post) => (
-          <li key={post.id}>{post.title}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-*/
-
-/* 사용법 예시 2
-
-"use client";
-
-import { useState } from "react";
-import ToggleBtn, { RecruitStatus } from "@/components/common/button/ToggleBtn";
-
-export default function Home() {
-  const [status, setStatus] = useState<RecruitStatus>("completed");
-
-  return (
-    <>
-      <ToggleBtn value={status} onChange={setStatus} />
-    </>
-  );
-}
-
-*/

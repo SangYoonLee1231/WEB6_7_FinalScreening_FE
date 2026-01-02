@@ -29,19 +29,21 @@ export async function POST(req: Request) {
 
   response.cookies.set("accessToken", accessToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: "lax", // 프론트 도메인 쿠키면 보통 lax로 충분
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     path: "/",
-    // 필요하면 만료 설정
-    // maxAge: 60 * 5, // 5분
+    maxAge: 60 * 10,
+    domain:
+      process.env.NODE_ENV === "production" ? ".matchmyduo.shop" : undefined,
   });
 
   response.cookies.set("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    // maxAge: 60 * 60 * 24 * 7, // 7일
+    domain:
+      process.env.NODE_ENV === "production" ? ".matchmyduo.shop" : undefined,
   });
 
   return response;

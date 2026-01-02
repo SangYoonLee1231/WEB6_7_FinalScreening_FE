@@ -3,25 +3,22 @@
 import Image, { type StaticImageData } from "next/image";
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-
 import emojiGood from "@/assets/images/emoji/emoji_good.png";
 import emojiNormal from "@/assets/images/emoji/emoji_normal.png";
 import emojiBad from "@/assets/images/emoji/emoji_bad.png";
-
 import lolLogo from "@/assets/images/games/lol/lol-logo.png";
 import overwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
 import valorantLogo from "@/assets/images/games/valorant/valorant-logo.png";
-
 import formatRelativeTime from "@/utils/formatRelativeTime";
-
 import type { EmojiType as Emotion } from "@/types/emoji";
-import IntroduceBubble from "../profile/IntroduceBubble";
-import HorizontalCardContainer from "../common/container/HorizontalCardContainer";
-import Avatar from "../common/Avatar";
+import IntroduceBubble from "../../profile/IntroduceBubble";
+import HorizontalCardContainer from "../../common/container/HorizontalCardContainer";
+import Avatar from "../../common/Avatar";
 import { MessageDirection } from "./MyReviewFilterToggle";
 import ClientApi from "@/lib/clientApi";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { useReviewStore } from "@/stores/reviewStore";
 
 type GameName = "lol" | "overwatch" | "valorant";
 
@@ -60,6 +57,7 @@ export default function ReviewCard({
 }: ReviewCardProps) {
   const router = useRouter();
   const qc = useQueryClient();
+  const { setInitialData } = useReviewStore();
   const [isOpen, setIsOpen] = useState(false);
 
   // 작성한 리뷰만 토글 가능
@@ -86,7 +84,7 @@ export default function ReviewCard({
     alert("리뷰를 삭제했습니다.");
 
     qc.invalidateQueries({
-      queryKey: ["MyWrittenReviews"],
+      queryKey: ["writtenReviews"],
     });
   };
 
@@ -131,7 +129,6 @@ export default function ReviewCard({
             <Image
               src={emotionSrc}
               alt={`${emotion} emoji`}
-              fill
               className="object-contain"
             />
           </div>
@@ -151,7 +148,13 @@ export default function ReviewCard({
       {/* 하단 수정/삭제 영역 (작성한 리뷰 + 펼쳐진 상태에서만) */}
       {isToggleable && isOpen && (
         <div className="mt-3 flex justify-end gap-2">
-          <button className="cursor-pointer rounded-xl bg-slate-500 px-4 py-1 text-sm text-white transition-all duration-150 hover:bg-slate-500/50">
+          <button
+            className="cursor-pointer rounded-xl bg-slate-500 px-4 py-1 text-sm text-white transition-all duration-150 hover:bg-slate-500/50"
+            onClick={() => {
+              setInitialData(emotion, content);
+              router.push(`/myprofile/reviews/modify/${reviewId}`);
+            }}
+          >
             수정
           </button>
           <button

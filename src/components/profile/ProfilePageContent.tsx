@@ -6,11 +6,11 @@ import HorizontalCardContainer from "@/components/common/container/HorizontalCar
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import TierSet from "@/components/profile/TierSet";
 import WinRate from "@/components/profile/WinRate";
-import ReviewCard from "@/components/review/ReviewCard";
+import ReviewCard from "@/components/review/myprofile/ReviewCard";
 import ReviewPercent from "@/components/review/ReviewPercent";
 import Image from "next/image";
 import LolLogo from "@/assets/images/games/lol/lol-logo.png";
-import { UserProfile } from "@/types/profile";
+import { MyProfile, UserProfile } from "@/types/profile";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GameAccount } from "@/types/game-account";
@@ -34,9 +34,11 @@ const REFRESH_COOLDOWN_MS = 2 * 60 * 1000;
 export default function ProfilePageContent({
   profileData,
   gameAccountData,
+  currentUserData,
 }: {
   profileData: UserProfile | null;
   gameAccountData: GameAccount | null;
+  currentUserData: MyProfile | null;
 }) {
   const router = useRouter();
 
@@ -63,9 +65,12 @@ export default function ProfilePageContent({
   const { data: banList, isLoading: isBanListLoading } = useQuery({
     queryKey: ["ban"],
     queryFn: getBanUsersList,
+    enabled: !!currentUserData,
   });
   const banListData = banList ?? [];
-  const isUserBlocked = banListData.some((ban) => ban.userId === profileData.id);
+  const isUserBlocked = banListData.some(
+    (ban) => ban.userId === profileData.id,
+  );
 
   const lolData =
     gameAccountData?.gameType === "LEAGUE_OF_LEGENDS" ||
@@ -180,14 +185,21 @@ export default function ProfilePageContent({
                 <span className="text-content-primary text-2xl font-semibold">
                   {nickname}
                 </span>
-                <BoxButton
-                  size="sm"
-                  tone="negative"
-                  className={twMerge("w-12 py-3", isUserBlocked ? "pointer-events-none" : "")}
-                  text={isUserBlocked ? "차단됨" : "차단"}
-                  onClick={userBanHandler}
-                  disabled={isBanListLoading || isUserBlocked || banMutation.isPending}
-                />
+                {currentUserData && (
+                  <BoxButton
+                    size="sm"
+                    tone="negative"
+                    className={twMerge(
+                      "w-12 py-3",
+                      isUserBlocked ? "pointer-events-none" : "",
+                    )}
+                    text={isUserBlocked ? "차단됨" : "차단"}
+                    onClick={userBanHandler}
+                    disabled={
+                      isBanListLoading || isUserBlocked || banMutation.isPending
+                    }
+                  />
+                )}
               </div>
               <IntroduceBubble size="lg" content={comment} />
             </div>
@@ -268,8 +280,11 @@ export default function ProfilePageContent({
                       <p className="text-semibold text-xl">승률</p>
                       <div className="flex h-full flex-col items-center justify-center">
                         {RankData && RankData.length !== 0 ? (
-                          RankData.map((r) => (
-                            <div className="flex flex-col items-center">
+                          RankData.map((r, index) => (
+                            <div
+                              key={`RankData${index}`}
+                              className="flex flex-col items-center"
+                            >
                               <p className="text-content-secondary text-sm">
                                 {r.queueType === "RANKED_SOLO_5x5"
                                   ? "솔로 랭크"

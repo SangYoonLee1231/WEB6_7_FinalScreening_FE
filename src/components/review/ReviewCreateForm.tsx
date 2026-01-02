@@ -7,9 +7,10 @@ import { EmojiRadioGroup } from "../common/button/EmojiButton";
 import { FormLabelAndContent } from "../common/FormLabelAndContent";
 import { Controller, useForm } from "react-hook-form";
 import { EmojiType } from "@/types/emoji";
-import { Post } from "@/types/post";
 import { PostPartyDetail } from "@/types/party";
 import ClientApi from "@/lib/clientApi";
+import { useReviewStore } from "@/stores/reviewStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 type FormValues = {
   emoji: EmojiType;
@@ -27,8 +28,14 @@ export default function ReviewCreateForm({
   currentUserId: number;
 }) {
   const router = useRouter();
+
   const { partyId } = useParams();
+  const { reviewId } = useParams();
   const revieweeId = useSearchParams().get("revieweeId");
+
+  const qc = useQueryClient();
+
+  const { initialData } = useReviewStore();
 
   const {
     control,
@@ -37,8 +44,8 @@ export default function ReviewCreateForm({
     formState: { isSubmitting },
   } = useForm<FormValues>({
     defaultValues: {
-      emoji: "GOOD",
-      content: "",
+      emoji: initialData.emoji ?? "GOOD",
+      content: initialData.content ?? "",
     },
     mode: "onSubmit",
   });
@@ -75,13 +82,11 @@ export default function ReviewCreateForm({
       }
 
       alert("리뷰가 등록되었습니다.");
-    } else {
-      if (!initialPost) {
-        alert("수정할 글이 없습니다.");
-        return;
-      }
 
-      res = await ClientApi(`/api/v1/reviews/{reviewId}`, {
+      router.refresh();
+      router.push(`/myprofile/find-history`);
+    } else {
+      res = await ClientApi(`/api/v1/reviews/${reviewId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -102,10 +107,15 @@ export default function ReviewCreateForm({
       }
 
       alert("리뷰가 수정되었습니다.");
-    }
 
-    router.refresh();
-    router.push(`/myprofile/find-history`);
+      router.refresh();
+
+      await qc.invalidateQueries({
+        queryKey: ["writtenReviews"],
+      });
+
+      router.push(`/myprofile/reviews`);
+    }
   };
 
   return (

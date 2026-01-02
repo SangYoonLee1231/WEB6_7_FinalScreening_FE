@@ -90,17 +90,14 @@ export default function FindHistoryCard({
 
           {/* 커뮤니티 닉네임 + 내용 */}
           <div className="flex shrink-0 items-center gap-2">
-            {leader.profileImage ? (
-              <Avatar
-                type="profile"
-                src={leader.profileImage}
-                alt="leader profile image"
-                width={40}
-                height={40}
-              />
-            ) : (
-              <div className="bg-bg-quaternary h-8 w-8 rounded-full" />
-            )}
+            <Avatar
+              type="profile"
+              src={leader.profileImage}
+              alt="leader profile image"
+              width={32}
+              height={32}
+              className="h-8 w-8"
+            />
 
             <span className="text-content-primary">{leader.nickname}</span>
           </div>
@@ -109,10 +106,10 @@ export default function FindHistoryCard({
           </span>
           <IntroduceBubble content={postTitle} size="sm" />
 
-          <StateBadge state={status as PostStatus} />
+          <StateBadge state={status as PostStatus} className="w-21" />
 
           {/* 시간 + 화살표 */}
-          <div className="text-content-secondary flex items-center gap-1 text-xs">
+          <div className="text-content-secondary flex w-15.5 items-center justify-end gap-1 text-xs">
             <span>{formatRelativeTime(joinedAt)}</span>
             <span className="text-base">
               {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -138,7 +135,7 @@ export default function FindHistoryCard({
                       {m.profileImage ? (
                         <Avatar src={m.profileImage} type="profile" size="xs" />
                       ) : (
-                        <div className="bg-bg-quaternary h-8 w-8 rounded-full"></div>
+                        <Avatar src="" type="profile" size="xs" />
                       )}
 
                       <span>{m.nickname}</span>
@@ -165,38 +162,38 @@ export default function FindHistoryCard({
                       ))}
                   </div>
                 ))}
-            </div>
-          </HorizontalCardContainer>
-          {leader.userId === currentUserId && (
-            <div className="mt-3 flex justify-end gap-2">
-              <BoxButton
-                text="수정"
-                tone="black"
-                size="xs"
-                onClick={() => {
-                  if (status === "CLOSED") {
-                    alert("게임을 완료한 모집글은 수정할 수 없습니다.");
-                    return;
-                  }
+            </div>{" "}
+            {leader.userId === currentUserId && (
+              <div className="mt-3 flex justify-end gap-2">
+                <BoxButton
+                  text="수정"
+                  tone="black"
+                  size="xs"
+                  onClick={() => {
+                    if (status === "CLOSED") {
+                      alert("게임을 완료한 모집글은 수정할 수 없습니다.");
+                      return;
+                    }
 
-                  router.push(`/${currentGame}/modify/${postId}`);
-                }}
-              />
-              <BoxButton
-                text="삭제"
-                tone="negative"
-                size="xs"
-                onClick={async () => {
-                  if (status === "CLOSED") {
-                    alert("게임을 완료한 모집글은 삭제할 수 없습니다.");
-                    return;
-                  }
-                  await deletePost(postId);
-                  router.push(`/${currentGame}/find`);
-                }}
-              />
-            </div>
-          )}
+                    router.push(`/${currentGame}/modify/${postId}`);
+                  }}
+                />
+                <BoxButton
+                  text="삭제"
+                  tone="negative"
+                  size="xs"
+                  onClick={async () => {
+                    if (status === "CLOSED") {
+                      alert("게임을 완료한 모집글은 삭제할 수 없습니다.");
+                      return;
+                    }
+                    await deletePost(postId);
+                    router.push(`/${currentGame}/find`);
+                  }}
+                />
+              </div>
+            )}
+          </HorizontalCardContainer>
         </>
       )}
     </div>

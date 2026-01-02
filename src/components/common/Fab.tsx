@@ -6,10 +6,15 @@ import "@/css/pab.css";
 import FindInfoModal from "../find/FindInfoModal";
 import CircleBtn from "./button/CircleBtn";
 import { MessageCircleMore, Plus, Users } from "lucide-react";
+import { MyProfile } from "@/types/profile";
 
 type View = "actions" | "find" | "chat";
 
-export function Fab() {
+export function Fab({
+  currentUserData,
+}: {
+  currentUserData: MyProfile | null;
+}) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [view, setView] = React.useState<View>("actions");
 
@@ -56,7 +61,7 @@ export function Fab() {
                   </CircleBtn>
                 </>
               ) : view === "find" ? (
-                <FindInfoModal />
+                <FindInfoModal currentUserData={currentUserData} />
               ) : (
                 <></>
               )}

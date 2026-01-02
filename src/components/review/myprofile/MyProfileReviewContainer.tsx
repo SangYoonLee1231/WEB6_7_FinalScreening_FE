@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MyReviewFilterToggle, { MessageDirection } from "./MyReviewFilterToggle";
+import MyReviewFilterToggle, {
+  MessageDirection,
+} from "@/components/review/myprofile/MyReviewFilterToggle";
 import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 import { useGetUserReviewList } from "@/hooks/reviews/useGetUserReviewList";
-import LoadingBouncy from "../common/loading/LoadingBouncy";
+import LoadingBouncy from "@/components/common/loading/LoadingBouncy";
 import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
-import ReviewList from "./ReviewList";
+import ReviewList from "@/components/review/myprofile/ReviewList";
 import useGetMyWrittenReviews from "@/hooks/reviews/useGetMyWrittenReviews";
 
 export default function MyProfileReviewContainer({
