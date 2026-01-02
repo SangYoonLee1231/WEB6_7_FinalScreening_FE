@@ -8,8 +8,14 @@ import { useRouter } from "next/navigation";
 
 export default function ReviewRow({ review }: { review: Review }) {
   const router = useRouter();
-  const { revieweeNickname, emoji, content, createdAt, revieweeProfileImage } =
-    review;
+  const {
+    revieweeId,
+    revieweeNickname,
+    emoji,
+    content,
+    createdAt,
+    revieweeProfileImage,
+  } = review;
   return (
     <div className="border-border-primary grid h-19 grid-cols-[120px_200px_1fr_120px] items-center border-t px-5">
       {/* 평가 (Emoji) */}
@@ -18,7 +24,12 @@ export default function ReviewRow({ review }: { review: Review }) {
       </div>
 
       {/* 유저 닉네임 */}
-      <div className="group flex items-center gap-2 hover:cursor-pointer">
+      <div
+        className="group flex items-center gap-2 hover:cursor-pointer"
+        onClick={() => {
+          router.push(`/profile/${revieweeId}`);
+        }}
+      >
         <Avatar src={revieweeProfileImage ?? ""} size="xs" type="profile" />
         <span className="text-content-primary group-hover:text-accent text-sm">
           {revieweeNickname}
