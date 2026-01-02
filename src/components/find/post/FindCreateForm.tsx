@@ -134,8 +134,9 @@ export default function FindCreateForm({
         return;
       }
 
-      if (initialPost.currentParticipants < payload.recruitCount) {
+      if (initialPost.currentParticipants > payload.recruitCount) {
         alert("현재 참여 인원보다 모집 인원을 적게 설정할 수 없습니다.");
+        return;
       }
 
       res = await ClientApi(`/api/v1/posts/${initialPost?.postId}`, {
