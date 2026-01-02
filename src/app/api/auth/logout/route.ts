@@ -23,7 +23,7 @@ export async function POST() {
     path: "/",
     maxAge: 0,
     domain:
-      process.env.NODE_ENV === "production" ? ".matchmyduo.site" : undefined,
+      process.env.NODE_ENV === "production" ? ".matchmyduo.shop" : undefined,
   });
 
   response.cookies.set("refreshToken", "", {
@@ -33,7 +33,7 @@ export async function POST() {
     path: "/",
     maxAge: 0,
     domain:
-      process.env.NODE_ENV === "production" ? ".matchmyduo.site" : undefined,
+      process.env.NODE_ENV === "production" ? ".matchmyduo.shop" : undefined,
   });
 
   return response;

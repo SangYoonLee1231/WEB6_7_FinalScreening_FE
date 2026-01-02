@@ -114,7 +114,7 @@ function setAccessCookie(res: NextResponse, token: string) {
     path: "/",
     secure: process.env.NODE_ENV === "production",
     domain:
-      process.env.NODE_ENV === "production" ? ".matchmyduo.site" : undefined,
+      process.env.NODE_ENV === "production" ? ".matchmyduo.shop" : undefined,
   });
 }
 

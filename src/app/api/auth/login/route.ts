@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     path: "/",
     maxAge: 60 * 10,
     domain:
-      process.env.NODE_ENV === "production" ? ".matchmyduo.site" : undefined,
+      process.env.NODE_ENV === "production" ? ".matchmyduo.shop" : undefined,
   });
 
   response.cookies.set("refreshToken", refreshToken, {
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     sameSite: "lax",
     path: "/",
     domain:
-      process.env.NODE_ENV === "production" ? ".matchmyduo.site" : undefined,
+      process.env.NODE_ENV === "production" ? ".matchmyduo.shop" : undefined,
   });
 
   return response;
