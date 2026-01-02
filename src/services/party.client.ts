@@ -126,3 +126,18 @@ export async function closeParty(partyId: number) {
 
   return;
 }
+
+export async function leaveParty(partyId: number) {
+  const res = await ClientApi(`/api/v1/parties/${partyId}/me`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    showToast.error("파티 탈퇴에 실패했습니다.");
+    return;
+  }
+
+  showToast.success("파티에서 탈퇴했습니다.");
+
+  return;
+}
