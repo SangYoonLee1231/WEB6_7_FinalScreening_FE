@@ -13,6 +13,7 @@ import { UnlinkGameAccount } from "@/services/game-account/link.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import LinkGameIdFormModal from "./LinkGameIdFormModal";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
 
 interface GameIdItemProps {
   gameAccountData: GameAccount;
@@ -35,6 +36,7 @@ export default function LinkedGameIdCard({
   const { gameAccountId, gameType, gameNickname, gameTag, updatedAt } =
     gameAccountData;
   const [isOpen, setIsOpen] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   return (
     <HorizontalCardContainer
@@ -89,12 +91,18 @@ export default function LinkedGameIdCard({
           text="연동 해제"
           className="h-9 w-21 rounded-xl px-4 py-2 text-sm"
           size="sm"
-          onClick={async () => {
-            const yes = confirm("정말 해제하시겠습니까?");
-            if (yes) {
-              await UnlinkGameAccount(String(gameAccountId));
-            }
-
+          onClick={() => {
+            setConfirmModalOpen(true);
+          }}
+        />
+        <ConfirmModal
+          open={confirmModalOpen}
+          onOpenChange={setConfirmModalOpen}
+          title="정말 해제하시겠습니까?"
+          description="연동된 계정은 3개월 단위로 변경할 수 있습니다."
+          confirmText="해제"
+          onConfirm={async () => {
+            await UnlinkGameAccount(String(gameAccountId));
             router.replace("/myprofile/link");
           }}
         />

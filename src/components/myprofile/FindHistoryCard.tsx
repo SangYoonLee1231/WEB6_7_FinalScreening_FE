@@ -21,6 +21,8 @@ import { useMenuStore } from "@/stores/menuStore";
 import { deletePost } from "@/services/posts.client";
 import { useGetRequestReviews } from "@/hooks/reviews/useGetRequestReviews";
 import { showToast } from "@/lib/toast";
+import { ConfirmModal } from "../common/ConfirmModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 type GameName = "lol" | "overwatch" | "valorant";
 
@@ -38,10 +40,12 @@ export default function FindHistoryCard({
   currentUserId: number;
 }) {
   const router = useRouter();
+  const qc = useQueryClient();
 
   const { currentGame } = useMenuStore();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -192,8 +196,23 @@ export default function FindHistoryCard({
                       );
                       return;
                     }
+                    setConfirmModalOpen(true);
+                  }}
+                />
+                <ConfirmModal
+                  open={confirmModalOpen}
+                  onOpenChange={setConfirmModalOpen}
+                  title="정말 삭제하시겠습니까?"
+                  description="삭제하면 다시 복구할 수 없습니다."
+                  confirmText="삭제"
+                  onConfirm={async () => {
                     await deletePost(postId);
-                    router.push(`/${currentGame}/find`);
+                    await qc.invalidateQueries({
+                      queryKey: [postId, "party"],
+                    });
+
+                    router.refresh();
+                    router.push(`/myprofile/find-history`);
                   }}
                 />
               </div>

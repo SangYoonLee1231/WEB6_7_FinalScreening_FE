@@ -14,6 +14,9 @@ import { GAME_MODE_META, QUEUE_TYPES_LABEL } from "@/types/party";
 import { useMenuStore } from "@/stores/menuStore";
 import { useRouter } from "next/navigation";
 import { deletePost } from "@/services/posts.client";
+import { useState } from "react";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface FindDetailModalProps {
   postData: Post;
@@ -36,7 +39,11 @@ export default function FindDetailModal({
 }: FindDetailModalProps) {
   const { gameNickname, gameTag, profileIconUrl } = gameAccount;
   const router = useRouter();
+  const qc = useQueryClient();
+
   const { currentGame } = useMenuStore();
+
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
@@ -128,29 +135,41 @@ export default function FindDetailModal({
               )}
             >
               {isLeader && (
-                <Dialog.Close asChild>
-                  <div className="space-x-2">
-                    <BoxButton
-                      text="수정"
-                      size="sm"
-                      tone="color"
-                      onClick={() => {
-                        router.push(
-                          `/${currentGame}/modify/${postData.postId}`,
-                        );
-                      }}
-                    />
-                    <BoxButton
-                      text="삭제"
-                      size="sm"
-                      tone="negative"
-                      onClick={async () => {
-                        await deletePost(postData.postId);
-                        router.push(`/${currentGame}/find`);
-                      }}
-                    />
-                  </div>
-                </Dialog.Close>
+                <div className="space-x-2">
+                  <BoxButton
+                    text="수정"
+                    size="sm"
+                    tone="color"
+                    onClick={() => {
+                      router.push(`/${currentGame}/modify/${postData.postId}`);
+                    }}
+                  />
+                  <BoxButton
+                    text="삭제"
+                    size="sm"
+                    tone="negative"
+                    onClick={async () => {
+                      setConfirmModalOpen(true);
+                    }}
+                  />
+                  <ConfirmModal
+                    open={confirmModalOpen}
+                    onOpenChange={setConfirmModalOpen}
+                    title="정말 삭제하시겠습니까?"
+                    description="삭제하면 다시 복구할 수 없습니다."
+                    confirmText="삭제"
+                    onConfirm={async () => {
+                      await deletePost(postData.postId);
+                      onOpenChange(false);
+                      await qc.invalidateQueries({
+                        queryKey: ["posts"],
+                      });
+
+                      router.refresh();
+                      router.push(`/${currentGame}/find`);
+                    }}
+                  />
+                </div>
               )}
 
               <Dialog.Close asChild>
