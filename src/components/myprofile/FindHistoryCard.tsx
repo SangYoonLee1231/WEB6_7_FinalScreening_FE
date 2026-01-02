@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useMenuStore } from "@/stores/menuStore";
 import { deletePost } from "@/services/posts.client";
 import { useGetRequestReviews } from "@/hooks/reviews/useGetRequestReviews";
+import { showToast } from "@/lib/toast";
 
 type GameName = "lol" | "overwatch" | "valorant";
 
@@ -171,7 +172,9 @@ export default function FindHistoryCard({
                   size="xs"
                   onClick={() => {
                     if (status === "CLOSED") {
-                      alert("게임을 완료한 모집글은 수정할 수 없습니다.");
+                      showToast.error(
+                        "게임을 완료한 모집글은 수정할 수 없습니다.",
+                      );
                       return;
                     }
 
@@ -184,7 +187,9 @@ export default function FindHistoryCard({
                   size="xs"
                   onClick={async () => {
                     if (status === "CLOSED") {
-                      alert("게임을 완료한 모집글은 삭제할 수 없습니다.");
+                      showToast.error(
+                        "게임을 완료한 모집글은 삭제할 수 없습니다.",
+                      );
                       return;
                     }
                     await deletePost(postId);

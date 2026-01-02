@@ -9,14 +9,18 @@ import {
   useState,
   useTransition,
 } from "react";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import { showToast } from "@/lib/toast";
 
 interface NicknameProps {
   initialNickname: string;
   nicknameUpdatedAt: string | null;
 }
 
-export default function NicknameSection({ initialNickname, nicknameUpdatedAt }: NicknameProps) {
+export default function NicknameSection({
+  initialNickname,
+  nicknameUpdatedAt,
+}: NicknameProps) {
   const [nickname, setNickname] = useState<string>("");
   const [modifyNickname, setModifyNickname] = useState<string>("");
   const [isNicknameEditing, setIsNicknameEditing] = useState<boolean>(false);
@@ -46,10 +50,13 @@ export default function NicknameSection({ initialNickname, nicknameUpdatedAt }: 
     if (nicknameUpdatedAt) {
       const lastUpdate = dayjs(nicknameUpdatedAt);
       const now = dayjs();
-      const availableAt = lastUpdate.add(7, 'day');
-      const formattedAvailableAt = dayjs(availableAt).format('YYYY년 M월 D일 H시 m분');
+      const availableAt = lastUpdate.add(7, "day");
+      const formattedAvailableAt =
+        dayjs(availableAt).format("YYYY년 M월 D일 H시 m분");
       if (now.isBefore(availableAt)) {
-        alert(`닉네임 변경은 ${formattedAvailableAt}부터 가능합니다.`);
+        showToast.error(
+          `닉네임 변경은 ${formattedAvailableAt}부터 가능합니다.`,
+        );
         return;
       }
     }
@@ -76,13 +83,14 @@ export default function NicknameSection({ initialNickname, nicknameUpdatedAt }: 
         });
 
         if (res.ok) {
+          showToast.success("닉네임을 변경했습니다.");
           setNickname(modifyNickname);
           setIsNicknameEditing(false);
         } else {
-          alert("닉네임 변경에 실패했습니다.");
+          showToast.error("닉네임 변경에 실패했습니다.");
         }
       } catch (error) {
-        alert("서버 통신 중 오류가 발생했습니다.");
+        showToast.error("서버 통신 중 오류가 발생했습니다.");
       }
     });
   };
@@ -100,7 +108,7 @@ export default function NicknameSection({ initialNickname, nicknameUpdatedAt }: 
               value={modifyNickname}
               onChange={(e) => setModifyNickname(e.target.value)}
               placeholder={nickname ?? ""}
-              className="h-4 w-29 px-[9px] py-3 text-base"
+              className="h-4 w-29 px-3 py-4 text-base"
             />
 
             <button

@@ -29,6 +29,7 @@ import ClientApi from "@/lib/clientApi";
 import { useMenuStore } from "@/stores/menuStore";
 import { Post } from "@/types/post";
 import { GameAccount } from "@/types/game-account";
+import { showToast } from "@/lib/toast";
 
 type PostCreateForm = {
   gameMode: GameMode;
@@ -87,7 +88,7 @@ export default function FindCreateForm({
     }
 
     if (!gameAccountData || !gameAccountData.length) {
-      alert("게임 계정 연동이 필요한 기능입니다.");
+      showToast.error("게임 계정 연동이 필요한 기능입니다.");
       router.back();
       return;
     }
@@ -116,7 +117,7 @@ export default function FindCreateForm({
       });
 
       if (!res.ok) {
-        alert("게시글 작성에 실패했습니다.");
+        showToast.error("게시글 작성에 실패했습니다.");
 
         if (res.status === 401) {
           router.push("find");
@@ -127,15 +128,17 @@ export default function FindCreateForm({
         return;
       }
 
-      alert("게시글이 작성되었습니다.");
+      showToast.success("게시글이 작성되었습니다.");
     } else {
       if (!initialPost) {
-        alert("수정할 글이 없습니다.");
+        showToast.error("수정할 글이 없습니다.");
         return;
       }
 
       if (initialPost.currentParticipants > payload.recruitCount) {
-        alert("현재 참여 인원보다 모집 인원을 적게 설정할 수 없습니다.");
+        showToast.error(
+          "현재 참여 인원보다 모집 인원을 적게 설정할 수 없습니다.",
+        );
         return;
       }
 
@@ -148,7 +151,7 @@ export default function FindCreateForm({
       });
 
       if (!res.ok) {
-        alert("게시글 수정에 실패했습니다.");
+        showToast.error("게시글 수정에 실패했습니다.");
 
         if (res.status === 401) {
           router.push("find");
@@ -159,7 +162,7 @@ export default function FindCreateForm({
         return;
       }
 
-      alert("게시글이 수정되었습니다.");
+      showToast.success("게시글이 수정되었습니다.");
     }
 
     router.push(`/${currentGame}/find`);

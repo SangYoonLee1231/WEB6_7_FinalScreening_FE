@@ -1,4 +1,5 @@
 import ClientApi from "@/lib/clientApi";
+import { showToast } from "@/lib/toast";
 import { QueueType } from "@/types/party";
 import { Position } from "@/types/position";
 import { PostListResponse, PostStatus } from "@/types/post";
@@ -11,14 +12,15 @@ export async function deletePost(postId: number) {
 
   if (!res.ok) {
     if (res.status === 403) {
-      alert("자신이 작성한 게시물만 삭제할 수 있습니다.");
+      showToast.error("자신이 작성한 게시물만 삭제할 수 있습니다.");
       return;
     }
-    alert("게시글 삭제에 실패했습니다.");
+    showToast.error("게시글 삭제에 실패했습니다.");
     return;
   }
 
-  return alert("게시글이 삭제되었습니다.");
+  showToast.success("게시글을 삭제했습니다.");
+  return;
 }
 
 export async function GetPosts(params: {

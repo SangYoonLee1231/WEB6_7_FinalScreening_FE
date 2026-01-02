@@ -17,6 +17,7 @@ import { GameAccount } from "@/types/game-account";
 import { useEffect } from "react";
 import { gameAccountRefreshAll } from "@/services/game-account/data.client";
 import { useMutation } from "@tanstack/react-query";
+import { showToast } from "@/lib/toast";
 
 const items = [{ value: "LEAGUE_OF_LEGENDS", label: "리그 오브 레전드" }];
 
@@ -80,7 +81,7 @@ export default function LinkGameIdFormModal({
 
       if (!refreshed) return;
 
-      alert("게임 아이디 연동 및 데이터 갱신이 완료되었습니다.");
+      showToast.success("게임 아이디 연동 및 데이터 갱신이 완료되었습니다.");
     } else if (initialData) {
       if (initialData.updatedAt) {
         const updatedAt = new Date(initialData.updatedAt);
@@ -89,7 +90,7 @@ export default function LinkGameIdFormModal({
         threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3);
 
         if (new Date() < threeMonthsLater) {
-          alert("연동된 계정은 3개월 단위로 변경할 수 있습니다.");
+          showToast.error("연동된 계정은 3개월 단위로 변경할 수 있습니다.");
           return;
         }
       }
@@ -99,7 +100,7 @@ export default function LinkGameIdFormModal({
         gameAccountId: initialData.gameAccountId,
         matchCount: 100,
       });
-    } else alert("수정할 계정을 찾을 수 없습니다.");
+    } else showToast.error("수정할 계정을 찾을 수 없습니다.");
 
     reset();
     onOpenChange(false);

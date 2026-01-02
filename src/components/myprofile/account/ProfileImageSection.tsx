@@ -1,6 +1,7 @@
 import Avatar from "@/components/common/Avatar";
 import CircleBtn from "@/components/common/button/CircleBtn";
 import { API_BASE } from "@/lib/clientApi";
+import { showToast } from "@/lib/toast";
 import { MyProfile } from "@/types/profile";
 import {
   QueryObserverResult,
@@ -30,15 +31,17 @@ export default function ProfileImageSection({
         body: formData,
         credentials: "include",
       });
-      if (!res.ok) throw new Error("업로드 실패");
+      if (!res.ok) {
+        showToast.error("이미지 업로드에 실패했습니다.");
+      }
     },
     onSuccess: () => {
       refetch();
-      alert("이미지가 성공적으로 업로드되었습니다.");
+      showToast.success("이미지가 성공적으로 변경되었습니다.");
       if (fileInputRef.current) fileInputRef.current.value = "";
     },
     onError: (error) => {
-      alert(error.message);
+      showToast.error(error.message);
       if (fileInputRef.current) fileInputRef.current.value = "";
     },
   });

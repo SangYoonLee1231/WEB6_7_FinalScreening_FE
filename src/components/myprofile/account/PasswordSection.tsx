@@ -4,6 +4,7 @@ import ClientApi from "@/lib/clientApi";
 import { passwordSchema } from "@/lib/validation/passwordSchema";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { showToast } from "@/lib/toast";
 
 export default function PasswordSection() {
   const [password, setPassword] = useState<string>("");
@@ -18,7 +19,7 @@ export default function PasswordSection() {
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== newPasswordConfirm) {
-      alert("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
+      showToast.error("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
       setPasswordError("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
       return;
     }
@@ -39,12 +40,12 @@ export default function PasswordSection() {
       });
 
       if (res.ok) {
-        alert("비밀번호 변경 성공!");
+        showToast.success("비밀번호를 변경했습니다.");
       } else {
-        alert("비밀번호 변경에 실패했습니다.");
+        showToast.error("비밀번호 변경에 실패했습니다.");
       }
     } catch (error) {
-      alert("서버 통신 중 오류가 발생했습니다.");
+      showToast.error("서버 통신 중 오류가 발생했습니다.");
     }
   };
 
@@ -53,6 +54,7 @@ export default function PasswordSection() {
       <h3>비밀번호 변경</h3>
       <form className="flex flex-col gap-2">
         <TextInput
+          className="text-sm"
           type={showPassword ? "text" : "password"}
           placeholder="현재 비밀번호"
           onChange={(e) => setPassword(e.target.value)}
@@ -62,11 +64,12 @@ export default function PasswordSection() {
               onClick={() => setShowPassword(!showPassword)}
               className="text-content-tertiary hover:text-content-secondary"
             >
-              {showPassword ? <Eye size={24} /> : <EyeOff size={24} />}
+              {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
           }
         />
         <TextInput
+          className="text-sm"
           type={showNewPassword ? "text" : "password"}
           placeholder="새 비밀번호"
           onChange={(e) => setNewPassword(e.target.value)}
@@ -76,11 +79,12 @@ export default function PasswordSection() {
               onClick={() => setShowNewPassword(!showNewPassword)}
               className="text-content-tertiary hover:text-content-secondary"
             >
-              {showNewPassword ? <Eye size={24} /> : <EyeOff size={24} />}
+              {showNewPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
           }
         />
         <TextInput
+          className="text-sm"
           type={showNewPasswordConfirm ? "text" : "password"}
           placeholder="새 비밀번호 확인"
           onChange={(e) => setNewPasswordConfirm(e.target.value)}
@@ -90,11 +94,15 @@ export default function PasswordSection() {
               onClick={() => setShowNewPasswordConfirm(!showNewPasswordConfirm)}
               className="text-content-tertiary hover:text-content-secondary"
             >
-              {showNewPasswordConfirm ? <Eye size={24} /> : <EyeOff size={24} />}
+              {showNewPasswordConfirm ? (
+                <Eye size={20} />
+              ) : (
+                <EyeOff size={20} />
+              )}
             </button>
           }
         />
-        { passwordError && <span className="ml-2">{passwordError}</span> }
+        {passwordError && <span className="ml-2">{passwordError}</span>}
         <BoxButton
           text="수정"
           tone="color"

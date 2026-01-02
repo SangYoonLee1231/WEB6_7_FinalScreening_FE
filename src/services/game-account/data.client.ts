@@ -1,4 +1,5 @@
 import ClientApi from "@/lib/clientApi";
+import { showToast } from "@/lib/toast";
 import {
   Champion,
   Match,
@@ -22,21 +23,18 @@ export async function gameAccountRefreshAll({
 
   if (!res.ok) {
     if (res.status === 400) {
-      alert("게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.");
+      showToast.error(
+        "게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.",
+      );
       return null;
     }
 
     if (res.status === 404) {
-      alert("게임 계정을 찾을 수 없습니다.");
+      showToast.error("게임 계정을 찾을 수 없습니다.");
       return null;
     }
 
-    if (res.status === 500) {
-      alert("랭크 정보 또는 매치 정보를 가져오는데 실패했습니다.");
-      return null;
-    }
-
-    alert("랭크 정보 또는 매치 정보를 가져오는데 실패했습니다.");
+    showToast.error("랭크 정보 또는 매치 정보를 가져오는데 실패했습니다.");
     return null;
   }
 
@@ -51,21 +49,18 @@ export async function RanksRefresh(gameAccountId: number) {
 
   if (!res.ok) {
     if (res.status === 400) {
-      alert("게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.");
+      showToast.error(
+        "게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.",
+      );
       return null;
     }
 
     if (res.status === 404) {
-      alert("게임 계정을 찾을 수 없습니다.");
+      showToast.error("게임 계정을 찾을 수 없습니다.");
       return null;
     }
 
-    if (res.status === 500) {
-      alert("랭크 정보를 가져오는데 실패했습니다.");
-      return null;
-    }
-
-    alert("랭크 정보를 가져오는데 실패했습니다.");
+    showToast.error("랭크 정보를 가져오는데 실패했습니다.");
     return null;
   }
 
@@ -87,21 +82,18 @@ export async function MatchesRefresh({
 
   if (!res.ok) {
     if (res.status === 400) {
-      alert("게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.");
+      showToast.error(
+        "게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.",
+      );
       return null;
     }
 
     if (res.status === 404) {
-      alert("게임 계정을 찾을 수 없습니다.");
+      showToast.error("게임 계정을 찾을 수 없습니다.");
       return null;
     }
 
-    if (res.status === 500) {
-      alert("랭크 정보를 가져오는데 실패했습니다.");
-      return null;
-    }
-
-    alert("랭크 정보를 가져오는데 실패했습니다.");
+    showToast.error("랭크 정보를 가져오는데 실패했습니다.");
     return null;
   }
 
@@ -124,7 +116,7 @@ export async function getRecentMatches({
 
   if (!res.ok) {
     if (res.status === 404) {
-      alert("게임 계정을 찾을 수 없습니다.");
+      showToast.error("게임 계정을 찾을 수 없습니다.");
       return null;
     }
     return null;
@@ -141,7 +133,7 @@ export async function getFavoriteChampions(gameAccountId: number) {
 
   if (!res.ok) {
     if (res.status === 404) {
-      alert("게임 계정을 찾을 수 없습니다.");
+      showToast.error("게임 계정을 찾을 수 없습니다.");
       return null;
     }
     return null;
@@ -157,21 +149,18 @@ export async function getRanks(gameAccountId: number) {
 
   if (!res.ok) {
     if (res.status === 400) {
-      alert("게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.");
+      showToast.error(
+        "게임 계정에 puuid가 없습니다. 먼저 게임 계정을 등록해주세요.",
+      );
       return null;
     }
 
     if (res.status === 404) {
-      alert("게임 계정을 찾을 수 없습니다.");
+      showToast.error("게임 계정을 찾을 수 없습니다.");
       return null;
     }
 
-    if (res.status === 500) {
-      alert("랭크 정보를 가져오는데 실패했습니다.");
-      return null;
-    }
-
-    alert("랭크 정보를 가져오는데 실패했습니다.");
+    showToast.error("랭크 정보를 가져오는데 실패했습니다.");
     return null;
   }
 
