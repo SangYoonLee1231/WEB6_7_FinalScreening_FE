@@ -1,4 +1,5 @@
 import ClientApi from "@/lib/clientApi";
+import { showToast } from "@/lib/toast";
 import {
   RequestReviewsResponse,
   Review,
@@ -11,7 +12,7 @@ export async function getUserReviewList(userId: number) {
   });
 
   if (!res.ok) {
-    alert("리뷰 목록을 불러올 수 없습니다.");
+    showToast.error("리뷰 목록을 불러올 수 없습니다.");
     return null;
   }
 
@@ -24,7 +25,7 @@ export async function getMyWrittenReviews() {
   });
 
   if (!res.ok) {
-    alert("작성한 리뷰 목록을 불러올 수 없습니다.");
+    showToast.error("작성한 리뷰 목록을 불러올 수 없습니다.");
     return null;
   }
 
@@ -37,7 +38,7 @@ export async function getRequestReviews() {
   });
 
   if (!res.ok) {
-    alert("작성 가능한 리뷰 목록을 불러올 수 없습니다.");
+    showToast.error("작성 가능한 리뷰 목록을 불러올 수 없습니다.");
     return null;
   }
 
@@ -50,7 +51,7 @@ export async function getReviewDistribution(userId: number) {
   });
 
   if (!res.ok) {
-    alert("리뷰 분포 데이터를 불러올 수 없습니다.");
+    showToast.error("리뷰 분포 데이터를 불러올 수 없습니다.");
     return null;
   }
 
@@ -63,7 +64,7 @@ export async function getAllReviews() {
   });
 
   if (!res.ok) {
-    alert("모든 리뷰 데이터를 불러올 수 없습니다.");
+    showToast.error("모든 리뷰 데이터를 불러올 수 없습니다.");
     return null;
   }
 

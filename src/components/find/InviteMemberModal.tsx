@@ -9,6 +9,7 @@ import { getCandidates, inviteMember } from "@/services/party.client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserX } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { showToast } from "@/lib/toast";
 
 export default function InviteMemberModal({
   postId,
@@ -67,12 +68,12 @@ export default function InviteMemberModal({
                   tone="color"
                   onClick={async () => {
                     if (!selectedMemberIds || selectedMemberIds.length === 0) {
-                      alert("초대할 멤버를 선택해주세요.");
+                      showToast.error("초대할 멤버를 선택해주세요.");
                       return;
                     }
 
                     if (selectedMemberIds.length > maxCount - currentCount) {
-                      alert("초대할 인원이 남은 인원보다 많습니다.");
+                      showToast.error("초대할 인원이 남은 인원보다 많습니다.");
                       return;
                     }
 

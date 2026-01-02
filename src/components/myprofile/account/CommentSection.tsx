@@ -2,6 +2,7 @@ import { BoxButton } from "@/components/common/button/BoxButton";
 import TextInput from "@/components/common/TextInput";
 import IntroduceBubble from "@/components/profile/IntroduceBubble";
 import ClientApi from "@/lib/clientApi";
+import { showToast } from "@/lib/toast";
 import { useEffect, useRef, useState } from "react";
 
 interface CommentProps {
@@ -34,13 +35,14 @@ export default function CommentSection({ initialComment }: CommentProps) {
       });
 
       if (res.ok) {
+        showToast.success("소개를 변경했습니다.");
         setComment(tempComment);
         setIsCommentEditing(false);
       } else {
-        alert("소개 변경에 실패했습니다.");
+        showToast.error("소개 변경에 실패했습니다.");
       }
     } catch (error) {
-      alert("서버 통신 중 오류가 발생했습니다.");
+      showToast.error("서버 통신 중 오류가 발생했습니다.");
     }
   };
 
@@ -77,11 +79,19 @@ export default function CommentSection({ initialComment }: CommentProps) {
         </form>
       ) : (
         <div className="flex flex-col gap-2">
-          <IntroduceBubble
-            content={comment ?? ""}
-            type="message"
-            className="text-base"
-          />
+          {comment ? (
+            <IntroduceBubble
+              content={comment ?? ""}
+              type="message"
+              className="text-sm"
+            />
+          ) : (
+            <IntroduceBubble
+              content="아직 자기소개를 작성하지 않았어요."
+              type="message"
+              className="text-sm"
+            />
+          )}
           <BoxButton
             text="수정"
             tone="color"

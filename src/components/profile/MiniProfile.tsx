@@ -12,6 +12,7 @@ import ReviewPercent from "../review/ReviewPercent";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getBanUsersList } from "@/services/ban.client";
 import { useRouter } from "next/navigation";
+import { showToast } from "@/lib/toast";
 
 interface MiniProfileProps extends React.ComponentPropsWithoutRef<"div"> {
   userData: UserProfile;
@@ -44,13 +45,20 @@ export default function MiniProfile({
         method: "POST",
       });
 
-      if (!res.ok) throw new Error("차단 실패");
+      if (!res.ok) {
+        if (res.status === 400) {
+          showToast.error("자신을 차단할 수 없습니다.");
+          return;
+        }
+        showToast.error("유저 차단에 실패했습니다.");
+      }
     },
     onSuccess: () => {
+      showToast.success("유저를 차단했습니다.");
       queryClient.invalidateQueries({ queryKey: ["ban"] });
     },
     onError: (error) => {
-      alert(error.message);
+      showToast.error(error.message);
     },
   });
 

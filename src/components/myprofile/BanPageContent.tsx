@@ -6,13 +6,10 @@ import ClientApi from "@/lib/clientApi";
 import { useMenuStore, useMyProfileMenuStore } from "@/stores/menuStore";
 import { formatDateToDash } from "@/utils/formatDateToDot";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  startTransition,
-  useEffect,
-  useOptimistic,
-} from "react";
+import { startTransition, useEffect, useOptimistic } from "react";
 import LoadingBouncy from "../common/loading/LoadingBouncy";
 import { getBanUsersList } from "@/services/ban.client";
+import { showToast } from "@/lib/toast";
 
 export default function BanPageContent() {
   const { setMenu } = useMenuStore();
@@ -37,13 +34,17 @@ export default function BanPageContent() {
         method: "DELETE",
       });
 
-      if (!res.ok) throw new Error("차단 해제 실패");
+      if (!res.ok) {
+        showToast.error("차단 해제에 실패했습니다.");
+        return;
+      }
     },
     onSuccess: () => {
+      showToast.success("차단을 해제했습니다.");
       queryClient.invalidateQueries({ queryKey: ["ban"] });
     },
     onError: (error) => {
-      alert(error.message);
+      showToast.error(error.message);
     },
   });
 
@@ -92,7 +93,11 @@ export default function BanPageContent() {
                   </p>
                   {/* 유저 닉네임 */}
                   <div className="flex items-center gap-2">
-                    <Avatar src={ban.profileImage ?? undefined} size="xs" type="profile" />
+                    <Avatar
+                      src={ban.profileImage ?? undefined}
+                      size="xs"
+                      type="profile"
+                    />
                     <span className="text-content-primary">{ban.nickname}</span>
                   </div>
                   <BoxButton

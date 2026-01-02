@@ -19,6 +19,7 @@ import ClientApi from "@/lib/clientApi";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useReviewStore } from "@/stores/reviewStore";
+import { showToast } from "@/lib/toast";
 
 type GameName = "lol" | "overwatch" | "valorant";
 
@@ -77,11 +78,11 @@ export default function ReviewCard({
     });
 
     if (!res.ok) {
-      alert("리뷰 삭제에 실패했습니다.");
+      showToast.error("리뷰 삭제에 실패했습니다.");
       return;
     }
 
-    alert("리뷰를 삭제했습니다.");
+    showToast.success("리뷰를 삭제했습니다.");
 
     qc.invalidateQueries({
       queryKey: ["writtenReviews"],

@@ -28,6 +28,7 @@ import { gameAccountRefreshAll } from "@/services/game-account/data.client";
 import { RefreshCooldown } from "./RefreshCooldown";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getBanUsersList } from "@/services/ban.client";
+import { showToast } from "@/lib/toast";
 
 const REFRESH_COOLDOWN_MS = 2 * 60 * 1000;
 
@@ -52,7 +53,7 @@ export default function ProfilePageContent({
     setMenu("");
 
     if (!profileData) {
-      alert("유저 프로필을 불러올 수 없습니다.");
+      showToast.error("유저 프로필을 불러올 수 없습니다.");
       router.back();
       return;
     }
@@ -101,13 +102,21 @@ export default function ProfilePageContent({
         method: "POST",
       });
 
-      if (!res.ok) throw new Error("차단 실패");
+      if (!res.ok) {
+        showToast.error("유저 차단에 실패했습니다.");
+        return;
+      }
+
+      showToast.success("유저를 차단했습니다.");
     },
+
     onSuccess: () => {
+      showToast.success("유저를 차단했습니다.");
       queryClient.invalidateQueries({ queryKey: ["ban"] });
     },
+
     onError: (error) => {
-      alert(error.message);
+      showToast.error(error.message);
     },
   });
 
@@ -154,7 +163,7 @@ export default function ProfilePageContent({
       });
     } catch (e) {
       localStorage.removeItem(cooldownKey);
-      alert("전적 갱신에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      showToast.error("전적 갱신에 실패했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
       setIsRefreshing(false);
     }

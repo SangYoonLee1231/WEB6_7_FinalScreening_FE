@@ -26,6 +26,7 @@ import useGetUserProfile from "@/hooks/useGetUserProfile";
 import useGetReviewDistribution from "@/hooks/reviews/useGetReviewDistribution";
 import MostChampion from "@/components/profile/MostChampion";
 import { useGetFavoriteChampions } from "@/hooks/useGetFavoriteChampions";
+import { showToast } from "@/lib/toast";
 
 interface FindCardProps extends HTMLAttributes<HTMLDivElement> {
   currentUserId: number | null;
@@ -253,13 +254,16 @@ export default function FindCard({
 
                   // 로그인 필요 (작성자/참여자 모두 인증 사용자)
                   if (!currentUserId) {
-                    alert("로그인이 필요한 기능입니다.");
+                    showToast.error("로그인이 필요한 기능입니다.");
+
                     return;
                   }
 
                   // 게임 아이디 연동 필요
                   if (!gameAccountData || gameAccountData.length === 0) {
-                    alert("게임 아이디 연동 후 이용할 수 있는 기능입니다.");
+                    showToast.error(
+                      "게임 아이디 연동 후 이용할 수 있는 기능입니다.",
+                    );
                     router.push(`/myprofile/link`);
                     return;
                   }
@@ -272,8 +276,9 @@ export default function FindCard({
                     // 채팅 페이지로 이동하면서 방을 바로 열 수 있도록 roomId 전달
                     router.push(`/chat?roomId=${res.chatRoomId}`);
                   } catch (err) {
-                    console.error(err);
-                    alert("채팅방 생성에 실패했습니다. 다시 시도해주세요.");
+                    showToast.error(
+                      "채팅방 생성에 실패했습니다. 다시 시도해주세요.",
+                    );
                   }
                 }}
               />

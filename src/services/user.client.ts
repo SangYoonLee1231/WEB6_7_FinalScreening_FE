@@ -1,4 +1,5 @@
 import ClientApi from "@/lib/clientApi";
+import { showToast } from "@/lib/toast";
 import { MyProfile, UserProfile } from "@/types/profile";
 
 export async function getUserProfile(userId: number) {
@@ -7,7 +8,7 @@ export async function getUserProfile(userId: number) {
   });
 
   if (!res.ok) {
-    alert("유저 프로필 정보를 불러올 수 없습니다.");
+    showToast.error("유저 프로필 정보를 불러올 수 없습니다.");
     return null;
   }
 
@@ -20,7 +21,7 @@ export async function getMyProfile() {
   });
 
   if (!res.ok) {
-    alert("유저 프로필 정보를 불러올 수 없습니다.");
+    showToast.error("유저 프로필 정보를 불러올 수 없습니다.");
     return null;
   }
 

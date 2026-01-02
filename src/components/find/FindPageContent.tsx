@@ -21,6 +21,7 @@ import LoadingBouncy from "../common/loading/LoadingBouncy";
 import { useQuery } from "@tanstack/react-query";
 import { GetPosts } from "@/services/posts.client";
 import { Position } from "@/types/position";
+import { showToast } from "@/lib/toast";
 
 export default function FindPageContent({
   postData,
@@ -162,16 +163,18 @@ export default function FindPageContent({
             className="font-semibold"
             onClick={() => {
               if (!loginData) {
-                alert("로그인이 필요한 기능입니다.");
+                showToast.error("로그인이 필요한 기능입니다.");
                 return;
               }
               if (gameAccountData?.length === 0) {
-                alert("게임 아이디 연동 후 이용할 수 있는 기능입니다.");
+                showToast.error(
+                  "게임 아이디 연동 후 이용할 수 있는 기능입니다.",
+                );
                 router.push(`/myprofile/link`);
                 return;
               }
               if (currentParty) {
-                alert("현재 모집중인 파티가 있습니다.");
+                showToast.error("현재 모집중인 파티가 있습니다.");
                 return;
               }
               router.push(`/${currentGame}/post`);
