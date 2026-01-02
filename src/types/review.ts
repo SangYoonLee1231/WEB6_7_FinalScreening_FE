@@ -18,6 +18,7 @@ export type ReviewDistribution = {
 
 export type Review = {
   reviewId: number;
+  revieweeId: number;
   reviewerId: number;
   reviewerNickname: string;
   revieweeNickname: string;

@@ -5,8 +5,12 @@ import FindCardContainer from "../common/container/FindCardContainer";
 import StateBadge from "../common/StateBadge";
 import { BoxButton } from "../common/button/BoxButton";
 import FindLinkButton from "./FindLinkButton";
-import { closeParty, getPartyMembers } from "@/services/party.client";
-import { useQuery } from "@tanstack/react-query";
+import {
+  closeParty,
+  getPartyMembers,
+  leaveParty,
+} from "@/services/party.client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingBouncy from "../common/loading/LoadingBouncy";
 import FindMemberCard from "./main-card/FindMemberCard";
 import { useMyParties } from "@/hooks/useMyParties";
@@ -19,6 +23,8 @@ export default function FindInfoModal({
 }: {
   currentUserData: MyProfile | null;
 }) {
+  const qc = useQueryClient();
+
   const { data, isLoading, error, refetch } = useMyParties(currentUserData?.id);
 
   const currentPartyData =
@@ -104,7 +110,15 @@ export default function FindInfoModal({
             onClick={async () => {
               if (currentPartyData?.myRole === "LEADER") {
                 await closeParty(currentPartyData?.partyId!);
+              } else {
+                await leaveParty(currentPartyData?.partyId!);
               }
+              await qc.invalidateQueries({
+                queryKey: ["me", "parties"],
+              });
+              await qc.invalidateQueries({
+                queryKey: ["posts"],
+              });
             }}
           />
         </>
