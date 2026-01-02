@@ -18,18 +18,22 @@ export async function POST() {
 
   response.cookies.set("accessToken", "", {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: 0,
+    domain:
+      process.env.NODE_ENV === "production" ? ".matchmyduo.site" : undefined,
   });
 
   response.cookies.set("refreshToken", "", {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: 0,
+    domain:
+      process.env.NODE_ENV === "production" ? ".matchmyduo.site" : undefined,
   });
 
   return response;

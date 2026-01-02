@@ -112,7 +112,9 @@ function setAccessCookie(res: NextResponse, token: string) {
     httpOnly: true,
     sameSite: "none",
     path: "/",
-    secure: true, // HTTPS면 켜기
+    secure: process.env.NODE_ENV === "production",
+    domain:
+      process.env.NODE_ENV === "production" ? ".matchmyduo.site" : undefined,
   });
 }
 
