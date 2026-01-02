@@ -109,7 +109,6 @@ function clearAuthCookies(res: NextResponse) {
 }
 
 function setAccessCookie(res: NextResponse, token: string) {
-  console.log(token);
   res.cookies.set("accessToken", token, {
     httpOnly: true,
     sameSite: "lax",

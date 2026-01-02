@@ -81,7 +81,7 @@ export default function LinkGameIdFormModal({
 
       if (!refreshed) return;
 
-      showToast.success("게임 아이디 연동 및 데이터 갱신이 완료되었습니다.");
+      showToast.success("게임 아이디 연동이 완료되었습니다.");
     } else if (initialData) {
       if (initialData.updatedAt) {
         const updatedAt = new Date(initialData.updatedAt);
