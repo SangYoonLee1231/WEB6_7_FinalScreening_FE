@@ -83,6 +83,7 @@ export default function ChatPage() {
 
   const {
     isLoadingRight,
+    isSending,
     rightHeaderUser,
     rightTitle,
     rightState,
@@ -91,9 +92,9 @@ export default function ChatPage() {
   } = useChatRoomPanel(selectedRoomId, setRooms);
 
   return (
-    <main className="w-full px-6 py-8">
-      <div className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:justify-center">
-        <section className="w-full lg:w-100">
+    <main className="min-h-0 w-full flex-1 overflow-hidden px-6 py-8">
+      <div className="flex h-full w-full min-w-0 flex-col gap-8 lg:flex-row lg:items-start lg:justify-center">
+        <section className="flex h-full min-h-0 w-full min-w-0 flex-col lg:w-100">
           <Tabs.Root
             value={tab}
             onValueChange={(v) => setTab(v as "all" | "unread")}
@@ -103,7 +104,7 @@ export default function ChatPage() {
             </div>
 
             <Tabs.Content value="all" className="outline-none">
-              <div className="flex max-h-[70vh] flex-col gap-4 overflow-auto pr-1 lg:max-h-152.5">
+              <div className="flex h-full min-h-0 flex-col gap-4 overflow-x-hidden overflow-y-auto pr-1">
                 {isLoadingRooms ? (
                   <p className="text-content-secondary px-2 py-6 text-sm">
                     채팅방을 불러오는 중...
@@ -164,10 +165,10 @@ export default function ChatPage() {
           </Tabs.Root>
         </section>
 
-        <section className="w-full lg:w-225">
+        <section className="flex h-full min-h-0 w-full min-w-0 flex-col lg:w-225">
           {selectedRoomId ? (
             isLoadingRight || !rightHeaderUser || !rightState ? (
-              <div className="border-border-primary bg-bg-secondary flex h-[60vh] w-full items-center justify-center rounded-xl border lg:h-214.75">
+              <div className="border-border-primary bg-bg-secondary flex h-full w-full items-center justify-center rounded-xl border">
                 <p className="text-content-secondary text-sm">
                   채팅 내용을 불러오는 중...
                 </p>
@@ -180,10 +181,11 @@ export default function ChatPage() {
                 state={rightState}
                 messages={rightMessages}
                 onSend={handleSend}
+                isSending={isSending}
               />
             )
           ) : (
-            <div className="h-[60vh] lg:h-214.75">
+            <div className="h-full">
               <EmptyChatPanel />
             </div>
           )}
