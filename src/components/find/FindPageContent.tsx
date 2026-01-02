@@ -82,7 +82,7 @@ export default function FindPageContent({
     setMenu("find");
   }, []);
 
-  if (myPratiesDataIsLoading) {
+  if (myPratiesDataIsLoading || isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <LoadingBouncy />
