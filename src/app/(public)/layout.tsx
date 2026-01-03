@@ -12,8 +12,8 @@ export default async function Layout({
   return (
     <div className="scrollbar-hide flex h-dvh flex-col overflow-y-auto">
       <Header type="full" userData={userData} />
-      <div className="m-auto w-(--content-area) max-w-full flex-1">
-        <main className="scrollbar-hide h-full w-full overflow-y-auto px-(--global-padding) pt-(--header-h)">
+      <div className="m-auto mt-(--header-h) w-(--content-area) max-w-full flex-1">
+        <main className="scrollbar-hide h-full w-full overflow-y-auto">
           {children}
         </main>
       </div>

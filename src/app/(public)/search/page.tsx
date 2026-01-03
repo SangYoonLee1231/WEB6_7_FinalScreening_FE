@@ -56,16 +56,27 @@ export default function SearchPage() {
   const isEmpty = enabled && !isSearching && userListData?.totalCount === 0;
 
   return (
-    <section className="flex h-full w-full flex-col items-center justify-center">
+    <section className="flex h-full w-full flex-col items-center justify-center px-(--global-padding)">
       <div className="flex flex-col items-center gap-4">
         <Link size={50} className="text-accent" />
-        <p className="text-content-main text-5xl font-bold">유저 검색</p>
+        <p className="text-content-main text-5xl font-bold max-md:text-4xl">
+          유저 검색
+        </p>
         {nickname.trim() === "" && (
-          <p className="text-content-secondary flex flex-row gap-1 text-xl">
+          <p className="text-content-secondary flex gap-1 text-xl max-md:hidden">
             매치마이듀오 닉네임으로 유저의
             <span className="text-accent">리그오브레전드</span> 전적과 리뷰를
             검색해보세요.
           </p>
+        )}
+        {nickname.trim() === "" && (
+          <div className="text-content-secondary flex flex-col items-center justify-center gap-1 text-xl max-md:text-lg md:hidden">
+            <span>매치마이듀오 닉네임으로</span>
+            <p>
+              <span className="text-accent">리그오브레전드 </span>
+              <span>전적과 리뷰를 검색해보세요.</span>
+            </p>
+          </div>
         )}
       </div>
       <SearchInput
@@ -73,7 +84,7 @@ export default function SearchPage() {
         placeholder="매치마이듀오 닉네임"
         value={nickname}
         onChange={(e) => setNickname(e.target.value)}
-        className="border-border-primary mt-11 border"
+        className="border-border-primary mt-11 border max-md:mt-6 max-md:h-15 max-md:min-w-60"
       />
 
       {isSearching && <LoadingBouncy />}
@@ -81,14 +92,13 @@ export default function SearchPage() {
       {(isEmpty || !!error) && (
         <div className="leading-1.4 mt-11 justify-items-center">
           <UserRoundSearch
-            size={168}
             strokeWidth={1}
-            className="text-content-tertiary"
+            className="text-content-tertiary h-42 w-42 max-md:h-35 max-md:w-35"
           />
-          <p className="text-content-primary mt-10.5 text-[32px] font-semibold">
+          <p className="text-content-primary mt-10.5 text-[32px] font-semibold max-md:mt-6 max-md:text-2xl">
             검색된 유저가 없습니다
           </p>
-          <p className="text-content-secondary mt-2 text-2xl font-semibold">
+          <p className="text-content-secondary mt-2 text-2xl font-semibold max-md:text-xl">
             다른 검색어로 다시 시도해보세요
           </p>
         </div>

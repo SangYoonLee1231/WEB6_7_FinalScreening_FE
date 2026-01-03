@@ -11,7 +11,7 @@ export default async function Layout({
   return (
     <div className="flex h-dvh flex-col">
       <Header type="compact" userData={userData} />
-      <div className="m-auto w-(--content-area) max-w-full flex-1">
+      <div className="mt-(--header-h) w-(--content-area) max-w-full flex-1">
         <main className="h-full w-full">{children}</main>
       </div>
     </div>
