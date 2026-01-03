@@ -78,7 +78,7 @@ export default function FindCard({
   return (
     <>
       <div
-        className="flex h-110 min-w-110 cursor-pointer flex-col"
+        className="flex h-fit min-w-full cursor-pointer flex-col"
         onClick={(e) => {
           setIsOpenFindDetailModal(true);
         }}
