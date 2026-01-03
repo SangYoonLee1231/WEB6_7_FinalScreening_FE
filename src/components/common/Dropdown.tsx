@@ -41,7 +41,7 @@ export default function Dropdown({
           position="popper"
           collisionPadding={0}
           avoidCollisions={false}
-          className="border-border-primary bg-bg-primary text-content-secondary max-h-60 w-full rounded-xl border"
+          className="border-border-primary bg-bg-primary text-content-secondary z-99 max-h-60 w-full rounded-xl border"
         >
           <Select.ScrollUpButton className="flex h-6 items-center justify-center">
             <ChevronUp size={14} />

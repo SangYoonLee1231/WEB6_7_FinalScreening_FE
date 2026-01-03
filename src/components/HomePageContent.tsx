@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import lolLogo from "@/assets/images/games/lol/lol-logo.png";
 import lolBg from "@/assets/images/games/lol/lol-bg.jpg";
 import overwatchLogo from "@/assets/images/games/overwatch/overwatch-logo.png";
