@@ -50,7 +50,7 @@ export default function Header({ type, userData }: HeaderProps) {
   }, [pathname]);
 
   return (
-    <nav className="bg-bg-primary flex h-(--header-h) shrink-0 justify-center px-(--global-padding)">
+    <nav className="bg-bg-primary fixed top-0 left-0 z-50 flex h-(--header-h) w-full shrink-0 justify-center px-(--global-padding)">
       <div className="flex h-full w-(--content-area) items-center justify-between">
         {type === "compact" ? (
           <Link href={`/`}>
@@ -74,7 +74,7 @@ export default function Header({ type, userData }: HeaderProps) {
               />
             </Link>
 
-            <ul className="flex gap-4 max-md:hidden">
+            <ul className="flex gap-4 max-[790px]:hidden">
               <HeaderMenuTab
                 text="듀오 찾기"
                 path={`${currentGame}/find`}

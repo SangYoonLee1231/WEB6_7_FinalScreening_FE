@@ -24,9 +24,9 @@ export function ConfirmModal({
   return (
     <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialog.Portal>
-        <AlertDialog.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 bg-black/60" />
+        <AlertDialog.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 z-90 bg-black/60" />
 
-        <AlertDialog.Content className="data-[state=open]:animate-contentShow fixed top-1/2 left-1/2 max-h-[85vh] w-[90vw] max-w-123.5 -translate-x-1/2 -translate-y-1/2 rounded-md focus:outline-none">
+        <AlertDialog.Content className="data-[state=open]:animate-contentShow fixed top-1/2 left-1/2 z-90 max-h-[85vh] w-[90vw] max-w-123.5 -translate-x-1/2 -translate-y-1/2 rounded-md focus:outline-none">
           <FormModalContainer>
             <AlertDialog.Title className="text-xl font-bold">
               {title}

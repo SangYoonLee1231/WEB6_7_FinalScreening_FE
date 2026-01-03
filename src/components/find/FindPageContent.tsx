@@ -92,75 +92,106 @@ export default function FindPageContent({
   }
 
   return (
-    <div className="flex h-full flex-col gap-7.5">
+    <div className="flex h-full flex-col gap-7.5 max-lg:gap-3">
       <ToggleBtn
         value={status}
         onChange={(next) => setStatus(next)}
         className="mt-17.5"
       />
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <PositionFilterBtns
-            value={myPositions}
-            onChange={(next) => setMyPositions(next)}
-          />
-          <Dropdown
-            name="gameMode"
-            placeholder="게임 모드를 선택해주세요"
-            onValueChange={() => {}}
-            value="SUMMONERS_RIFT"
-            items={[
-              {
-                value: "SUMMONERS_RIFT",
-                label: (
-                  <div className="flex items-center gap-2.5">
-                    <Image
-                      src={gameIconLol}
-                      alt={`lol icon`}
-                      width={20}
-                      className="object-cover"
-                    />
-                    <span>소환사의 협곡</span>
-                  </div>
-                ),
-              },
-            ]}
-            className="min-w-50"
-          />
-          <Dropdown
-            name="queueType"
-            placeholder="큐 타입을 선택해주세요"
-            value={queueType}
-            onValueChange={(v) => setQueueType(v as QueueType | "ALL")}
-            items={[
-              { value: "ALL", label: "전체 큐" },
-              ...QUEUE_TYPES.map((t) => ({
-                value: t,
-                label: QUEUE_TYPES_LABEL[t],
-              })),
-            ]}
-            className="min-w-50"
-          />
-          <Dropdown
-            name="tiers"
-            placeholder="티어를 선택해주세요"
-            value={tier}
-            onValueChange={(v) => setTier(v as Tier)}
-            items={[
-              { value: "ALL", label: "전체 티어" },
-              ...TIERS.map((t) => ({ value: t, label: TIERS_LABEL[t] })),
-            ]}
-            className="min-w-50"
-          />
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-3 max-lg:w-full max-lg:flex-col max-lg:items-start max-lg:justify-start">
+          <div className="flex justify-between max-lg:w-full">
+            <PositionFilterBtns
+              value={myPositions}
+              onChange={(next) => setMyPositions(next)}
+            />
+            <BoxButton
+              text="모집글 작성"
+              size="sm"
+              tone={"gradient_positive"}
+              className="font-semibold lg:hidden"
+              onClick={() => {
+                if (!loginData) {
+                  showToast.error("로그인이 필요한 기능입니다.");
+                  return;
+                }
+                if (gameAccountData?.length === 0) {
+                  showToast.error(
+                    "게임 아이디 연동 후 이용할 수 있는 기능입니다.",
+                  );
+                  router.push(`/myprofile/link`);
+                  return;
+                }
+                if (currentParty) {
+                  showToast.error("현재 모집중인 파티가 있습니다.");
+                  return;
+                }
+                router.push(`/${currentGame}/post`);
+              }}
+            />
+          </div>
+
+          <div className="flex gap-2 max-lg:w-full">
+            <Dropdown
+              name="gameMode"
+              placeholder="게임 모드를 선택해주세요"
+              onValueChange={() => {}}
+              value="SUMMONERS_RIFT"
+              items={[
+                {
+                  value: "SUMMONERS_RIFT",
+                  label: (
+                    <div className="flex w-fit items-center gap-2.5">
+                      <Image
+                        src={gameIconLol}
+                        alt={`lol icon`}
+                        width={20}
+                        className="object-cover max-lg:hidden"
+                      />
+                      <span>소환사의 협곡</span>
+                    </div>
+                  ),
+                },
+              ]}
+              className="w-50 max-lg:w-full"
+            />
+            <Dropdown
+              name="queueType"
+              placeholder="큐 타입을 선택해주세요"
+              value={queueType}
+              onValueChange={(v) => setQueueType(v as QueueType | "ALL")}
+              items={[
+                { value: "ALL", label: "전체 큐" },
+                ...QUEUE_TYPES.map((t) => ({
+                  value: t,
+                  label: QUEUE_TYPES_LABEL[t],
+                })),
+              ]}
+              className="w-50 max-lg:w-full"
+            />
+            <Dropdown
+              name="tiers"
+              placeholder="티어를 선택해주세요"
+              value={tier}
+              onValueChange={(v) => setTier(v as Tier)}
+              items={[
+                { value: "ALL", label: "전체 티어" },
+                ...TIERS.map((t) => ({ value: t, label: TIERS_LABEL[t] })),
+              ]}
+              className="w-50 max-lg:w-full"
+            />
+          </div>
         </div>
         <div className="text-content-secondary flex items-center gap-4">
-          <span className="text-sm">나만의 듀오를 찾고 싶다면</span>
-          <span className="font-light">―</span>
+          <span className="text-sm max-[1150px]:hidden">
+            나만의 듀오를 찾고 싶다면
+          </span>
+          <span className="font-light max-[1150px]:hidden">―</span>
           <BoxButton
             text="모집글 작성"
             size="sm"
             tone={"gradient_positive"}
-            className="font-semibold"
+            className="font-semibold max-lg:hidden"
             onClick={() => {
               if (!loginData) {
                 showToast.error("로그인이 필요한 기능입니다.");
@@ -187,7 +218,7 @@ export default function FindPageContent({
           <LoadingBouncy />
         </div>
       ) : posts && posts.length > 0 ? (
-        <div className="flex flex-wrap justify-between gap-y-7.5 px-7.5">
+        <div className="mb-17 grid grid-cols-3 gap-7.5 max-[1400px]:grid-cols-2 max-lg:grid-cols-1">
           {posts.map((post, index) => (
             <FindCard
               key={index}
