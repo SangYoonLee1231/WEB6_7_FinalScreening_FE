@@ -26,7 +26,7 @@ export default function HeaderMenuTab({
       >
         <span
           className={twMerge(
-            "text-content-primary px-3 py-3 text-base font-semibold",
+            "text-content-primary p-3 text-base font-semibold",
             isActive && "text-accent",
           )}
         >
