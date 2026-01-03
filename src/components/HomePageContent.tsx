@@ -13,6 +13,7 @@ import valorantBg from "@/assets/images/games/valorant/valorant-bg.jpg";
 import { BoxButton } from "@/components/common/button/BoxButton";
 import { useMenuStore } from "@/stores/menuStore";
 import { useRouter } from "next/navigation";
+import { twMerge } from "tailwind-merge";
 
 const games = [
   {
@@ -39,10 +40,27 @@ export default function HomePageContent() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const router = useRouter();
-  const { setCurrentGame, setMenu } = useMenuStore();
+  const { setCurrentGame } = useMenuStore();
+  const [offset, setOffset] = useState(260);
 
   useEffect(() => {
-    setMenu("");
+    const md = window.matchMedia("(min-width: 768px)");
+    const lg = window.matchMedia("(min-width: 1024px)");
+
+    const apply = () => {
+      if (lg.matches) setOffset(260);
+      else if (md.matches) setOffset(200);
+      else setOffset(120);
+    };
+
+    apply();
+    md.addEventListener("change", apply);
+    lg.addEventListener("change", apply);
+
+    return () => {
+      md.removeEventListener("change", apply);
+      lg.removeEventListener("change", apply);
+    };
   }, []);
 
   const current = games[index];
@@ -74,25 +92,37 @@ export default function HomePageContent() {
         {/* 콘텐츠 */}
 
         <div
-          className="text-content-primary grid h-[84.2%] w-[75%] grid-cols-1 items-center justify-items-center bg-cover bg-center transition-[background-image]"
+          className="text-content-primary grid h-[82%] w-[90%] grid-cols-1 items-center justify-items-center bg-cover bg-center transition-[background-image]"
           style={{
-            background: `linear-gradient(to bottom, rgba(25,41, 61,1) 0%, rgba(0,0,0,0.75) 50%, rgba(25,41, 61,1) 100%) center /cover no-repeat, url(${current.bg.src}) center /cover no-repeat`,
+            background: `
+    linear-gradient(
+      to bottom,
+      var(--color-bg-secondary) 0%,
+      
+      rgba(0,0,0,0.5) 50%,
+      var(--color-bg-secondary) 100%
+    ),
+    url(${current.bg.src}) center / cover no-repeat
+  `,
           }}
         >
-          <p className="text-center text-5xl leading-[1.4] font-bold">
+          <p className="text-content-primary text-center text-5xl leading-[1.4] font-bold max-lg:text-4xl max-md:text-3xl">
             플레이 할 게임을 선택하고
             <br />
             내게 딱 맞는 듀오를 찾아보세요
           </p>
 
           {/* 캐러셀 */}
-          <div className="flex w-full flex-row items-center justify-around">
+          <div className="flex w-full items-center justify-around">
             <div>
-              <button onClick={prev}>
-                <ChevronLeft strokeWidth={0.5} size={78} />
+              <button onClick={prev} className="cursor-pointer">
+                <ChevronLeft
+                  strokeWidth={0.5}
+                  className="size-19.5 max-lg:size-15 max-md:size-10"
+                />
               </button>
             </div>
-            <div className="flex h-50 w-[598px] flex-row items-center justify-center">
+            <div className="flex h-50 w-[598px] items-center justify-center">
               <AnimatePresence mode="popLayout" custom={direction}>
                 {getVisibleGames().map((game) => {
                   const isCenter = game.position === "center";
@@ -104,17 +134,17 @@ export default function HomePageContent() {
                       initial={{
                         x:
                           game.position === "left"
-                            ? -234
+                            ? -offset
                             : game.position === "right"
-                              ? 234
+                              ? offset
                               : 0,
                       }}
                       animate={{
                         x:
                           game.position === "left"
-                            ? -234
+                            ? -offset
                             : game.position === "right"
-                              ? 234
+                              ? offset
                               : 0,
                       }}
                       exit={{
@@ -126,13 +156,16 @@ export default function HomePageContent() {
                         duration: 0.3,
                         ease: "easeInOut",
                       }}
-                      className={`absolute flex items-center justify-center rounded-full ${isCenter ? "h-50 w-50 bg-[#101A25]" : "h-32.5 w-32.5 bg-[#101A25]/80"}`}
+                      className={`absolute flex items-center justify-center rounded-full ${isCenter ? "bg-bg-primary h-50 w-50 max-lg:h-40 max-lg:w-40 max-md:h-30 max-md:w-30" : "bg-bg-primary/80 h-32.5 w-32.5 max-lg:h-22.5 max-lg:w-22.5 max-md:h-15 max-md:w-15"}`}
                     >
                       <Image
                         src={game.icon}
                         alt={game.name}
-                        width={60}
-                        height={60}
+                        className={
+                          isCenter
+                            ? "size-20 max-lg:size-15 max-md:size-10"
+                            : "size-10 max-lg:size-8 max-md:size-5"
+                        }
                       />
                     </motion.div>
                   );
@@ -140,23 +173,36 @@ export default function HomePageContent() {
               </AnimatePresence>
             </div>
             <div>
-              <button onClick={prev}>
-                <ChevronRight strokeWidth={0.5} size={78} />
+              <button onClick={next} className="cursor-pointer">
+                <ChevronRight
+                  strokeWidth={0.5}
+                  className="size-19.5 max-lg:size-15 max-md:size-10"
+                />
               </button>
             </div>
           </div>
           <div className="flex h-full flex-col items-center gap-10 self-start text-center">
-            <p className="text-[44px] font-semibold">{current.name}</p>
+            <p className="text-4xl font-semibold max-lg:text-3xl max-md:text-2xl">
+              {current.name}
+            </p>
 
             <BoxButton
               size="lg"
-              tone="gradient_positive"
+              tone={
+                current.name === "리그 오브 레전드"
+                  ? "gradient_positive"
+                  : "black"
+              }
               text="이 게임으로 듀오 찾기"
-              className="w-auto shrink-0 self-center px-10 py-5 text-xl font-bold"
+              className={twMerge(
+                "shrink-0 self-center px-10 py-5 text-xl font-bold",
+                current.name !== "리그 오브 레전드" && "pointer-events-none",
+              )}
               onClick={() => {
                 setCurrentGame(current.id);
                 router.push(current.id);
               }}
+              disabled={current.name !== "리그 오브 레전드"}
             />
           </div>
         </div>
