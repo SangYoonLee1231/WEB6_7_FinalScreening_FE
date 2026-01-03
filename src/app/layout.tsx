@@ -29,7 +29,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${pretendard.className} bg-bg-secondary scrollbar-hide font-medium`}
+        className={`${pretendard.className} bg-bg-secondary scrollbar-hide overflow-auto px-(--global-padding) font-medium`}
       >
         <ThemeProvider
           attribute="class"

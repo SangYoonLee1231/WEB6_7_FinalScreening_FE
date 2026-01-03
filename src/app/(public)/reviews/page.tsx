@@ -49,7 +49,7 @@ export default function ReviewsPage() {
 
   return (
     <section className="mt-17.5 flex h-full w-full flex-col items-center">
-      <div className="mt-4 flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between">
         <Dropdown
           placeholder="리뷰 전체"
           items={items}
