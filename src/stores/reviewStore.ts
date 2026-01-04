@@ -4,21 +4,40 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 type ReviewStore = {
-  initialData: { emoji: EmojiType; content: string };
-  setInitialData: (emoji: EmojiType, content?: string) => void;
+  initialData: {
+    nickName: string;
+    profileImage: string;
+    emoji: EmojiType;
+    content: string;
+  };
+  setInitialData: ({
+    nickName,
+    profileImage,
+    emoji,
+    content,
+  }: {
+    nickName?: string;
+    profileImage?: string;
+    emoji?: EmojiType;
+    content?: string;
+  }) => void;
 };
 
 export const useReviewStore = create<ReviewStore>()(
   devtools(
     immer((set) => ({
       initialData: {
+        nickName: "",
+        profileImage: "",
         emoji: "GOOD",
         content: "",
       },
-      setInitialData: (emoji, content) =>
+      setInitialData: ({ nickName, profileImage, emoji, content }) =>
         set({
           initialData: {
-            emoji: emoji,
+            nickName: nickName ?? "",
+            profileImage: profileImage ?? "",
+            emoji: emoji ?? "GOOD",
             content: content ?? "",
           },
         }),

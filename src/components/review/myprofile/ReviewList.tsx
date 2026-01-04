@@ -15,7 +15,7 @@ export default function ReviewList({
 }) {
   return (
     <>
-      {status === "received" && (
+      {status === "received" && review && review.length !== 0 && (
         <ReviewPercent type="default" distributionData={distribution} />
       )}
       {review && review.length !== 0 ? (
@@ -34,7 +34,11 @@ export default function ReviewList({
                 key={`${status} review${index}`}
                 mode={status}
                 gameName="lol"
-                communityName={r.reviewerNickname}
+                communityName={
+                  status === "received"
+                    ? r.reviewerNickname
+                    : r.revieweeNickname
+                }
                 content={r.content}
                 emotion={r.emoji}
                 createdAt={r.createdAt}
