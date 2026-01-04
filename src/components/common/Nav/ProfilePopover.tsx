@@ -28,8 +28,8 @@ export default function ProfilePopover({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade bg-bg-primary border-border-primary rounded-xl border p-2 will-change-[transform,opacity]"
-          sideOffset={5}
+          className="data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade bg-bg-primary border-border-primary z-99 rounded-xl border p-2 will-change-[transform,opacity]"
+          sideOffset={10}
         >
           <div className="[&>:is(a,button)]:hover:bg-bg-secondary flex flex-col gap-1 text-sm [&>:is(a,button)]:cursor-pointer [&>:is(a,button)]:rounded-xl [&>:is(a,button)]:px-3 [&>:is(a,button)]:py-2">
             <Popover.Close asChild>

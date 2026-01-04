@@ -21,11 +21,9 @@ type FormValues = {
 
 export default function ReviewCreateForm({
   type,
-  initialPost,
   currentUserId,
 }: {
   type: "create" | "modify";
-  initialPost?: PostPartyDetail;
   currentUserId: number;
 }) {
   const router = useRouter();
@@ -123,8 +121,8 @@ export default function ReviewCreateForm({
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7.5">
       <div className="flex flex-col justify-center gap-7.5 text-sm">
         <div className="flex items-center justify-center gap-2">
-          <Avatar type="profile" src="" size="sm" />
-          <span>커뮤니티닉네임</span>
+          <Avatar type="profile" src={initialData.profileImage} size="sm" />
+          <span>{initialData.nickName}</span>
         </div>
         <p className="text-content-secondary text-center">
           함께한 파티원에 대한 평가를 선택해주세요

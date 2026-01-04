@@ -23,6 +23,7 @@ import { useGetRequestReviews } from "@/hooks/reviews/useGetRequestReviews";
 import { showToast } from "@/lib/toast";
 import { ConfirmModal } from "../common/ConfirmModal";
 import { useQueryClient } from "@tanstack/react-query";
+import { useReviewStore } from "@/stores/reviewStore";
 
 type GameName = "lol" | "overwatch" | "valorant";
 
@@ -43,6 +44,7 @@ export default function FindHistoryCard({
   const qc = useQueryClient();
 
   const { currentGame } = useMenuStore();
+  const { setInitialData } = useReviewStore();
 
   const [isOpen, setIsOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -165,6 +167,10 @@ export default function FindHistoryCard({
                           size="xs"
                           className="bg-accent text-xs"
                           onClick={() => {
+                            setInitialData({
+                              nickName: m.nickname,
+                              profileImage: m.profileImage,
+                            });
                             router.push(
                               `/myprofile/reviews/post/${PartyData.partyId}?revieweeId=${m.userId}`,
                             );

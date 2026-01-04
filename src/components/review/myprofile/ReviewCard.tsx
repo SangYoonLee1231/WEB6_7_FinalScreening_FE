@@ -155,7 +155,12 @@ export default function ReviewCard({
           <button
             className="cursor-pointer rounded-xl bg-slate-500 px-4 py-1 text-sm text-white transition-all duration-150 hover:bg-slate-500/50"
             onClick={() => {
-              setInitialData(emotion, content);
+              setInitialData({
+                nickName: communityName,
+                profileImage: profileImageURL,
+                emoji: emotion,
+                content: content,
+              });
               router.push(`/myprofile/reviews/modify/${reviewId}`);
             }}
           >
