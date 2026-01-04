@@ -126,7 +126,7 @@ export default function SignUpForm() {
         showToast.error("회원가입에 실패했습니다.");
         return;
       }
-      showToast.error("회원가입이 완료되었습니다.");
+      showToast.success("회원가입이 완료되었습니다.");
 
       router.push("/login");
     } finally {
