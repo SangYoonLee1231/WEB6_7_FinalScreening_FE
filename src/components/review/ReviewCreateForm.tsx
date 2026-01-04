@@ -11,6 +11,7 @@ import { PostPartyDetail } from "@/types/party";
 import ClientApi from "@/lib/clientApi";
 import { useReviewStore } from "@/stores/reviewStore";
 import { useQueryClient } from "@tanstack/react-query";
+import { showToast } from "@/lib/toast";
 
 type FormValues = {
   emoji: EmojiType;
@@ -70,7 +71,7 @@ export default function ReviewCreateForm({
       });
 
       if (!res.ok) {
-        alert("리뷰 등록에 실패했습니다.");
+        showToast.error("리뷰 등록에 실패했습니다.");
 
         if (res.status === 401) {
           router.push("find");
@@ -81,7 +82,7 @@ export default function ReviewCreateForm({
         return;
       }
 
-      alert("리뷰가 등록되었습니다.");
+      showToast.success("리뷰가 등록되었습니다.");
 
       router.refresh();
       router.push(`/myprofile/find-history`);
@@ -95,7 +96,7 @@ export default function ReviewCreateForm({
       });
 
       if (!res.ok) {
-        alert("리뷰 수정에 실패했습니다.");
+        showToast.error("리뷰 수정에 실패했습니다.");
 
         if (res.status === 401) {
           router.push("/myprofile/find-history");
@@ -106,7 +107,7 @@ export default function ReviewCreateForm({
         return;
       }
 
-      alert("리뷰가 수정되었습니다.");
+      showToast.success("리뷰가 수정되었습니다.");
 
       router.refresh();
 

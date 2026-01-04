@@ -72,7 +72,7 @@ export default function PositionFilterBtns({
             />
           </label>
         ) : (
-          <label key={index} className="cursor-pointer">
+          <label key={index} className="shrink-0 cursor-pointer">
             <input
               type="checkbox"
               aria-label={`${p} position`}
@@ -87,7 +87,8 @@ export default function PositionFilterBtns({
             <Image
               src={isChecked(p) ? activePositionIcons[p] : positionIcons[p]}
               alt={`${p} position icon`}
-              height={25}
+              width={28}
+              height={28}
             />
           </label>
         ),

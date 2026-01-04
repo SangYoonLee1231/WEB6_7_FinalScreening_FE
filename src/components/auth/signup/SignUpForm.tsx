@@ -15,6 +15,7 @@ import {
 } from "@/lib/validation/signupSchema";
 import { useRouter } from "next/navigation";
 import { sendEmailCode, signUp, verifyEmailCode } from "@/app/api/auth/signUp";
+import { showToast } from "@/lib/toast";
 
 export default function SignUpForm() {
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -122,11 +123,10 @@ export default function SignUpForm() {
 
       if (!res.ok) {
         setError("root", { message: res.message });
-        alert("회원가입에 실패했습니다.");
+        showToast.error("회원가입에 실패했습니다.");
         return;
       }
-
-      alert("회원가입이 완료되었습니다.");
+      showToast.error("회원가입이 완료되었습니다.");
 
       router.push("/login");
     } finally {

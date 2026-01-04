@@ -35,8 +35,9 @@ export default function IntroduceBubble({
 }: IntroduceBubbleProps) {
   return (
     <div className={twMerge(introduceBubble({ type, size }), className)}>
-      <span className="shrink-0 break-words">
-        {content ?? "아직 자기소개를 작성하지 않았어요."}
+      <span className="overflow-hidden break-words text-ellipsis whitespace-nowrap">
+        {type === "message" && !content && "아직 자기소개를 작성하지 않았어요."}
+        {type === "default" && !content ? "내용이 없습니다." : content}
       </span>
     </div>
   );

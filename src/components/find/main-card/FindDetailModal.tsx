@@ -14,6 +14,9 @@ import { GAME_MODE_META, QUEUE_TYPES_LABEL } from "@/types/party";
 import { useMenuStore } from "@/stores/menuStore";
 import { useRouter } from "next/navigation";
 import { deletePost } from "@/services/posts.client";
+import { useState } from "react";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface FindDetailModalProps {
   postData: Post;
@@ -36,14 +39,18 @@ export default function FindDetailModal({
 }: FindDetailModalProps) {
   const { gameNickname, gameTag, profileIconUrl } = gameAccount;
   const router = useRouter();
+  const qc = useQueryClient();
+
   const { currentGame } = useMenuStore();
+
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 bg-black/60" />
-        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-1/2 left-1/2 max-h-[85vh] w-[90vw] max-w-123.5 -translate-x-1/2 -translate-y-1/2 rounded-md focus:outline-none">
-          <FormModalContainer className="text-content-primary w-142">
+        <Dialog.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 z-50 bg-black/60" />
+        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-1/2 left-1/2 z-50 max-h-[85vh] w-[90vw] max-w-123.5 -translate-x-1/2 -translate-y-1/2 rounded-md focus:outline-none max-lg:w-[80vw]">
+          <FormModalContainer className="text-content-primary w-142 max-md:w-100">
             <Dialog.Title className="mb-7.5 text-2xl font-bold">
               모집글 상세 정보
             </Dialog.Title>
@@ -128,29 +135,41 @@ export default function FindDetailModal({
               )}
             >
               {isLeader && (
-                <Dialog.Close asChild>
-                  <div className="space-x-2">
-                    <BoxButton
-                      text="수정"
-                      size="sm"
-                      tone="color"
-                      onClick={() => {
-                        router.push(
-                          `/${currentGame}/modify/${postData.postId}`,
-                        );
-                      }}
-                    />
-                    <BoxButton
-                      text="삭제"
-                      size="sm"
-                      tone="negative"
-                      onClick={async () => {
-                        await deletePost(postData.postId);
-                        router.push(`/${currentGame}/find`);
-                      }}
-                    />
-                  </div>
-                </Dialog.Close>
+                <div className="space-x-2">
+                  <BoxButton
+                    text="수정"
+                    size="sm"
+                    tone="color"
+                    onClick={() => {
+                      router.push(`/${currentGame}/modify/${postData.postId}`);
+                    }}
+                  />
+                  <BoxButton
+                    text="삭제"
+                    size="sm"
+                    tone="negative"
+                    onClick={async () => {
+                      setConfirmModalOpen(true);
+                    }}
+                  />
+                  <ConfirmModal
+                    open={confirmModalOpen}
+                    onOpenChange={setConfirmModalOpen}
+                    title="정말 삭제하시겠습니까?"
+                    description="삭제하면 다시 복구할 수 없습니다."
+                    confirmText="삭제"
+                    onConfirm={async () => {
+                      await deletePost(postData.postId);
+                      onOpenChange(false);
+                      await qc.invalidateQueries({
+                        queryKey: ["posts"],
+                      });
+
+                      router.refresh();
+                      router.push(`/${currentGame}/find`);
+                    }}
+                  />
+                </div>
               )}
 
               <Dialog.Close asChild>

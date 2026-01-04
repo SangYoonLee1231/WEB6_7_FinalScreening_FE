@@ -1,4 +1,5 @@
 import { ServerApi } from "@/lib/serverApi";
+import { showToast } from "@/lib/toast";
 import { Post, PostListResponse } from "@/types/post";
 
 export async function GetPosts() {
@@ -17,7 +18,7 @@ export async function GetDetailPost(postId: string) {
   const res = await ServerApi(`/api/v1/posts/${postId}`);
 
   if (!res.ok) {
-    alert("수정할 글이 없습니다.");
+    showToast.error("수정할 글이 없습니다.");
     return;
   }
 

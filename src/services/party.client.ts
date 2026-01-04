@@ -1,4 +1,5 @@
 import ClientApi from "@/lib/clientApi";
+import { showToast } from "@/lib/toast";
 import {
   MyPartyListResponse,
   PartyCandidatesResponse,
@@ -13,7 +14,7 @@ export async function getMyParties() {
 
   if (!res.ok) {
     if (res.status === 401) return null;
-    alert("참여한 파티 목록을 조회할 수 없습니다.");
+    showToast.error("참여한 파티 목록을 조회할 수 없습니다.");
     return null;
   }
 
@@ -26,7 +27,7 @@ export async function getPartyDetail(postId: number) {
   });
 
   if (!res.ok) {
-    console.error(`postId: ${postId} 파티 세부 정보를 불러올 수 없습니다.`);
+    showToast.error("파티 세부 정보를 불러올 수 없습니다.");
     return null;
   }
 
@@ -43,7 +44,7 @@ export async function getPartyMembers(partyId: number | null) {
   });
 
   if (!res.ok) {
-    alert("참여한 파티원 목록을 조회할 수 없습니다.");
+    showToast.error("참여한 파티원 목록을 조회할 수 없습니다.");
     return null;
   }
 
@@ -80,11 +81,11 @@ export async function inviteMember({
   });
 
   if (!res.ok) {
-    console.error(`멤버를 초대할 수 없습니다.`);
+    showToast.error("멤버를 초대할 수 없습니다.");
     return;
   }
 
-  alert("멤버를 초대했습니다.");
+  showToast.success("멤버를 초대했습니다.");
   return;
 }
 
@@ -103,11 +104,11 @@ export async function kickOutMember({
   );
 
   if (!res.ok) {
-    alert(`멤버를 추방할 수 없습니다.`);
+    showToast.error("멤버를 추방할 수 없습니다.");
     return;
   }
 
-  alert("멤버를 추방했습니다.");
+  showToast.success("멤버를 추방했습니다.");
   return;
 }
 
@@ -117,10 +118,26 @@ export async function closeParty(partyId: number) {
   });
 
   if (!res.ok) {
-    alert(`파티를 종료할 수 없습니다.`);
+    showToast.error("파티를 종료할 수 없습니다.");
     return;
   }
 
-  alert("파티를 종료했습니다..");
+  showToast.success("파티를 종료했습니다.");
+
+  return;
+}
+
+export async function leaveParty(partyId: number) {
+  const res = await ClientApi(`/api/v1/parties/${partyId}/me`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    showToast.error("파티 탈퇴에 실패했습니다.");
+    return;
+  }
+
+  showToast.success("파티에서 탈퇴했습니다.");
+
   return;
 }

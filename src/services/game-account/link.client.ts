@@ -1,4 +1,5 @@
 import ClientApi from "@/lib/clientApi";
+import { showToast } from "@/lib/toast";
 import { GameAccount } from "@/types/game-account";
 
 type gameAccountRequestType = {
@@ -25,14 +26,16 @@ export async function LinkGameAccount({
 
   if (!res.ok) {
     if (res.status === 404) {
-      alert("해당 게임 계정을 찾을 수 없습니다. 닉네임과 태그를 확인해주세요.");
+      showToast.error(
+        "해당 게임 계정을 찾을 수 없습니다. 닉네임과 태그를 확인해주세요.",
+      );
       return { ok: res.ok, data: null };
     }
     if (res.status === 409) {
-      alert("이미 해당 게임 계정이 등록되어 있습니다.");
+      showToast.error("이미 해당 게임 아이디가 등록되어 있습니다.");
       return { ok: res.ok, data: null };
     }
-    alert("게임 아이디 연동에 실패했습니다.");
+    showToast.error("게임 아이디 연동에 실패했습니다.");
     return { ok: res.ok, data: null };
   }
 
@@ -54,11 +57,11 @@ export async function ModifyGameAccount(
   });
 
   if (!res.ok) {
-    alert("게임 아이디 연동 수정에 실패했습니다.");
+    showToast.error("게임 아이디 연동 수정에 실패했습니다.");
     return;
   }
 
-  alert("게임 아이디 연동 수정에 성공했습니다.");
+  showToast.success("연동된 게임 아이디를 수정했습니다.");
   return;
 }
 
@@ -68,10 +71,10 @@ export async function UnlinkGameAccount(gameAccountId: string) {
   });
 
   if (!res.ok) {
-    alert("게임 아이디 연동 해제에 실패했습니다.");
+    showToast.error("게임 아이디 연동 해제에 실패했습니다.");
     return;
   }
 
-  alert("게임 아이디 연동을 해제했습니다.");
+  showToast.success("연동된 게임 아이디를 해제했습니다.");
   return;
 }

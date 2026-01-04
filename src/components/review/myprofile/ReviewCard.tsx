@@ -19,6 +19,8 @@ import ClientApi from "@/lib/clientApi";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useReviewStore } from "@/stores/reviewStore";
+import { showToast } from "@/lib/toast";
+import { twMerge } from "tailwind-merge";
 
 type GameName = "lol" | "overwatch" | "valorant";
 
@@ -43,6 +45,7 @@ interface ReviewCardProps {
   createdAt: string; // ISO 날짜 문자열
   profileImageURL: string;
   reviewId?: number;
+  className?: string;
 }
 
 export default function ReviewCard({
@@ -54,6 +57,7 @@ export default function ReviewCard({
   createdAt,
   profileImageURL,
   reviewId,
+  className,
 }: ReviewCardProps) {
   const router = useRouter();
   const qc = useQueryClient();
@@ -77,11 +81,11 @@ export default function ReviewCard({
     });
 
     if (!res.ok) {
-      alert("리뷰 삭제에 실패했습니다.");
+      showToast.error("리뷰 삭제에 실패했습니다.");
       return;
     }
 
-    alert("리뷰를 삭제했습니다.");
+    showToast.success("리뷰를 삭제했습니다.");
 
     qc.invalidateQueries({
       queryKey: ["writtenReviews"],
@@ -89,7 +93,7 @@ export default function ReviewCard({
   };
 
   return (
-    <HorizontalCardContainer>
+    <HorizontalCardContainer className={twMerge("", className)}>
       <button
         type="button"
         onClick={handleToggle}
@@ -118,7 +122,7 @@ export default function ReviewCard({
               </span>
             </div>
 
-            <IntroduceBubble content={content} className="w-91" />
+            <IntroduceBubble content={content} className="w-full" />
           </div>
         </div>
 

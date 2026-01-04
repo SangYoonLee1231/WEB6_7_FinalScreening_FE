@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "@/css/globals.css";
 import { ThemeProvider } from "next-themes";
 import Providers from "./providers";
+import { Toaster } from "sonner";
 
 const pretendard = localFont({
   src: "../fonts/pretendard/PretendardVariable.woff2",
@@ -28,14 +29,17 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${pretendard.className} bg-bg-secondary scrollbar-hide font-medium`}
+        className={`${pretendard.className} bg-bg-secondary scrollbar-hide overflow-auto px-(--global-padding) font-medium`}
       >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem={false}
         >
-          <Providers>{children}</Providers>
+          <Providers>
+            <Toaster position="top-center" richColors />
+            {children}
+          </Providers>
         </ThemeProvider>
       </body>
     </html>

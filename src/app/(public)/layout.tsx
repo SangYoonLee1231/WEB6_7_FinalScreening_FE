@@ -10,9 +10,9 @@ export default async function Layout({
   const userData = await getMyProfile();
 
   return (
-    <div className="flex h-dvh flex-col">
+    <div className="scrollbar-hide flex h-dvh flex-col overflow-y-auto">
       <Header type="full" userData={userData} />
-      <div className="m-auto w-(--content-area) max-w-full flex-1">
+      <div className="m-auto mt-(--header-h) w-(--content-area) max-w-full flex-1">
         <main className="scrollbar-hide h-full w-full overflow-y-auto">
           {children}
         </main>
