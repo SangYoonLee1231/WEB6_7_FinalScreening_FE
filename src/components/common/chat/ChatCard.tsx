@@ -4,6 +4,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MoreVertical } from "lucide-react";
 
 import formatRelativeTime from "@/utils/formatRelativeTime";
+import Avatar from "@/components/common/Avatar";
 
 export type ChatCardMenuItem = {
   label: string;
@@ -40,21 +41,27 @@ export default function ChatCard({
 }: ChatCardProps) {
   const hasMenu = !!menuItems && menuItems.length > 0;
 
+  console.log("hasMenu:", hasMenu, "menuItems:", menuItems);
+
   return (
     <article
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
-      onClick={onClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick?.();
+      }}
       onKeyDown={(e) => {
         if (!onClick) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
+          e.stopPropagation();
           onClick();
         }
       }}
       className={[
         /* base */
-        "h-25.25 w-100",
+        "h-25.25 w-full min-w-0",
         "flex items-center gap-3 p-4",
         "rounded-xl border",
         "text-content-main",
@@ -74,16 +81,17 @@ export default function ChatCard({
         .join(" ")}
     >
       {/* 프로필 이미지 */}
-      <img
-        src={avatarSrc}
-        alt={avatarAlt}
-        className="h-12 w-12 shrink-0 rounded-full object-cover"
+      <Avatar
+        type="profile"
+        size="md"
+        src={avatarSrc ?? ""}
+        className="shrink-0"
       />
 
       {/* 텍스트 영역 */}
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         {/* 상단 */}
-        <div className="flex min-w-0 items-center gap-2">
+        <div className="flex w-full min-w-0 items-center gap-2">
           <p className="truncate font-semibold">{nickname}</p>
           <span className="text-content-secondary shrink-0 text-[0.875rem]">
             · {formatRelativeTime(createdAt)}
@@ -103,7 +111,7 @@ export default function ChatCard({
                     type="button"
                     aria-label="more"
                     onClick={(e) => e.stopPropagation()}
-                    className="text-content-secondary rounded-md p-1"
+                    className="text-content-secondary hover:text-content-main hover:bg-bg-tertiary rounded-md p-1"
                   >
                     <MoreVertical className="h-5 w-5" />
                   </button>

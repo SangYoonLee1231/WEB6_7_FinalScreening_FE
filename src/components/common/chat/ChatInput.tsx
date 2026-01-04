@@ -64,6 +64,12 @@ export default function ChatInput({
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter") return;
+              if (e.nativeEvent.isComposing) return; // IME(한글) 조합 중 Enter 방지
+              e.preventDefault();
+              handleSend();
+            }}
             placeholder={placeholder}
             disabled={inputDisabled}
             className={twMerge(

@@ -173,3 +173,28 @@ export async function markMessagesAsRead(
 
   return await res.json();
 }
+
+// 채팅방 나가기
+export async function leaveChatRoom(
+  chatRoomId: string,
+): Promise<{ chatRoomId: number; isClosed: boolean; isFullyClosed: boolean }> {
+  const res = await ClientApi(`/api/v1/chats/${chatRoomId}`, {
+    method: "DELETE",
+    headers: {
+      accept: "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(
+      `leaveChatRoom failed(chatRoomId=${chatRoomId}): ${res.status} ${text}`,
+    );
+  }
+
+  return (await res.json()) as {
+    chatRoomId: number;
+    isClosed: boolean;
+    isFullyClosed: boolean;
+  };
+}
