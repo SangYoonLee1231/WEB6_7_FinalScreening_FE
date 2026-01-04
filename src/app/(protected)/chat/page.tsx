@@ -12,6 +12,9 @@ import { useMenuStore } from "@/stores/menuStore";
 import { useChatRooms } from "@/hooks/chat/useChatRooms";
 import { useChatRoomPanel } from "@/hooks/chat/useChatRoomPanel";
 
+import { leaveChatRoom } from "@/services/chats.client";
+import { wsService } from "@/services/websocket";
+
 function SegmentedTabs() {
   return (
     <Tabs.List className="bg-bg-primary inline-flex rounded-full p-1">
@@ -91,10 +94,39 @@ export default function ChatPage() {
     handleSend,
   } = useChatRoomPanel(selectedRoomId, setRooms);
 
+  const handleLeaveRoom = React.useCallback(
+    async (roomId: string) => {
+      const ok = window.confirm(
+        "정말 채팅방을 나가시겠습니까?\n나가면 해당 채팅방은 닫히며 메시지 전송이 불가합니다.",
+      );
+      if (!ok) return;
+
+      try {
+        await leaveChatRoom(roomId);
+
+        // 즉시 구독 해제 (선택 사항이지만 UX 안정적)
+        wsService.unsubscribe(roomId);
+
+        // 목록에서 제거
+        setRooms((prev) => prev.filter((r) => r.id !== roomId));
+
+        // 현재 보고 있는 방이면 선택 해제 → 대기화면
+        setSelectedRoomId((prev) => (prev === roomId ? "" : prev));
+      } catch (e) {
+        console.error(e);
+        alert("채팅방 나가기에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      }
+    },
+    [setRooms, setSelectedRoomId],
+  );
+
   return (
     <main className="min-h-0 w-full flex-1 overflow-hidden px-6 py-8">
-      <div className="flex h-full w-full min-w-0 flex-col gap-8 lg:flex-row lg:items-start lg:justify-center">
-        <section className="flex h-full min-h-0 w-full min-w-0 flex-col lg:w-100">
+      <div
+        className="flex h-full w-full min-w-0 flex-col gap-8 lg:flex-row lg:items-start lg:justify-center"
+        onClick={() => setSelectedRoomId("")}
+      >
+        <section className="flex h-full min-h-0 w-full min-w-0 flex-col overflow-x-hidden lg:w-100">
           <Tabs.Root
             value={tab}
             onValueChange={(v) => setTab(v as "all" | "unread")}
@@ -117,9 +149,7 @@ export default function ChatPage() {
                   filteredRooms.map((room) => (
                     <ChatCard
                       key={room.id}
-                      avatarSrc={
-                        room.headerUser.profileImageUrl ?? "/default-avatar.png"
-                      }
+                      avatarSrc={room.headerUser.profileImageUrl ?? ""}
                       nickname={room.headerUser.communityNickname}
                       createdAt={room.createdAt}
                       message={room.lastMessage}
@@ -127,6 +157,12 @@ export default function ChatPage() {
                       unreadCount={room.unreadCount}
                       onClick={() => setSelectedRoomId(room.id)}
                       isSelected={room.id === selectedRoomId}
+                      menuItems={[
+                        {
+                          label: "채팅방 나가기",
+                          onSelect: () => handleLeaveRoom(room.id),
+                        },
+                      ]}
                     />
                   ))
                 )}
@@ -134,7 +170,7 @@ export default function ChatPage() {
             </Tabs.Content>
 
             <Tabs.Content value="unread" className="outline-none">
-              <div className="flex max-h-[70vh] flex-col gap-4 overflow-auto pr-1 lg:max-h-152.5">
+              <div className="flex h-full min-h-0 flex-col gap-4 overflow-x-hidden overflow-y-auto pr-1">
                 {isLoadingRooms ? (
                   <p className="text-content-secondary px-2 py-6 text-sm">
                     채팅방을 불러오는 중...
@@ -147,9 +183,7 @@ export default function ChatPage() {
                   filteredRooms.map((room) => (
                     <ChatCard
                       key={room.id}
-                      avatarSrc={
-                        room.headerUser.profileImageUrl ?? "/default-avatar.png"
-                      }
+                      avatarSrc={room.headerUser.profileImageUrl ?? ""}
                       nickname={room.headerUser.communityNickname}
                       createdAt={room.createdAt}
                       message={room.lastMessage}
@@ -157,6 +191,12 @@ export default function ChatPage() {
                       unreadCount={room.unreadCount}
                       onClick={() => setSelectedRoomId(room.id)}
                       isSelected={room.id === selectedRoomId}
+                      menuItems={[
+                        {
+                          label: "채팅방 나가기",
+                          onSelect: () => handleLeaveRoom(room.id),
+                        },
+                      ]}
                     />
                   ))
                 )}

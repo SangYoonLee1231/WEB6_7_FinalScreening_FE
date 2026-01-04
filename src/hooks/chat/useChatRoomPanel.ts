@@ -6,6 +6,7 @@ import type {
   ChatHeaderUser,
   ChatMessage,
 } from "@/components/common/chat/ChatFrame";
+import { QUEUE_TYPES_LABEL, type QueueType } from "@/types/party";
 import {
   getChatMessages,
   getChatRoomDetail,
@@ -64,7 +65,10 @@ export function useChatRoomPanel(
           communityNickname: detail.otherUser.nickname,
         });
 
-        setRightTitle(`${detail.queueType} ${detail.memo}`);
+        const queueLabel =
+          QUEUE_TYPES_LABEL[detail.queueType as QueueType] ?? detail.queueType;
+
+        setRightTitle(`${queueLabel} ${detail.memo}`);
         setRightState(detail.postStatus as PostStatus);
 
         const mapped: ChatMessage[] = messageRes.messages.map((m) => {
