@@ -200,14 +200,18 @@ export default function SignUpForm() {
           )
         )}
 
-        {(!isCodeSent || !isEmailVerified) && (
+        {isCodeSent && !loading.send && !isEmailVerified && (
           <div className="flex flex-row gap-1 text-base">
             <p className="text-content-secondary ml-2">
               인증번호를 받지 못하셨나요?
             </p>
-            <a href="#" className="text-accent hover:underline">
+            <button
+              type="button"
+              className="text-accent cursor-pointer hover:underline"
+              onClick={onSendCode}
+            >
               재전송
-            </a>
+            </button>
           </div>
         )}
         <TextInput
