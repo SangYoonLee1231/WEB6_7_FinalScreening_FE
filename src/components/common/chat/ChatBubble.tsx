@@ -3,18 +3,7 @@
 import Avatar from "@/components/common/Avatar";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-
-// 시간 포맷: '오후 N:NN'
-function formatKoreanTime(date: string) {
-  const d = new Date(date);
-  const hours = d.getHours();
-  const minutes = d.getMinutes().toString().padStart(2, "0");
-
-  const isPM = hours >= 12;
-  const displayHour = hours % 12 === 0 ? 12 : hours % 12;
-
-  return `${isPM ? "오후" : "오전"} ${displayHour}:${minutes}`;
-}
+import formatChatTime from "@/utils/formatChatTime";
 
 export type ChatBubbleSide = "me" | "other";
 
@@ -106,7 +95,7 @@ export default function ChatBubble({
                   dateTime={createdAt}
                   className="text-content-secondary shrink-0 text-xs select-none"
                 >
-                  {formatKoreanTime(createdAt)}
+                  {formatChatTime(createdAt)}
                 </time>
               </Tooltip.Trigger>
 
@@ -116,7 +105,9 @@ export default function ChatBubble({
                   sideOffset={6}
                   className="bg-bg-quaternary text-content-main rounded-md px-2 py-1 text-xs"
                 >
-                  {new Date(createdAt).toLocaleString()}
+                  {new Date(createdAt).toLocaleString("ko-KR", {
+                    timeZone: "Asia/Seoul",
+                  })}
                   <Tooltip.Arrow className="fill-bg-quaternary" />
                 </Tooltip.Content>
               </Tooltip.Portal>
