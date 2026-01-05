@@ -105,9 +105,7 @@ export default function ChatBubble({
                   sideOffset={6}
                   className="bg-bg-quaternary text-content-main rounded-md px-2 py-1 text-xs"
                 >
-                  {new Date(createdAt).toLocaleString("ko-KR", {
-                    timeZone: "Asia/Seoul",
-                  })}
+                  {formatChatTime(createdAt)}
                   <Tooltip.Arrow className="fill-bg-quaternary" />
                 </Tooltip.Content>
               </Tooltip.Portal>

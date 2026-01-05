@@ -10,6 +10,6 @@ dayjs.locale("ko");
 const KST = "Asia/Seoul";
 
 export default function formatChatTime(date: string) {
-  // 서버 createdAt(UTC, Z 포함)이 와도 KST로 변환해서 표시
-  return dayjs(date).tz(KST).format("A h:mm"); // 예: 오전 11:18
+  // ISO-8601 + timezone 이 보장되므로 그대로 KST 변환만 하면 됨
+  return dayjs(date).tz(KST).format("A h:mm");
 }
