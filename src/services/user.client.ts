@@ -27,3 +27,16 @@ export async function getMyProfile() {
 
   return (await res.json()) as MyProfile;
 }
+
+export async function userResgin() {
+  const res = await ClientApi(`/api/v1/auth/resign`, {
+    method: "POST",
+  });
+
+  if (!res.ok) {
+    showToast.error("회원 탈퇴에 실패했습니다.");
+    return;
+  }
+  showToast.success("탈퇴했습니다.");
+  return;
+}

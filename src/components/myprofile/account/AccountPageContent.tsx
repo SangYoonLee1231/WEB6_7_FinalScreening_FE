@@ -7,15 +7,26 @@ import ProfileImageSection from "./ProfileImageSection";
 import CommentSection from "./CommentSection";
 import PasswordSection from "./PasswordSection";
 import { useQuery } from "@tanstack/react-query";
-import { getMyProfile } from "@/services/user.client"
+import { getMyProfile, userResgin } from "@/services/user.client";
 import LoadingBouncy from "@/components/common/loading/LoadingBouncy";
+import { BoxButton } from "@/components/common/button/BoxButton";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { useRouter } from "next/navigation";
 
 export default function AccountPageContent() {
+  const router = useRouter();
+
   const { setMenu } = useMenuStore();
   const { setMenu: setProfileMenu } = useMyProfileMenuStore();
-  
-  const { data: profileData, isLoading, refetch } = useQuery({ 
-    queryKey: ['user'], 
+
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+
+  const {
+    data: profileData,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["user"],
     queryFn: getMyProfile,
   });
 
@@ -24,18 +35,22 @@ export default function AccountPageContent() {
     setProfileMenu("account");
   }, [setMenu, setProfileMenu]);
 
- if (isLoading) {
-  return <LoadingBouncy />;
- }
+  if (isLoading) {
+    return <LoadingBouncy />;
+  }
   return (
     <div className="flex w-125 flex-col gap-11 [&_h3]:text-xl [&_h3]:font-semibold">
       <h2 className="text-4xl font-bold">계정 관리</h2>
       <div className="flex flex-col gap-9">
         <div className="flex items-center gap-10">
           <ProfileImageSection
-            profileImage={profileData?.profileImage ?? undefined} refetch={refetch}
+            profileImage={profileData?.profileImage ?? undefined}
+            refetch={refetch}
           />
-          <NicknameSection initialNickname={profileData?.nickname ?? ""} nicknameUpdatedAt={profileData?.nicknameUpdatedAt ?? null} />
+          <NicknameSection
+            initialNickname={profileData?.nickname ?? ""}
+            nicknameUpdatedAt={profileData?.nicknameUpdatedAt ?? null}
+          />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -45,6 +60,24 @@ export default function AccountPageContent() {
 
         <CommentSection initialComment={profileData?.comment ?? ""} />
         <PasswordSection />
+        <BoxButton
+          text="회원탈퇴"
+          size="sm"
+          onClick={async () => {
+            setConfirmModalOpen(true);
+          }}
+        />
+        <ConfirmModal
+          open={confirmModalOpen}
+          onOpenChange={setConfirmModalOpen}
+          title="정말 탈퇴하시겠습니까?"
+          description="탈퇴하면 다시 복구할 수 없습니다."
+          confirmText="탈퇴"
+          onConfirm={async () => {
+            await userResgin();
+            router.push(`/login`);
+          }}
+        />
       </div>
     </div>
   );
