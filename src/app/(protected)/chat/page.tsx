@@ -124,9 +124,19 @@ export default function ChatPage() {
     <main className="min-h-0 w-full flex-1 overflow-hidden px-6 py-8">
       <div
         className="flex h-full w-full min-w-0 flex-col gap-8 lg:flex-row lg:items-start lg:justify-center"
-        onClick={() => setSelectedRoomId("")}
+        onClick={(e) => {
+          const target = e.target as HTMLElement;
+
+          // 좌/우 패널 내부 클릭이면 선택 해제하지 않음
+          if (target.closest('[data-chat-surface="true"]')) return;
+
+          setSelectedRoomId("");
+        }}
       >
-        <section className="flex h-full min-h-0 w-full min-w-0 flex-col overflow-x-hidden lg:w-100">
+        <section
+          data-chat-surface="true"
+          className="flex h-full min-h-0 w-full min-w-0 flex-col overflow-x-hidden lg:w-100"
+        >
           <Tabs.Root
             value={tab}
             onValueChange={(v) => setTab(v as "all" | "unread")}
@@ -205,7 +215,10 @@ export default function ChatPage() {
           </Tabs.Root>
         </section>
 
-        <section className="flex h-full min-h-0 w-full min-w-0 flex-col lg:w-225">
+        <section
+          data-chat-surface="true"
+          className="flex h-full min-h-0 w-full min-w-0 flex-col lg:w-225"
+        >
           {selectedRoomId ? (
             isLoadingRight || !rightHeaderUser || !rightState ? (
               <div className="border-border-primary bg-bg-secondary flex h-full w-full items-center justify-center rounded-xl border">
