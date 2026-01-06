@@ -92,6 +92,10 @@ export default function ChatPage() {
     rightState,
     rightMessages,
     handleSend,
+
+    // 추가
+    isRoomDisabled,
+    roomDisabledText,
   } = useChatRoomPanel(selectedRoomId, setRooms);
 
   const handleLeaveRoom = React.useCallback(
@@ -227,15 +231,30 @@ export default function ChatPage() {
                 </p>
               </div>
             ) : (
-              <ChatFrame
-                widthClassName="w-full"
-                headerUser={rightHeaderUser}
-                title={rightTitle}
-                state={rightState}
-                messages={rightMessages}
-                onSend={handleSend}
-                isSending={isSending}
-              />
+              <div className="flex h-full min-h-0 flex-col">
+                {/* 이용 불가 문구 */}
+                {isRoomDisabled && (
+                  <div className="border-border-primary bg-bg-tertiary text-content-primary mb-3 rounded-xl border px-4 py-3 text-sm">
+                    {roomDisabledText}
+                  </div>
+                )}
+
+                <div className="min-h-0 flex-1">
+                  <ChatFrame
+                    widthClassName="w-full"
+                    headerUser={rightHeaderUser}
+                    title={rightTitle}
+                    state={rightState}
+                    messages={rightMessages}
+                    onSend={(msg) => {
+                      if (isRoomDisabled) return;
+                      return handleSend(msg);
+                    }}
+                    // isSending을 OR 처리해서 Input도 같이 비활성화되게
+                    isSending={isSending || isRoomDisabled}
+                  />
+                </div>
+              </div>
             )
           ) : (
             <div className="h-full">

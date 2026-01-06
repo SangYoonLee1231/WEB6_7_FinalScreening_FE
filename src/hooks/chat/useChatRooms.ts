@@ -6,6 +6,7 @@ import { getChatRooms } from "@/services/chats.client";
 import type { ChatMessage } from "@/components/common/chat/ChatFrame";
 import { useMemo } from "react";
 import { wsService, type ChatWebSocketMessage } from "@/services/websocket";
+import { useSearchParams } from "next/navigation";
 
 export type ChatRoom = {
   id: string;
@@ -51,6 +52,10 @@ export function useChatRooms(game: string) {
     Map<string, (m: ChatWebSocketMessage) => void>
   >(new Map());
 
+  // 채팅방 참여하기 진입 처리
+  const searchParams = useSearchParams();
+  const initialRoomIdFromQuery = searchParams.get("roomId");
+
   // 채팅방 목록 최초 로드
   React.useEffect(() => {
     let cancelled = false;
@@ -80,7 +85,20 @@ export function useChatRooms(game: string) {
         }));
 
         setRooms(sortByLatest(nextRooms));
-        setSelectedRoomId((prev) => prev || nextRooms[0]?.id || "");
+
+        // 채팅방 참여하기로 진입한 경우(roomId 쿼리 존재 시)
+        if (initialRoomIdFromQuery) {
+          const exists = nextRooms.some(
+            (r) => r.id === String(initialRoomIdFromQuery),
+          );
+
+          if (exists) {
+            setSelectedRoomId(String(initialRoomIdFromQuery));
+          }
+        }
+
+        // 기본 진입 시에는 자동으로 채팅방을 선택하지 않음
+        setSelectedRoomId((prev) => prev);
       } catch (e) {
         console.warn(e);
         if (!cancelled) setRooms([]);

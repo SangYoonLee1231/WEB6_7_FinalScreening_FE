@@ -28,6 +28,10 @@ export function useChatRoomPanel(
   const [rightState, setRightState] = React.useState<PostStatus | null>(null);
   const [rightMessages, setRightMessages] = React.useState<ChatMessage[]>([]);
 
+  // 채팅방 이용 불가 상태/문구
+  const [isRoomDisabled, setIsRoomDisabled] = React.useState<boolean>(false);
+  const [roomDisabledText, setRoomDisabledText] = React.useState<string>("");
+
   // 상대방 정보를 저장 (WebSocket 메시지 수신 시 사용)
   const otherUserRef = React.useRef<{
     userId: number;
@@ -70,6 +74,25 @@ export function useChatRoomPanel(
 
         setRightTitle(`${queueLabel} ${detail.memo}`);
         setRightState(detail.postStatus as PostStatus);
+
+        // 채팅방 이용 불가 상태 세팅
+        if (detail.myLeft) {
+          setIsRoomDisabled(true);
+          setRoomDisabledText(
+            "채팅방을 나간 상태입니다. 메시지를 보낼 수 없습니다.",
+          );
+        } else if (detail.otherLeft) {
+          setIsRoomDisabled(true);
+          setRoomDisabledText(
+            "상대방이 채팅방을 나가 채팅을 이용할 수 없습니다.",
+          );
+        } else if (!detail.isOpen) {
+          setIsRoomDisabled(true);
+          setRoomDisabledText("현재 채팅방을 이용할 수 없습니다.");
+        } else {
+          setIsRoomDisabled(false);
+          setRoomDisabledText("");
+        }
 
         const mapped: ChatMessage[] = messageRes.messages.map((m) => {
           const isOther = m.senderId === detail.otherUser.userId;
@@ -119,6 +142,10 @@ export function useChatRoomPanel(
           setRightState(null);
           setRightMessages([]);
           otherUserRef.current = null;
+
+          // 오류 시 이용불가 상태 초기화
+          setIsRoomDisabled(false);
+          setRoomDisabledText("");
         }
       } finally {
         if (!cancelled) setIsLoadingRight(false);
@@ -131,6 +158,10 @@ export function useChatRoomPanel(
       setRightState(null);
       setRightMessages([]);
       otherUserRef.current = null;
+
+      // 선택 해제 시 이용불가 상태 초기화
+      setIsRoomDisabled(false);
+      setRoomDisabledText("");
       return;
     }
 
@@ -139,7 +170,7 @@ export function useChatRoomPanel(
     return () => {
       cancelled = true;
     };
-  }, [selectedRoomId]);
+  }, [selectedRoomId, setRooms]);
 
   // WebSocket 구독
   React.useEffect(() => {
@@ -218,6 +249,7 @@ export function useChatRoomPanel(
 
   const handleSend = async (message: string) => {
     if (!selectedRoomId || isSending) return;
+    if (isRoomDisabled) return; // 이용 불가 상태면 전송 차단
 
     const createdAt = new Date().toISOString();
     const tempId = `temp-${Math.random().toString(16).slice(2)}`;
@@ -264,5 +296,9 @@ export function useChatRoomPanel(
     rightState,
     rightMessages,
     handleSend,
+
+    // 추가 반환
+    isRoomDisabled,
+    roomDisabledText,
   };
 }
